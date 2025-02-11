@@ -1,10 +1,14 @@
 :root {
     --color-jet: #353535;
     --color-gray: #d2d7df;
+    --color-dark-gray: hsl(217, 17%, 70%);
     --color-silver: #bdbbb0;
+    --color-light-jet: hsl(0, 0%, 40%);
+    --page-bg-color: var(--color-gray, white);
 
     --notes-line-color: #85c1e9;
     --scroll-bar-width: thin;
+    --sidebar-line-height: 1.3em;
 }
 
 @font-face {
@@ -26,11 +30,12 @@ li {
 
 .main-container {
     display: grid;
-    background: var(--color-gray);
+    background: var(--page-bg-color);
     grid:
-        "header header header" 80px
+        "header header header" minmax(100px, auto)
         "sidebar modules notes" 1fr
-        / 200px 1fr calc(50ch);
+        "footer footer footer" 30px
+        / 200px minmax(50%, 1fr) minmax(20ch, 50ch);
     height: 100dvh;
     height: 100vh;
 }
@@ -38,11 +43,42 @@ li {
 .header {
     grid-area: header;
     border-bottom: 2px solid black;
+    background-color: var(--color-jet);
+}
+
+.footer {
+    grid-area: footer;
+
+    background-color: var(--color-jet);
+}
+
+.open-modules-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-left: 10px;
+    gap: 10px;
+    color: white;
+}
+
+.open-module-list-item {
+    text-align: center;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 10px;
+    border-bottom: 4px solid black;
+}
+
+.open-module-list-item:hover {
+    background-color: var(--color-dark-gray);
+}
+
+.open-module-list-item:active {
+    background-color: var(--color-dark-gray);
 }
 
 .sidebar {
     grid-area: sidebar;
-    border-right: 2px solid black;
     overflow: auto;
     scrollbar-width: var(--scroll-bar-width);
     scrollbar-color: var(--color-jet) var(--color-gray);
@@ -53,25 +89,47 @@ li {
         flex-direction: column;
         gap: 2px;
         font-size: 20px;
-
-        height: 100%;
     }
 }
 
 .module-list-item {
-    background-color: var(--color-jet);
-    color: skyblue;
-    border: 1px solid black;
-    padding: 4px;
+    display: flex;
 }
 
-.module-list-item:hover {
+.sidebar-item {
+    background-color: var(--color-jet, black);
+    color: skyblue;
+    padding: 6px 12px;
+    border-radius: 6px;
+}
+
+.module-list :first-child {
+    margin-bottom: 30px;
+}
+
+.first-appendix {
+    margin-top: 30px;
+}
+
+.module-list-item > div {
+    display: inline;
+    align-self: center;
+}
+
+.sidebar-item:hover {
     opacity: 0.9;
     cursor: pointer;
 }
 
 .modules {
     grid-area: modules;
+    border-left: 2px solid black;
+    border-right: 2px solid black;
+}
+
+iframe {
+    height: 99%;
+    width: 100%;
 }
 
 .notes {
@@ -79,20 +137,17 @@ li {
     padding: 10px;
     height: 100%;
     width: 100%;
-    line-height: 1.6em;
-    border-left: 2px solid black;
 
     overflow: auto;
     font-family: "special-elite";
 
     background-image: linear-gradient(
+        to top,
         var(--notes-line-color) 0.1em,
         transparent 0.1em
     );
-    background-size: 100% 1.2em;
+    background-size: 100% 1.4em;
     background-attachment: local;
     padding-top: 0.2rem;
-    line-height: 1.2;
-    scrollbar-width: var(--scroll-bar-width);
-    scrollbar-color: var(--color-jet) var(--color-gray);
+    line-height: 1.4;
 }
