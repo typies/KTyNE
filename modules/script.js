@@ -15,84 +15,84 @@ function Module(
 }
 
 let moduleList = [
-    new Module(" - New REPO Tab"),
+    new Module(" + New REPO Tab"),
     new Module(
         "Wires",
         "./module-images/WireComponent.svg",
-        "https://bombmanual.com/web/index.html#Wires",
+        "https://ktane.timwi.de/HTML/Wires.html",
         false
     ),
     new Module(
         "The Button",
         "./module-images/ButtonComponent.svg",
-        "https://bombmanual.com/web/index.html#TheButton"
+        "https://ktane.timwi.de/HTML/The%20Button.html"
     ),
     new Module(
         "Keypad",
         "./module-images/KeypadComponent.svg",
-        "https://bombmanual.com/web/index.html#Keypads"
+        "https://ktane.timwi.de/HTML/Keypad.html"
     ),
     new Module(
         "Simon Says",
         "./module-images/SimonComponent.svg",
-        "https://bombmanual.com/web/index.html#SimonSays"
+        "https://ktane.timwi.de/HTML/Simon%20Says.html"
     ),
     new Module(
         "Who's on First?",
         "./module-images/WhosOnFirstComponent.svg",
-        "https://bombmanual.com/web/index.html#WhosOnFirst"
+        "https://ktane.timwi.de/HTML/Who%27s%20on%20First.html"
     ),
     new Module(
         "Memory",
         "./module-images/MemoryComponent.svg",
-        "https://bombmanual.com/web/index.html#Memory"
+        "https://ktane.timwi.de/HTML/Memory.html"
     ),
     new Module(
         "Morse Code",
         "./module-images/MorseCodeComponent.svg",
-        "https://bombmanual.com/web/index.html#MorseCode"
+        "https://ktane.timwi.de/HTML/Morse%20Code.html"
     ),
     new Module(
         "Complicated Wires",
         "./module-images/VennWireComponent.svg",
-        "https://bombmanual.com/web/index.html#ComplicatedWires"
+        "https://ktane.timwi.de/HTML/Complicated%20Wires.html"
     ),
     new Module(
         "Wire Sequence",
         "./module-images/WireSequenceComponent.svg",
-        "https://bombmanual.com/web/index.html#WireSequences"
+        "https://ktane.timwi.de/HTML/Wire%20Sequence.html"
     ),
     new Module(
         "Maze",
         "./module-images/MazeComponent.svg",
-        "https://bombmanual.com/web/index.html#Mazes"
+        "https://ktane.timwi.de/HTML/Maze.html"
     ),
     new Module(
         "Password",
         "./module-images/PasswordComponent.svg",
-        "https://bombmanual.com/web/index.html#Passwords"
+        "https://ktane.timwi.de/HTML/Password.html"
     ),
     new Module(
         "Knob",
         "./module-images/NeedyKnobComponent.svg",
-        "https://bombmanual.com/web/index.html#Knobs"
+        "https://ktane.timwi.de/HTML/Knob.html"
     ),
     new Module(
         "Appendix A (Indicators)",
         "./module-images/IndicatorWidget.svg",
-        "https://bombmanual.com/web/index.html#AppendixA",
+        "https://ktane.timwi.de/HTML/Indicators.html",
         true
     ),
     new Module(
         "Appendix B (Batteries)",
         "./module-images/Battery-AA.svg",
-        "https://bombmanual.com/web/index.html#AppendixB",
+        "https://ktane.timwi.de/HTML/Batteries.html",
         true
     ),
     new Module(
         "Appendix C (Ports)",
         "./module-images/RJ45.svg",
-        "https://bombmanual.com/web/index.html#AppendixC",
+        "https://ktane.timwi.de/HTML/Ports.html",
         true
     ),
 ];
