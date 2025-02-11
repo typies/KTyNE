@@ -125,9 +125,18 @@ li {
     grid-area: modules;
     border-left: 2px solid black;
     border-right: 2px solid black;
+    position: relative;
 }
 
-iframe {
+.hidden-iframe {
+    visibility: hidden;
+    height: 0;
+    width: 0;
+    position: absolute;
+}
+
+.current-iframe {
+    visibility: visible;
     height: 99%;
     width: 100%;
 }
