@@ -19,9 +19,6 @@ class HeaderList {
         let newHeaderListItem = document.createElement("li");
         newHeaderListItem.classList.add("open-module-list-item");
         newHeaderListItem.setAttribute("data-module-index", this.#idCounter++);
-        let newListItemImg = document.createElement("img");
-        newListItemImg.setAttribute("src", module.imageUrl);
-        newListItemImg.classList.add("header-list-item-img");
 
         let headerListText = document.createElement("div");
         headerListText.classList.add("header-list-item");
@@ -48,7 +45,6 @@ class HeaderList {
             }
         });
         newHeaderListItem.addEventListener("dblclick", this.headerItemRename);
-        newHeaderListItem.appendChild(newListItemImg);
         newHeaderListItem.appendChild(headerListText);
         this.domElements.headerList.appendChild(newHeaderListItem);
         this.highlightHeaderItem(moduleIndex);

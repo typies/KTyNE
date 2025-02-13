@@ -46,10 +46,6 @@ li {
     background-color: var(--color-jet);
 }
 
-.header-list-item-img {
-    height: 50px;
-}
-
 .footer {
     grid-area: footer;
 
@@ -60,7 +56,7 @@ li {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    margin-left: 10px;
+    margin: 10px;
     gap: 10px;
     color: skyblue;
 }
