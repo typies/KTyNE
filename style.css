@@ -46,6 +46,10 @@ li {
     background-color: var(--color-jet);
 }
 
+.header-list-item-img {
+    height: 50px;
+}
+
 .footer {
     grid-area: footer;
 

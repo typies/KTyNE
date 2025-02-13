@@ -2,20 +2,24 @@ const KTANE_TIMWI_URL = "https://ktane.timwi.de/";
 const VANILLA_MAN_URL = "https://bombmanual.com/web/index.html";
 const DEFAULT_MOD_IMG = "./KeepTalkingIcon_Transparent95x95-1.png";
 
-function Module(
-    moduleName,
-    imageUrl = DEFAULT_MOD_IMG,
-    manualUrl = KTANE_TIMWI_URL,
-    appendix = false
-) {
-    this.moduleName = moduleName;
-    this.imageUrl = imageUrl;
-    this.manualUrl = manualUrl;
-    this.appendix = appendix;
+import pageSidebar from "./sidebar.js";
+
+class Module {
+    constructor(
+        moduleName,
+        imageUrl = DEFAULT_MOD_IMG,
+        manualUrl = KTANE_TIMWI_URL,
+        appendix = false
+    ) {
+        this.moduleName = moduleName;
+        this.imageUrl = imageUrl;
+        this.manualUrl = manualUrl;
+        this.appendix = appendix;
+    }
 }
 
 let moduleList = [
-    new Module(" + New REPO Tab"),
+    new Module("+ New REPO Tab"),
     new Module(
         "Wires",
         "./module-images/WireComponent.svg",
@@ -104,98 +108,7 @@ moduleList.sort((a, b) => {
     return 1;
 });
 
-function populateSidebarModuleList(moduleList) {
-    let moduleListElement = document.querySelector(".sidebar .module-list");
-    moduleList.forEach((module) => {
-        let newModuleListItem = document.createElement("div");
-        newModuleListItem.classList.add("module-list-item");
-        newModuleListItem.classList.add("sidebar-item");
-        if (module.appendix) newModuleListItem.classList.add("appendix");
-
-        newModuleListItem.textContent = module.moduleName;
-        moduleListElement.appendChild(newModuleListItem);
-        newModuleListItem.addEventListener("click", () => {
-            openNewModule(module);
-            openNewIFrame(module.manualUrl);
-            moduleCounter++;
-        });
-    });
-}
-
-let moduleCounter = 0;
-
-function openNewModule(module) {
-    let headerList = document.querySelector(".open-modules-list");
-    let newHeaderListItem = document.createElement("li");
-    newHeaderListItem.classList.add("open-module-list-item");
-    newHeaderListItem.setAttribute("data-module-index", moduleCounter);
-
-    let newListItemImg = document.createElement("img");
-    newListItemImg.setAttribute("src", module.imageUrl);
-    newListItemImg.style.height = "50px";
-
-    let headerListText = document.createElement("div");
-    headerListText.classList.add("header-list-item");
-    headerListText.textContent = module.moduleName;
-
-    let moduleIndex = newHeaderListItem.getAttribute("data-module-index");
-    newHeaderListItem.addEventListener("mousedown", (event) => {
-        switch (event.button) {
-            case 0:
-                changeIFrame(moduleIndex);
-                break;
-            case 1:
-                // Middle mouse click close
-                closeTab(moduleIndex);
-                break;
-        }
-    });
-
-    newHeaderListItem.appendChild(newListItemImg);
-    newHeaderListItem.appendChild(headerListText);
-    headerList.appendChild(newHeaderListItem);
-}
-
-function closeTab(moduleIndex) {
-    document.querySelector(`[data-iframe-index="${moduleIndex}"]`).remove();
-    document.querySelector(`[data-module-index="${moduleIndex}"]`).remove();
-}
-
-function changeIFrame(moduleIndex) {
-    let currentIFrame = document.querySelector(".current-iframe");
-    if (currentIFrame != null) {
-        toggleIFrame(currentIFrame);
-    }
-
-    let nextIFrame = document.querySelector(
-        `[data-iframe-index="${moduleIndex}"]`
-    );
-    toggleIFrame(nextIFrame);
-}
-
-function toggleIFrame(iframe) {
-    if (iframe.classList.contains("current-iframe")) {
-        iframe.classList.remove("current-iframe");
-        iframe.classList.add("hidden-iframe");
-    } else if (iframe.classList.contains("hidden-iframe")) {
-        iframe.classList.remove("hidden-iframe");
-        iframe.classList.add("current-iframe");
-    }
-}
-
-function openNewIFrame(url) {
-    let currentIFrame = document.querySelector(".current-iframe");
-    if (currentIFrame != null) toggleIFrame(currentIFrame);
-
-    let newIFrame = document.createElement("iframe");
-    newIFrame.setAttribute("src", url);
-    newIFrame.setAttribute("data-iframe-index", moduleCounter);
-    newIFrame.classList.add("current-iframe");
-    let modulesFrame = document.querySelector(".modules");
-    modulesFrame.appendChild(newIFrame);
-}
-
-populateSidebarModuleList(moduleList);
+pageSidebar.addSidebarItems(moduleList);
 
 // Make gap above appendix items for module list (Can't be done with CSS easily)
 let firstAppendix = document.querySelector(".appendix");
