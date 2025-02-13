@@ -2,6 +2,7 @@ import pageIframeManager from "./iframeManager.js";
 
 class HeaderList {
     #idCounter = 0;
+    #currentHighlight = 0;
     constructor(openModules) {
         if (!this.openModules) {
             this.openModules = [];
@@ -31,6 +32,7 @@ class HeaderList {
             switch (event.button) {
                 case 0:
                     pageIframeManager.changeIFrame(moduleIndex);
+                    this.highlightHeaderItem(moduleIndex);
                     break;
                 case 1:
                     // Middle mouse click close
@@ -41,13 +43,38 @@ class HeaderList {
                     newHeaderListItem.remove();
                     pageIframeManager.removeIframe(moduleIndex);
                     break;
+                case 2:
+                    this.headerItemRename(newHeaderListItem);
             }
         });
-
+        newHeaderListItem.addEventListener("dblclick", this.headerItemRename);
         newHeaderListItem.appendChild(newListItemImg);
         newHeaderListItem.appendChild(headerListText);
         this.domElements.headerList.appendChild(newHeaderListItem);
+        this.highlightHeaderItem(moduleIndex);
     }
+
+    headerItemRename(newHeaderListItem) {
+        newHeaderListItem =
+            newHeaderListItem instanceof MouseEvent ? this : newHeaderListItem;
+        const text = newHeaderListItem.querySelector(".header-list-item");
+        const renameInput = prompt(`Renaming ${text.textContent}`);
+        if (renameInput) {
+            text.textContent = renameInput;
+        }
+    }
+
+    highlightHeaderItem(index) {
+        this.domElements.headerList
+            .querySelector(`[data-module-index="${this.#currentHighlight}"]`)
+            .classList.remove("current-header-item");
+        this.#currentHighlight = index;
+        this.domElements.headerList
+            .querySelector(`[data-module-index="${index}"]`)
+            .classList.add("current-header-item");
+    }
+
+    removeHighlightHeaderItem(index) {}
 
     render() {
         this.domElements.headerList.textContent = "";

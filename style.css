@@ -32,7 +32,7 @@ li {
     display: grid;
     background: var(--page-bg-color);
     grid:
-        "header header header" minmax(100px, auto)
+        "sidebar header header" minmax(100px, auto)
         "sidebar modules notes" 1fr
         "footer footer footer" 30px
         / 200px minmax(50%, 1fr) minmax(20ch, 50ch);
@@ -62,7 +62,7 @@ li {
     align-items: center;
     margin-left: 10px;
     gap: 10px;
-    color: white;
+    color: skyblue;
 }
 
 .open-module-list-item {
@@ -79,6 +79,11 @@ li {
 
 .open-module-list-item:active {
     background-color: var(--color-dark-gray);
+}
+
+.open-module-list-item.current-header-item {
+    color: white;
+    border-bottom-color: white;
 }
 
 .sidebar {
