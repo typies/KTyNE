@@ -11,81 +11,71 @@ class HeaderList {
     };
 
     addHeaderListItem(moduleName) {
-        const newModuleId = this.#idCounter++;
+        const newHeaderListItemId = this.#idCounter++;
 
         let newHeaderListItem = document.createElement("li");
         newHeaderListItem.classList.add("open-module-list-item", "clickable");
-        newHeaderListItem.setAttribute("data-module-id", newModuleId);
+        newHeaderListItem.setAttribute("data-module-id", newHeaderListItemId);
         newHeaderListItem.textContent = moduleName;
 
         // Left click
         newHeaderListItem.addEventListener("click", (event) => {
-            pageIframeManager.setIframeById(newModuleId);
-            this.changeHighlightedHeaderItem(newModuleId);
+            pageIframeManager.setIframeById(newHeaderListItemId);
+            this.changeHighlightedHeaderItem(newHeaderListItemId);
         });
         // Middle Click (Separate 'auxclick' listener so full mouse press is used instead of only up or down)
         newHeaderListItem.addEventListener("auxclick", (event) => {
             if (event.button == 1) {
-                this.closeModule(newModuleId);
+                this.closeHeaderListItem(newHeaderListItemId);
             }
         });
         // Right Click( Rename header items instead of opening context menu)
         newHeaderListItem.addEventListener("contextmenu", (event) => {
             event.preventDefault();
-            this.headerItemRename(newModuleId);
+            this.headerItemRename(newHeaderListItemId);
         });
         // Double click
         newHeaderListItem.addEventListener("dblclick", () =>
-            this.headerItemRename(newModuleId)
+            this.headerItemRename(newHeaderListItemId)
         );
 
         this.domElements.headerList.appendChild(newHeaderListItem);
-        this.changeHighlightedHeaderItem(newModuleId);
+        this.changeHighlightedHeaderItem(newHeaderListItemId);
     }
 
-    closeModule(moduleId) {
-        this.getHeaderListItem(moduleId).remove();
-        pageIframeManager.removeIframe(moduleId);
+    closeHeaderListItem(headerListItemId) {
+        this.getHeaderListItem(headerListItemId).remove();
+        pageIframeManager.removeIframeById(headerListItemId);
     }
 
-    getHeaderListItem(moduleId) {
+    getHeaderListItem(headerListItemId) {
         return this.domElements.headerList.querySelector(
-            `[data-module-id="${moduleId}"]`
+            `[data-module-id="${headerListItemId}"]`
         );
     }
 
-    headerItemRename(moduleId) {
-        const headerItem = this.getHeaderListItem(moduleId);
+    headerItemRename(headerListItemId) {
+        const headerItem = this.getHeaderListItem(headerListItemId);
         const renameInput = prompt(`Renaming ${headerItem.textContent}`);
         if (renameInput) {
             headerItem.textContent = renameInput;
         }
     }
 
-    changeHighlightedHeaderItem(moduleId) {
-        const itemToHighlight = this.getHeaderListItem(moduleId);
+    changeHighlightedHeaderItem(headerListItemId) {
+        const itemToHighlight = this.getHeaderListItem(headerListItemId);
         const itemHighlighted = this.domElements.currentlyHighlightedHeaderItem;
         if (itemHighlighted) {
             itemHighlighted.classList.remove("current-header-item");
         }
 
         if (itemToHighlight === itemHighlighted) {
-            // Unselect, selected tab - No time highlighted
+            // Unselect, selected tab - No highlight
             this.domElements.currentlyHighlightedHeaderItem = null;
         } else {
             itemToHighlight.classList.add("current-header-item");
             this.domElements.currentlyHighlightedHeaderItem = itemToHighlight;
         }
-    }
-
-    removeHighlight(moduleId) {
-        this.getHeaderListItem(moduleId).classList.remove(
-            "current-header-item"
-        );
-    }
-
-    addHighlight(moduleId) {
-        this.getHeaderListItem(moduleId).classList.add("current-header-item");
     }
 }
 

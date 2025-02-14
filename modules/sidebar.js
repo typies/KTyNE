@@ -11,12 +11,14 @@ class Sidebar {
     }
 
     domElements = {
-        moduleListElement: document.querySelector(".sidebar .module-list"),
+        sidebarListElement: document.querySelector(".sidebar .module-list"),
     };
 
     render() {
         if (this.sidebarItems instanceof Array) {
-            this.sidebarItems.forEach((module) => this.createSidebarLi(module));
+            this.sidebarItems.forEach((sidebarItem) =>
+                this.createSidebarLi(sidebarItem)
+            );
         }
     }
 
@@ -24,31 +26,31 @@ class Sidebar {
         this.render();
     }
 
-    addSidebarItem(module) {
-        this.sidebarItems.push(module);
+    addSidebarItem(sidebarItem) {
+        this.sidebarItems.push(sidebarItem);
         this.render();
     }
 
-    addSidebarItems(modules) {
-        modules.forEach((module) => {
-            this.sidebarItems.push(module);
+    addSidebarItems(sidebarItems) {
+        sidebarItems.forEach((sidebarItem) => {
+            this.sidebarItems.push(sidebarItem);
         });
         this.render();
     }
 
-    createSidebarLi(module) {
-        let newModuleListItem = document.createElement("li");
-        newModuleListItem.classList.add(
+    createSidebarLi(sidebarItem) {
+        let newSidebarListItem = document.createElement("li");
+        newSidebarListItem.classList.add(
             "module-list-item",
             "sidebar-item",
             "clickable"
         );
 
-        newModuleListItem.textContent = module.moduleName;
-        this.domElements.moduleListElement.appendChild(newModuleListItem);
-        newModuleListItem.addEventListener("click", () => {
-            pageHeaderList.addHeaderListItem(module.moduleName);
-            pageIframeManager.createNewIframe(module.manualUrl);
+        newSidebarListItem.textContent = sidebarItem.moduleName;
+        this.domElements.sidebarListElement.appendChild(newSidebarListItem);
+        newSidebarListItem.addEventListener("click", () => {
+            pageHeaderList.addHeaderListItem(sidebarItem.moduleName);
+            pageIframeManager.createNewIframe(sidebarItem.manualUrl);
         });
     }
 }

@@ -3,13 +3,13 @@ class IframeManager {
     constructor() {}
 
     domElements = {
-        modulesDiv: document.querySelector(".modules"),
+        manualsDiv: document.querySelector(".manuals"),
         pageIframe: document.createElement("iframe"),
         currentIframe: document.querySelector(".current-iframe"),
     };
 
     setIframeById(iframeId) {
-        let nextIframe = this.getIframe(iframeId);
+        let nextIframe = this.getIframeById(iframeId);
         if (nextIframe === this.domElements.currentIframe) {
             this.toggleHidden(nextIframe);
         } else {
@@ -26,20 +26,20 @@ class IframeManager {
 
         let newIframe = document.createElement("iframe");
         newIframe.setAttribute("src", link);
-        newIframe.setAttribute("data-iframe-index", this.#idCounter++);
+        newIframe.setAttribute("data-iframe-id", this.#idCounter++);
         newIframe.classList.add("current-iframe");
 
-        this.domElements.modulesDiv.appendChild(newIframe);
+        this.domElements.manualsDiv.appendChild(newIframe);
         this.domElements.currentIframe = newIframe;
     }
 
-    removeIframe(iframeId) {
-        this.getIframe(iframeId).remove();
+    removeIframeById(iframeId) {
+        this.getIframeById(iframeId).remove();
     }
 
-    getIframe(iframeId) {
-        return this.domElements.modulesDiv.querySelector(
-            `[data-iframe-index="${iframeId}"]`
+    getIframeById(iframeId) {
+        return this.domElements.manualsDiv.querySelector(
+            `[data-iframe-id="${iframeId}"]`
         );
     }
 
@@ -52,25 +52,13 @@ class IframeManager {
     }
 
     showIframe(iframe) {
-        if (iframe.classList.contains("hidden-iframe")) {
-            iframe.classList.remove("hidden-iframe");
-            iframe.classList.add("current-iframe");
-        }
+        iframe.classList.remove("hidden-iframe");
+        iframe.classList.add("current-iframe");
     }
 
     hideIframe(iframe) {
-        if (iframe.classList.contains("current-iframe")) {
-            iframe.classList.remove("current-iframe");
-            iframe.classList.add("hidden-iframe");
-        }
-    }
-
-    hideIframeByIndex(iframeId) {
-        let iframe = this.getIframe(iframeId);
-        if (iframe.classList.contains("current-iframe")) {
-            iframe.classList.remove("current-iframe");
-            iframe.classList.add("hidden-iframe");
-        }
+        iframe.classList.remove("current-iframe");
+        iframe.classList.add("hidden-iframe");
     }
 }
 
