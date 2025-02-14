@@ -38,14 +38,17 @@ class Sidebar {
 
     createSidebarLi(module) {
         let newModuleListItem = document.createElement("li");
-        newModuleListItem.classList.add("module-list-item", "sidebar-item");
-        if (module.appendix) newModuleListItem.classList.add("appendix");
+        newModuleListItem.classList.add(
+            "module-list-item",
+            "sidebar-item",
+            "clickable"
+        );
 
         newModuleListItem.textContent = module.moduleName;
         this.domElements.moduleListElement.appendChild(newModuleListItem);
         newModuleListItem.addEventListener("click", () => {
-            pageHeaderList.addHeaderListItem(module);
-            pageIframeManager.openNewIframe(module.manualUrl);
+            pageHeaderList.addHeaderListItem(module.moduleName);
+            pageIframeManager.createNewIframe(module.manualUrl);
         });
     }
 }

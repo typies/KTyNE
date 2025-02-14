@@ -1,82 +1,91 @@
 import pageIframeManager from "./iframeManager.js";
 
 class HeaderList {
+    constructor() {}
+
     #idCounter = 0;
-    #currentHighlight = 0;
-    constructor(openModules) {
-        if (!this.openModules) {
-            this.openModules = [];
-        }
-        this.openModules = openModules;
-    }
 
     domElements = {
         headerList: document.querySelector(".open-modules-list"),
+        currentlyHighlightedHeaderItem: null,
     };
 
-    addHeaderListItem(module) {
-        this.openModules.push(module);
+    addHeaderListItem(moduleName) {
+        const newModuleId = this.#idCounter++;
+
         let newHeaderListItem = document.createElement("li");
-        newHeaderListItem.classList.add("open-module-list-item");
-        newHeaderListItem.setAttribute("data-module-index", this.#idCounter++);
+        newHeaderListItem.classList.add("open-module-list-item", "clickable");
+        newHeaderListItem.setAttribute("data-module-id", newModuleId);
+        newHeaderListItem.textContent = moduleName;
 
-        let headerListText = document.createElement("div");
-        headerListText.classList.add("header-list-item");
-        headerListText.textContent = module.moduleName;
-
-        let moduleIndex = newHeaderListItem.getAttribute("data-module-index");
-        newHeaderListItem.addEventListener("mousedown", (event) => {
-            switch (event.button) {
-                case 0:
-                    pageIframeManager.changeIFrame(moduleIndex);
-                    this.highlightHeaderItem(moduleIndex);
-                    break;
-                case 1:
-                    // Middle mouse click close
-                    this.openModules.splice(
-                        this.openModules.indexOf(module),
-                        1
-                    );
-                    newHeaderListItem.remove();
-                    pageIframeManager.removeIframe(moduleIndex);
-                    break;
-                case 2:
-                    this.headerItemRename(newHeaderListItem);
+        // Left click
+        newHeaderListItem.addEventListener("click", (event) => {
+            pageIframeManager.setIframeById(newModuleId);
+            this.changeHighlightedHeaderItem(newModuleId);
+        });
+        // Middle Click (Separate 'auxclick' listener so full mouse press is used instead of only up or down)
+        newHeaderListItem.addEventListener("auxclick", (event) => {
+            if (event.button == 1) {
+                this.closeModule(newModuleId);
             }
         });
-        newHeaderListItem.addEventListener("dblclick", this.headerItemRename);
-        newHeaderListItem.appendChild(headerListText);
+        // Right Click( Rename header items instead of opening context menu)
+        newHeaderListItem.addEventListener("contextmenu", (event) => {
+            event.preventDefault();
+            this.headerItemRename(newModuleId);
+        });
+        // Double click
+        newHeaderListItem.addEventListener("dblclick", () =>
+            this.headerItemRename(newModuleId)
+        );
+
         this.domElements.headerList.appendChild(newHeaderListItem);
-        this.highlightHeaderItem(moduleIndex);
+        this.changeHighlightedHeaderItem(newModuleId);
     }
 
-    headerItemRename(newHeaderListItem) {
-        newHeaderListItem =
-            newHeaderListItem instanceof MouseEvent ? this : newHeaderListItem;
-        const text = newHeaderListItem.querySelector(".header-list-item");
-        const renameInput = prompt(`Renaming ${text.textContent}`);
+    closeModule(moduleId) {
+        this.getHeaderListItem(moduleId).remove();
+        pageIframeManager.removeIframe(moduleId);
+    }
+
+    getHeaderListItem(moduleId) {
+        return this.domElements.headerList.querySelector(
+            `[data-module-id="${moduleId}"]`
+        );
+    }
+
+    headerItemRename(moduleId) {
+        const headerItem = this.getHeaderListItem(moduleId);
+        const renameInput = prompt(`Renaming ${headerItem.textContent}`);
         if (renameInput) {
-            text.textContent = renameInput;
+            headerItem.textContent = renameInput;
         }
     }
 
-    highlightHeaderItem(index) {
-        this.domElements.headerList
-            .querySelector(`[data-module-index="${this.#currentHighlight}"]`)
-            .classList.remove("current-header-item");
-        this.#currentHighlight = index;
-        this.domElements.headerList
-            .querySelector(`[data-module-index="${index}"]`)
-            .classList.add("current-header-item");
+    changeHighlightedHeaderItem(moduleId) {
+        const itemToHighlight = this.getHeaderListItem(moduleId);
+        const itemHighlighted = this.domElements.currentlyHighlightedHeaderItem;
+        if (itemHighlighted) {
+            itemHighlighted.classList.remove("current-header-item");
+        }
+
+        if (itemToHighlight === itemHighlighted) {
+            // Unselect, selected tab - No time highlighted
+            this.domElements.currentlyHighlightedHeaderItem = null;
+        } else {
+            itemToHighlight.classList.add("current-header-item");
+            this.domElements.currentlyHighlightedHeaderItem = itemToHighlight;
+        }
     }
 
-    removeHighlightHeaderItem(index) {}
+    removeHighlight(moduleId) {
+        this.getHeaderListItem(moduleId).classList.remove(
+            "current-header-item"
+        );
+    }
 
-    render() {
-        this.domElements.headerList.textContent = "";
-        this.openModules.forEach((module) => {
-            addHeaderListItem(module);
-        });
+    addHighlight(moduleId) {
+        this.getHeaderListItem(moduleId).classList.add("current-header-item");
     }
 }
 
