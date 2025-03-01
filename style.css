@@ -4,6 +4,7 @@
   --color-dark-gray: hsl(217, 17%, 70%);
   --color-silver: #bdbbb0;
   --color-light-jet: hsl(0, 0%, 40%);
+  --color-green: #cefb89;
   --page-bg-color: var(--color-gray, white);
 
   --notes-line-color: #85c1e9;
@@ -114,6 +115,12 @@ li {
 #new-repo-tab-btn {
   width: 100%;
   margin-bottom: 4px;
+}
+
+#add-this-tab-btn {
+  width: 100%;
+  margin-bottom: 4px;
+  color: var(--color-green);
 }
 
 .sidebar-filter {

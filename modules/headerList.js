@@ -1,4 +1,5 @@
 import pageIframeManager from "./iframeManager.js";
+import mainPubSub from "./PubSub.js";
 
 class HeaderList {
   constructor() {}
@@ -21,7 +22,8 @@ class HeaderList {
     // Left click
     newHeaderListItem.addEventListener("click", (event) => {
       pageIframeManager.setIframeById(newHeaderListItemId);
-      this.changeHighlightedHeaderItem(newHeaderListItemId);
+      this.changeHeaderItem(newHeaderListItemId);
+      // this.changeHighlightedHeaderItem(newHeaderListItemId);
     });
     // Middle Click (Separate 'auxclick' listener so full mouse press is used instead of only up or down)
     newHeaderListItem.addEventListener("auxclick", (event) => {
@@ -37,7 +39,7 @@ class HeaderList {
 
     this.domElements.headerList.appendChild(newHeaderListItem);
     this.sortHeaderList();
-    this.changeHighlightedHeaderItem(newHeaderListItemId);
+    this.changeHeaderItem(newHeaderListItemId);
   }
 
   sortHeaderList() {
@@ -70,18 +72,26 @@ class HeaderList {
     }
   }
 
+  changeHeaderItem(headerListItemId) {
+    const newHeaderListItem = this.getHeaderListItem(headerListItemId);
+    this.changeHighlightedHeaderItem(headerListItemId);
+    mainPubSub.publish("tabChange", {
+      moduleName: newHeaderListItem.textContent,
+    });
+  }
+
   changeHighlightedHeaderItem(headerListItemId) {
     const itemToHighlight = this.getHeaderListItem(headerListItemId);
     const itemHighlighted = this.domElements.currentlyHighlightedHeaderItem;
     if (itemHighlighted) {
-      itemHighlighted.classList.remove("current-header-item", "seleted");
+      itemHighlighted.classList.remove("current-header-item");
     }
 
     if (itemToHighlight === itemHighlighted) {
       // Unselect, selected tab - No highlight
       this.domElements.currentlyHighlightedHeaderItem = null;
     } else {
-      itemToHighlight.classList.add("current-header-item", "seleted");
+      itemToHighlight.classList.add("current-header-item");
       this.domElements.currentlyHighlightedHeaderItem = itemToHighlight;
     }
   }

@@ -20,16 +20,21 @@ class IframeManager {
   }
 
   createNewIframe(link) {
-    if (this.domElements.currentIframe) {
-      this.hideIframe(this.domElements.currentIframe);
-    }
-
+    const newIframeId = this.#idCounter++;
     let newIframe = document.createElement("iframe");
     newIframe.setAttribute("src", link);
-    newIframe.setAttribute("data-iframe-id", this.#idCounter++);
+    newIframe.setAttribute("data-iframe-id", newIframeId);
     newIframe.classList.add("current-iframe");
 
     this.domElements.manualsDiv.appendChild(newIframe);
+    this.changeIframe(newIframeId);
+  }
+
+  changeIframe(iframeId) {
+    if (this.domElements.currentIframe) {
+      this.hideIframe(this.domElements.currentIframe);
+    }
+    const newIframe = this.getIframeById(iframeId);
     this.domElements.currentIframe = newIframe;
   }
 

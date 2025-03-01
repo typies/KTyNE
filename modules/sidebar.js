@@ -1,5 +1,6 @@
 import pageHeaderList from "./headerList.js";
 import pageIframeManager from "./iframeManager.js";
+import mainPubSub from "./PubSub.js";
 const KTANE_TIMWI_URL = "https://ktane.timwi.de/";
 
 class Sidebar {
@@ -13,11 +14,16 @@ class Sidebar {
 
   domElements = {
     sidebarListElement: document.querySelector(".sidebar .module-list"),
+    addTabBtn: document.querySelector("#add-this-tab-btn"),
+    newRepoTabBtn: document.querySelector("#new-repo-tab-btn"),
+    filter: document.querySelector("#filter"),
+    currentHeaderItem: document.querySelector(".current-header-item"),
   };
 
   init() {
     this.render();
     this.configureSidebarBtns();
+    mainPubSub.subscribe("tabChange", this.reactToTabChange.bind(this));
   }
 
   render() {
@@ -55,23 +61,34 @@ class Sidebar {
   }
 
   configureSidebarBtns() {
-    const filter = document.querySelector("#filter");
     const filterClear = document.querySelector("button.clear-filter");
-    const newRepoTabBtn = document.querySelector("#new-repo-tab-btn");
-    filter.addEventListener("keyup", () => {
+    this.domElements.filter.addEventListener("keyup", () => {
       this.filterSidebar(filter.value);
     });
     filterClear.addEventListener("click", () => {
-      filter.value = "";
+      this.domElements.filter.value = "";
       this.filterSidebar("");
     });
-    newRepoTabBtn.addEventListener("click", () => {
+    this.domElements.newRepoTabBtn.addEventListener("click", () => {
       const newTabName = prompt("New Tab Name");
       if (!newTabName || newTabName === "") return;
       navigator.clipboard.writeText(newTabName);
       pageHeaderList.addHeaderListItem(newTabName);
       pageIframeManager.createNewIframe(KTANE_TIMWI_URL);
     });
+  }
+
+  reactToTabChange(pubSubData) {
+    const sidebarItemExists =
+      this.sidebarItems.filter(
+        (item) =>
+          item.moduleName.toLowerCase() === pubSubData.moduleName.toLowerCase()
+      ).length !== 0;
+    if (!sidebarItemExists) {
+      this.domElements.addTabBtn.classList.remove("hidden");
+    } else {
+      this.domElements.addTabBtn.classList.add("hidden");
+    }
   }
 
   sortSidebar() {
