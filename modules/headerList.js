@@ -1,8 +1,13 @@
-import pageIframeManager from "./iframeManager.js";
 import mainPubSub from "./PubSub.js";
 
 class HeaderList {
-  constructor() {}
+  constructor() {
+    mainPubSub.subscribe(
+      "addHeaderListItem",
+      this.addHeaderListItem.bind(this)
+    );
+    mainPubSub.subscribe("tabChange", this.reactToTabChange.bind(this));
+  }
 
   #idCounter = 0;
 
@@ -11,19 +16,20 @@ class HeaderList {
     currentlyHighlightedHeaderItem: null,
   };
 
-  addHeaderListItem(moduleName) {
+  addHeaderListItem(pubsubData) {
     const newHeaderListItemId = this.#idCounter++;
 
     let newHeaderListItem = document.createElement("li");
     newHeaderListItem.classList.add("open-module-list-item");
     newHeaderListItem.setAttribute("data-module-id", newHeaderListItemId);
-    newHeaderListItem.textContent = moduleName;
+    newHeaderListItem.textContent = pubsubData.moduleName;
 
     // Left click
     newHeaderListItem.addEventListener("click", (event) => {
-      pageIframeManager.setIframeById(newHeaderListItemId);
-      this.changeHeaderItem(newHeaderListItemId);
-      // this.changeHighlightedHeaderItem(newHeaderListItemId);
+      mainPubSub.publish("tabChange", {
+        moduleName: pubsubData.moduleName,
+        iframeId: newHeaderListItemId,
+      });
     });
     // Middle Click (Separate 'auxclick' listener so full mouse press is used instead of only up or down)
     newHeaderListItem.addEventListener("auxclick", (event) => {
@@ -39,7 +45,10 @@ class HeaderList {
 
     this.domElements.headerList.appendChild(newHeaderListItem);
     this.sortHeaderList();
-    this.changeHeaderItem(newHeaderListItemId);
+    mainPubSub.publish("tabChange", {
+      moduleName: pubsubData.moduleName,
+      iframeId: newHeaderListItemId,
+    });
   }
 
   sortHeaderList() {
@@ -52,8 +61,12 @@ class HeaderList {
   }
 
   closeHeaderListItem(headerListItemId) {
-    this.getHeaderListItem(headerListItemId).remove();
-    pageIframeManager.removeIframeById(headerListItemId);
+    const itemToRemove = this.getHeaderListItem(headerListItemId);
+    if (itemToRemove === this.domElements.currentlyHighlightedHeaderItem) {
+      mainPubSub.publish("tabChange", {});
+    }
+    itemToRemove.remove();
+    mainPubSub.publish("removeIframe", { iframeId: headerListItemId });
   }
 
   getHeaderListItem(headerListItemId) {
@@ -72,12 +85,9 @@ class HeaderList {
     }
   }
 
-  changeHeaderItem(headerListItemId) {
-    const newHeaderListItem = this.getHeaderListItem(headerListItemId);
-    this.changeHighlightedHeaderItem(headerListItemId);
-    mainPubSub.publish("tabChange", {
-      moduleName: newHeaderListItem.textContent,
-    });
+  reactToTabChange(pubsubData) {
+    if (Number.isInteger(pubsubData.iframeId))
+      this.changeHighlightedHeaderItem(pubsubData.iframeId);
   }
 
   changeHighlightedHeaderItem(headerListItemId) {

@@ -1,5 +1,7 @@
 const KTANE_TIMWI_URL = "https://ktane.timwi.de/";
 
+import pageHeaderList from "./modules/headerList.js";
+import iframeManager from "./modules/iframeManager.js";
 import pageSidebar from "./modules/sidebar.js";
 import popups from "./modules/popup.js";
 

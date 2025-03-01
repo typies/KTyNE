@@ -1,5 +1,3 @@
-import pageHeaderList from "./headerList.js";
-import pageIframeManager from "./iframeManager.js";
 import mainPubSub from "./PubSub.js";
 const KTANE_TIMWI_URL = "https://ktane.timwi.de/";
 
@@ -9,6 +7,7 @@ class Sidebar {
       this.sidebarItems = [];
     }
     this.sidebarItems = itemList;
+    mainPubSub.subscribe("tabChange", this.reactToTabChange.bind(this));
     this.init();
   }
 
@@ -23,7 +22,6 @@ class Sidebar {
   init() {
     this.render();
     this.configureSidebarBtns();
-    mainPubSub.subscribe("tabChange", this.reactToTabChange.bind(this));
   }
 
   render() {
@@ -55,8 +53,10 @@ class Sidebar {
     newSidebarListItem.textContent = sidebarItem.moduleName;
     this.domElements.sidebarListElement.appendChild(newSidebarListItem);
     newSidebarListItem.addEventListener("click", () => {
-      pageHeaderList.addHeaderListItem(sidebarItem.moduleName);
-      pageIframeManager.createNewIframe(sidebarItem.manualUrl);
+      mainPubSub.publish("addIframe", { manualUrl: sidebarItem.manualUrl });
+      mainPubSub.publish("addHeaderListItem", {
+        moduleName: sidebarItem.moduleName,
+      });
     });
   }
 
@@ -73,18 +73,21 @@ class Sidebar {
       const newTabName = prompt("New Tab Name");
       if (!newTabName || newTabName === "") return;
       navigator.clipboard.writeText(newTabName);
-      pageHeaderList.addHeaderListItem(newTabName);
-      pageIframeManager.createNewIframe(KTANE_TIMWI_URL);
+      mainPubSub.publish("addIframe", { manualUrl: KTANE_TIMWI_URL });
+      mainPubSub.publish("addHeaderListItem", { moduleName: newTabName });
     });
   }
 
   reactToTabChange(pubSubData) {
-    const sidebarItemExists =
-      this.sidebarItems.filter(
-        (item) =>
-          item.moduleName.toLowerCase() === pubSubData.moduleName.toLowerCase()
-      ).length !== 0;
-    if (!sidebarItemExists) {
+    if (!pubSubData.moduleName || pubSubData.moduleName === "") {
+      this.domElements.addTabBtn.classList.add("hidden");
+      return;
+    }
+    const matchingSidebarItems = this.sidebarItems.filter(
+      (item) =>
+        item.moduleName.toLowerCase() === pubSubData.moduleName.toLowerCase()
+    );
+    if (matchingSidebarItems.length === 0) {
       this.domElements.addTabBtn.classList.remove("hidden");
     } else {
       this.domElements.addTabBtn.classList.add("hidden");

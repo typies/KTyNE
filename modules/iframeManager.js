@@ -1,6 +1,12 @@
+import mainPubSub from "./PubSub.js";
+
 class IframeManager {
   #idCounter = 0;
-  constructor() {}
+  constructor() {
+    mainPubSub.subscribe("addIframe", this.createNewIframe.bind(this));
+    mainPubSub.subscribe("removeIframe", this.removeIframeById.bind(this));
+    mainPubSub.subscribe("tabChange", this.setIframeById.bind(this));
+  }
 
   domElements = {
     manualsDiv: document.querySelector(".manuals"),
@@ -8,26 +14,17 @@ class IframeManager {
     currentIframe: document.querySelector(".current-iframe"),
   };
 
-  setIframeById(iframeId) {
-    let nextIframe = this.getIframeById(iframeId);
-    if (nextIframe === this.domElements.currentIframe) {
-      this.toggleHidden(nextIframe);
-    } else {
-      this.hideIframe(this.domElements.currentIframe);
-      this.showIframe(nextIframe);
-      this.domElements.currentIframe = nextIframe;
+  setIframeById(pubsubData) {
+    if (Number.isInteger(pubsubData.iframeId)) {
+      let nextIframe = this.getIframeById(pubsubData.iframeId);
+      if (nextIframe === this.domElements.currentIframe) {
+        this.toggleHidden(nextIframe);
+      } else {
+        this.hideIframe(this.domElements.currentIframe);
+        this.showIframe(nextIframe);
+        this.domElements.currentIframe = nextIframe;
+      }
     }
-  }
-
-  createNewIframe(link) {
-    const newIframeId = this.#idCounter++;
-    let newIframe = document.createElement("iframe");
-    newIframe.setAttribute("src", link);
-    newIframe.setAttribute("data-iframe-id", newIframeId);
-    newIframe.classList.add("current-iframe");
-
-    this.domElements.manualsDiv.appendChild(newIframe);
-    this.changeIframe(newIframeId);
   }
 
   changeIframe(iframeId) {
@@ -38,8 +35,19 @@ class IframeManager {
     this.domElements.currentIframe = newIframe;
   }
 
-  removeIframeById(iframeId) {
-    this.getIframeById(iframeId).remove();
+  createNewIframe(pubsubData) {
+    const newIframeId = this.#idCounter++;
+    let newIframe = document.createElement("iframe");
+    newIframe.setAttribute("src", pubsubData.manualUrl);
+    newIframe.setAttribute("data-iframe-id", newIframeId);
+    newIframe.classList.add("hidden-iframe");
+
+    this.domElements.manualsDiv.appendChild(newIframe);
+    this.changeIframe(newIframeId);
+  }
+
+  removeIframeById(pubsubData) {
+    this.getIframeById(pubsubData.iframeId).remove();
   }
 
   getIframeById(iframeId) {
