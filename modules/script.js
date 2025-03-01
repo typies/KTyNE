@@ -11,7 +11,6 @@ class Module {
 }
 
 let defaultModuleList = [
-  new Module("+ New REPO Tab"),
   new Module("Wires", "https://ktane.timwi.de/HTML/Wires.html"),
   new Module("The Button", "https://ktane.timwi.de/HTML/The%20Button.html"),
   new Module("Keypad", "https://ktane.timwi.de/HTML/Keypad.html"),

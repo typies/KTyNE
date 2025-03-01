@@ -7,7 +7,7 @@
   --page-bg-color: var(--color-gray, white);
 
   --notes-line-color: #85c1e9;
-  --scroll-bar-width: thin;
+  --scroll-bar-width: none;
   --sidebar-line-height: 1.3em;
 }
 
@@ -107,21 +107,57 @@ li {
   scrollbar-width: var(--scroll-bar-width);
   scrollbar-color: var(--color-jet) var(--color-gray);
   border-right: 1px solid var(--color-jet);
+
+  padding: 10px;
+}
+
+#new-repo-tab-btn {
+  width: 100%;
+  margin-bottom: 4px;
+}
+
+.sidebar-filter {
+  width: 100%;
+  position: relative;
+}
+
+#filter {
+  width: inherit;
+  height: 2em;
+  padding-left: 4px;
+  border-radius: 6px;
+  display: block;
+}
+
+button.clear-filter {
+  width: 2ch;
+  height: 2ch;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  position: absolute;
+  content: "x";
+  color: var(--color-jet);
+  right: 0;
+  top: 0;
+  cursor: pointer;
+}
+
+button.clear-filter:hover {
+  background-color: rgba(255, 0, 0, 0.1);
 }
 
 .module-list {
-  padding: 10px;
+  margin-top: 40px;
   display: flex;
   flex-direction: column;
   gap: 2px;
   font-size: 20px;
 }
 
-.module-list-item {
-  display: flex;
-}
-
 .sidebar-item {
+  display: flex;
   background-color: var(--color-jet, black);
   color: skyblue;
   padding: 6px 12px;
@@ -380,10 +416,28 @@ form div.title {
   border-radius: 5px;
   display: flex;
   flex-direction: column;
+  font-size: 24px;
 }
 
 .edgework-form label {
   margin-top: 10px;
+}
+
+label[for="serial"] {
+  position: relative;
+}
+label[for="serial"]:after {
+  content: "required";
+  color: red;
+  font-size: 0.5em;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+
+.edgework-form input {
+  padding-left: 4px;
+  font-size: inherit;
 }
 
 .inds {

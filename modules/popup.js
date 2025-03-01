@@ -14,15 +14,17 @@ class EdgeworkPopup {
   configureFormButtons() {
     this.domElements.newEdgeworkBtn.addEventListener("click", () => {
       this.domElements.popupOverlay.classList.remove("hidden");
+      document.querySelector("#serial").focus();
     });
 
     this.domElements.closeFormBtn.addEventListener("click", () => {
       this.domElements.popupOverlay.classList.add("hidden");
     });
 
-    this.domElements.resetFormBtn.addEventListener("click", () =>
-      this.resetForm()
-    );
+    this.domElements.resetFormBtn.addEventListener("click", () => {
+      this.resetForm();
+      document.querySelector("#serial").focus();
+    });
 
     this.domElements.edgeworkForm.addEventListener("submit", (event) => {
       event.preventDefault();

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Interactive KTaNE Manual</title>
+    <title>KTaNE Experting</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="icon" href="./favicon.ico" type="image/png" />
     <script src="./modules/script.js" type="module" defer></script>
@@ -18,7 +18,13 @@
         <ul class="open-modules-list"></ul>
       </header>
       <div class="sidebar">
-        <ul class="module-list"></ul>
+        <button id="new-repo-tab-btn">New Repo Tab</button>
+        <div class="sidebar-filter">
+          <input type="text" name="filter" id="filter" placeholder="filter">
+          <button class="clear-filter">x</button>
+        </div>
+        <ul class="module-list">
+        </ul>
       </div>
       <div class="manuals"></div>
       <div
@@ -91,7 +97,7 @@
           type="text"
           name="ports"
           id="ports"
-          placeholder="dvi-ps2 parallel-serial"
+          placeholder="ex: dvi-ps2 para-serial"
           autocomplete="off"
         />
 
