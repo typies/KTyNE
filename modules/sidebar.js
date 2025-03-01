@@ -2,7 +2,7 @@ import pageHeaderList from "./headerList.js";
 import pageIframeManager from "./iframeManager.js";
 
 class Sidebar {
-  constructor(itemList) {
+  constructor(itemList = []) {
     if (!itemList) {
       this.sidebarItems = [];
     }
@@ -62,4 +62,4 @@ class Sidebar {
   }
 }
 
-export default new Sidebar([]);
+export default new Sidebar();

@@ -1,6 +1,7 @@
 const KTANE_TIMWI_URL = "https://ktane.timwi.de/";
 
 import pageSidebar from "./sidebar.js";
+import popup from "./popup.js";
 
 class Module {
   constructor(moduleName, manualUrl = KTANE_TIMWI_URL) {

@@ -10,6 +10,10 @@
   </head>
   <body>
     <div class="main-container">
+      <div class="edgework-wrapper">
+        <button class="clickable edgework-btn new">Edgework?</button>
+        <div class="edgework"></div>
+      </div>
       <header class="header">
         <ul class="open-modules-list"></ul>
       </header>
@@ -24,6 +28,109 @@
       ></div>
 
       <footer class="footer"></footer>
+    </div>
+    <div class="popup-overlay hidden">
+      <form action="" class="edgework-form">
+        <div class="title">Edgework</div>
+        <label for="serial">Serial #</label>
+        <input
+          type="text"
+          name="serial"
+          id="serial"
+          maxlength="6"
+          minlength="6"
+          autocomplete="off"
+          required
+        />
+        <label for="batteries">Batteries</label>
+        <input type="number" name="batteries" id="batteries" min="0" />
+        <label for="holders">Battery Holders</label>
+        <input type="number" name="holders" id="holders" min="0" />
+
+        <label for="ports">Ports</label>
+        <input
+          type="text"
+          name="ports"
+          id="ports"
+          placeholder="dvi-ps2 parallel-serial"
+          autocomplete="off"
+        />
+
+        <div class="inds">
+          <label>
+            <span> Lit </span>
+            <span> -</span>
+            <span>Unlit</span>
+          </label>
+          <div>
+            <input type="checkbox" name="lit-bob-ind" id="lit-bob-ind" />
+            <span>BOB</span>
+            <input type="checkbox" name="unlit-bob-ind" id="unlit-bob-ind" />
+          </div>
+          <div>
+            <input type="checkbox" name="lit-car-ind" id="lit-car-ind" />
+            <span>CAR</span>
+            <input type="checkbox" name="unlit-car-ind" id="unlit-car-ind" />
+          </div>
+          <div>
+            <input type="checkbox" name="lit-clr-ind" id="lit-clr-ind" />
+            <span>CLR</span>
+            <input type="checkbox" name="unlit-clr-ind" id="unlit-clr-ind" />
+          </div>
+          <div>
+            <input type="checkbox" name="lit-frk-ind" id="lit-frk-ind" />
+            <span>FRK</span>
+            <input type="checkbox" name="unlit-frk-ind" id="unlit-frk-ind" />
+          </div>
+          <div>
+            <input type="checkbox" name="lit-frq-ind" id="lit-frq-ind" />
+            <span>FRQ</span>
+            <input type="checkbox" name="unlit-frq-ind" id="unlit-frq-ind" />
+          </div>
+          <div>
+            <input type="checkbox" name="lit-ind-ind" id="lit-ind-ind" />
+            <span>IND</span>
+            <input type="checkbox" name="unlit-ind-ind" id="unlit-ind-ind" />
+          </div>
+          <div>
+            <input type="checkbox" name="lit-msa-ind" id="lit-msa-ind" />
+            <span>MSA</span>
+            <input type="checkbox" name="unlit-msa-ind" id="unlit-msa-ind" />
+          </div>
+          <div>
+            <input type="checkbox" name="lit-nsa-ind" id="lit-nsa-ind" />
+            <span>NSA</span>
+            <input type="checkbox" name="unlit-nsa-ind" id="unlit-nsa-ind" />
+          </div>
+          <div>
+            <input type="checkbox" name="lit-sig-ind" id="lit-sig-ind" />
+            <span>SIG</span>
+            <input type="checkbox" name="unlit-sig-ind" id="unlit-sig-ind" />
+          </div>
+          <div>
+            <input type="checkbox" name="lit-snd-ind" id="lit-snd-ind" />
+            <span>SND</span>
+            <input type="checkbox" name="unlit-snd-ind" id="unlit-snd-ind" />
+          </div>
+          <div>
+            <input type="checkbox" name="lit-trn-ind" id="lit-trn-ind" />
+            <span>TRN</span>
+            <input type="checkbox" name="unlit-trn-ind" id="unlit-trn-ind" />
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button type="button" class="form-btn close-btn clickable">
+            Close
+          </button>
+          <button type="button" class="form-btn reset-btn clickable">
+            Reset
+          </button>
+          <button type="submit" class="form-btn create-btn clickable">
+            Create
+          </button>
+        </div>
+      </form>
     </div>
   </body>
 </html>

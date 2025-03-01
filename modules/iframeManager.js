@@ -62,5 +62,4 @@ class IframeManager {
   }
 }
 
-const pageIframeManager = new IframeManager();
-export default pageIframeManager;
+export default new IframeManager();

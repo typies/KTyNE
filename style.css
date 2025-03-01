@@ -16,11 +16,20 @@
   src: url("./fonts/SpecialElite-Regular.ttf") format("truetype");
 }
 
+@font-face {
+  font-family: "anonymous pro";
+  src: url("./fonts/AnonymousPro-Regular.ttf") format("truetype");
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
   font-family: "special-elite";
+}
+
+button:hover {
+  cursor: pointer;
 }
 
 ul,
@@ -32,10 +41,11 @@ li {
   display: grid;
   background: var(--page-bg-color);
   grid:
+    "edgework edgework edgework" minmax(50px, auto)
     "header header header" minmax(50px, auto)
     "sidebar modules notes" 1fr
     "footer footer footer" 30px
-    / 200px minmax(50%, 1fr) minmax(20ch, 50ch);
+    / minmax(20ch, 200px) minmax(50%, 1fr) minmax(20ch, 50ch);
   height: 100dvh;
   height: 100vh;
 }
@@ -117,8 +127,6 @@ li {
 
 .modules {
   grid-area: modules;
-  border-left: 2px solid black;
-  border-right: 2px solid black;
   position: relative;
 }
 
@@ -133,6 +141,132 @@ li {
   visibility: visible;
   height: 99%;
   width: 100%;
+}
+
+/* Edgework */
+
+.edgework-wrapper {
+  grid-area: edgework;
+  display: flex;
+  background-color: var(--color-jet);
+  width: 100%;
+}
+
+.edgework-btn {
+  color: skyblue;
+  font-size: 20px;
+  background-color: var(--color-jet);
+  border-radius: 10px;
+  border: 1px solid var(--color-gray);
+  padding: 6px 12px;
+  margin: 12px 12px;
+}
+
+.edgework {
+  padding: 0 20px;
+  overflow: auto;
+}
+
+.widget {
+  height: 50px;
+  display: inline-block;
+  margin: 12px 15px 8px 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  vertical-align: bottom;
+  position: relative;
+}
+
+/* .widget:hover:after {
+  position: absolute;
+  top: 40%;
+  left: 30%;
+  content: "Text";
+  color: white;
+} */
+
+.widget.serial {
+  background-image: url(images/Serial\ number.png);
+  width: 100px;
+  font-size: 24px;
+  font-weight: bold;
+  color: black;
+  padding: 23px 0 0 11px;
+  font-family: "Anonymous Pro";
+}
+
+.widget.battery.aa {
+  width: 90px;
+  background-image: url(images/BatteryAA.png);
+}
+
+.widget.battery.d {
+  width: 90px;
+  background-image: url(images/BatteryD.png);
+}
+
+.widget.indicator {
+  width: 115px;
+  color: white;
+  font-family: "Ostrich", "anonymous pro";
+  font-size: 30px;
+  padding: 10px 0 0 50px;
+}
+
+.widget.indicator.lit {
+  background-image: url(images/LitIndicator.png);
+}
+
+.widget.indicator.unlit {
+  background-image: url(images/UnlitIndicator.png);
+}
+
+.widget.portplate {
+  width: 112px;
+  background-image: url(images/PortPlate.png);
+  position: relative;
+}
+
+.widget.portplate > span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.widget.portplate span.dvi,
+.widget.portplate span.dvid {
+  background-image: url(images/PortDVI.png);
+}
+
+.widget.portplate span.para,
+.widget.portplate span.parallel,
+.widget.portplate span.paralel {
+  background-image: url(images/PortParallel.png);
+}
+
+.widget.portplate span.ps2 {
+  background-image: url(images/PortPS2.png);
+}
+
+.widget.portplate span.rj45,
+.widget.portplate span.rj {
+  background-image: url(images/PortRJ.png);
+}
+
+.widget.portplate span.serial {
+  background-image: url(images/PortSerial.png);
+}
+
+.widget.portplate span.rca,
+.widget.portplate span.stereorca,
+.widget.portplate span.stereo {
+  background-image: url(images/PortRCA.png);
 }
 
 /* Notes css */
@@ -158,10 +292,72 @@ li {
   border-left: 1px solid var(--color-jet);
 }
 
+.notes:focus {
+  outline: none;
+}
+
 /* Footer css */
 
 .footer {
   grid-area: footer;
 
   background-color: var(--color-jet);
+}
+
+/* pop ups */
+
+form div.title {
+  font-size: 24px;
+  text-align: center;
+}
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-overlay.hidden {
+  display: none;
+}
+
+.edgework-form {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+.edgework-form label {
+  margin-top: 10px;
+}
+
+.inds {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.btn-group {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.form-btn {
+  color: skyblue;
+  font-size: 20px;
+  background-color: var(--color-jet);
+  border-radius: 10px;
+  border: 1px solid var(--color-gray);
+  padding: 6px 12px;
+  margin: 4px 4px;
 }
