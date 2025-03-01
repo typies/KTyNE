@@ -28,7 +28,6 @@ let defaultModuleList = [
   ),
   new Module(
     "Wire Sequence",
-    "./module-images/WireSequenceComponent.svg",
     "https://ktane.timwi.de/HTML/Wire%20Sequence.html"
   ),
   new Module("Maze", "https://ktane.timwi.de/HTML/Maze.html"),

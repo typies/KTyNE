@@ -90,6 +90,7 @@ class EdgeworkPopup {
     if (!portList || portList === "") return;
     const portPlates = portList.split(" ");
     portPlates.forEach((plate) => {
+      if (!plate || plate == "") return;
       const newPlate = document.createElement("div");
       newPlate.classList.add("widget", "portplate");
       const ports = plate.split("-");

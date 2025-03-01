@@ -44,16 +44,16 @@ class Sidebar {
 
     newSidebarListItem.textContent = sidebarItem.moduleName;
     this.domElements.sidebarListElement.appendChild(newSidebarListItem);
-    newSidebarListItem.addEventListener("click", async () => {
-      pageIframeManager.createNewIframe(sidebarItem.manualUrl);
+    newSidebarListItem.addEventListener("click", () => {
       if (sidebarItem.moduleName === "+ New REPO Tab") {
         const newTabName = prompt("New Tab Name");
-        if (!newTabName) return;
+        if (!newTabName || newTabName === "") return;
         navigator.clipboard.writeText(newTabName);
         pageHeaderList.addHeaderListItem(newTabName);
       } else {
         pageHeaderList.addHeaderListItem(sidebarItem.moduleName);
       }
+      pageIframeManager.createNewIframe(sidebarItem.manualUrl);
     });
   }
 }
