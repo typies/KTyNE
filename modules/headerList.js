@@ -14,7 +14,7 @@ class HeaderList {
     const newHeaderListItemId = this.#idCounter++;
 
     let newHeaderListItem = document.createElement("li");
-    newHeaderListItem.classList.add("open-module-list-item", "clickable");
+    newHeaderListItem.classList.add("open-module-list-item");
     newHeaderListItem.setAttribute("data-module-id", newHeaderListItemId);
     newHeaderListItem.textContent = moduleName;
 
@@ -74,14 +74,14 @@ class HeaderList {
     const itemToHighlight = this.getHeaderListItem(headerListItemId);
     const itemHighlighted = this.domElements.currentlyHighlightedHeaderItem;
     if (itemHighlighted) {
-      itemHighlighted.classList.remove("current-header-item");
+      itemHighlighted.classList.remove("current-header-item", "seleted");
     }
 
     if (itemToHighlight === itemHighlighted) {
       // Unselect, selected tab - No highlight
       this.domElements.currentlyHighlightedHeaderItem = null;
     } else {
-      itemToHighlight.classList.add("current-header-item");
+      itemToHighlight.classList.add("current-header-item", "seleted");
       this.domElements.currentlyHighlightedHeaderItem = itemToHighlight;
     }
   }

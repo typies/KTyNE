@@ -1,7 +1,7 @@
 const KTANE_TIMWI_URL = "https://ktane.timwi.de/";
 
 import pageSidebar from "./sidebar.js";
-import popup from "./popup.js";
+import popups from "./popup.js";
 
 class Module {
   constructor(moduleName, manualUrl = KTANE_TIMWI_URL) {
@@ -44,5 +44,8 @@ let defaultModuleList = [
   ),
   new Module("Appendix C (Ports)", "https://ktane.timwi.de/HTML/Ports.html"),
 ];
+
+new popups.EdgeworkPopup().init();
+new popups.NumberedAlphabetPopup().init();
 
 pageSidebar.addSidebarItems(defaultModuleList);

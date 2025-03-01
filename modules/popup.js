@@ -1,5 +1,7 @@
 class EdgeworkPopup {
-  constructor() {}
+  constructor() {
+    return this;
+  }
   domElements = {
     popupOverlay: document.querySelector(".popup-overlay"),
     edgework: document.querySelector(".edgework"),
@@ -9,7 +11,7 @@ class EdgeworkPopup {
     closeFormBtn: document.querySelector(".form-btn.close-btn"),
     resetFormBtn: document.querySelector(".form-btn.reset-btn"),
   };
-  createPopup() {
+  configureFormButtons() {
     this.domElements.newEdgeworkBtn.addEventListener("click", () => {
       this.domElements.popupOverlay.classList.remove("hidden");
     });
@@ -102,14 +104,74 @@ class EdgeworkPopup {
 
   resetForm() {
     this.domElements.edgeworkForm.reset();
+    return this;
   }
 
   resetEdgework() {
     this.domElements.edgework.replaceChildren();
+    return this;
+  }
+
+  init() {
+    this.configureFormButtons();
+    return this;
   }
 }
 
-const edgeworkPopup = new EdgeworkPopup();
-edgeworkPopup.createPopup();
+class NumberedAlphabetPopup {
+  constructor() {}
 
-export default edgeworkPopup;
+  domElements = {
+    alphaBtn: document.querySelector(".alphabet-btn"),
+    zeroBtn: document.querySelector(".zero-btn"),
+    oneBtn: document.querySelector(".one-btn"),
+    alphaPopupWrapper: document.querySelector(".alphabet-popup-wrapper"),
+  };
+  configureFormButtons() {
+    this.domElements.alphaBtn.addEventListener("click", () => {
+      this.domElements.alphaPopupWrapper.classList.toggle("hidden");
+      this.domElements.alphaPopupWrapper.classList.toggle("selected");
+    });
+
+    this.domElements.zeroBtn.addEventListener("click", () => {
+      this.changeLabelsZero();
+    });
+
+    this.domElements.oneBtn.addEventListener("click", () => {
+      this.changeLabelsOne();
+    });
+  }
+
+  changeLabelsZero() {
+    const spans =
+      this.domElements.alphaPopupWrapper.querySelectorAll("div span");
+    spans.forEach((span, index) => {
+      const spanParts = span.textContent.split(":");
+      spanParts[0] = index;
+      span.textContent = spanParts.join(":");
+    });
+    spans[9].classList.add("single-digit");
+    this.domElements.zeroBtn.classList.add("selected");
+    this.domElements.oneBtn.classList.remove("selected");
+  }
+
+  changeLabelsOne() {
+    const spans =
+      this.domElements.alphaPopupWrapper.querySelectorAll("div span");
+    spans.forEach((span, index) => {
+      const spanParts = span.textContent.split(":");
+      spanParts[0] = index + 1;
+      span.textContent = spanParts.join(":");
+    });
+    spans[9].classList.remove("single-digit");
+    this.domElements.zeroBtn.classList.remove("selected");
+    this.domElements.oneBtn.classList.add("selected");
+  }
+
+  init() {
+    this.configureFormButtons();
+    return this;
+  }
+}
+
+export default { EdgeworkPopup, NumberedAlphabetPopup };

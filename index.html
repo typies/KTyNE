@@ -11,7 +11,7 @@
   <body>
     <div class="main-container">
       <div class="edgework-wrapper">
-        <button class="clickable edgework-btn new">Edgework?</button>
+        <button class="edgework-btn new">Edgework?</button>
         <div class="edgework"></div>
       </div>
       <header class="header">
@@ -27,7 +27,46 @@
         spellcheck="false"
       ></div>
 
-      <footer class="footer"></footer>
+      <footer class="footer">
+        <button class="alphabet-btn">Numbered Alphabet</button>
+        <div class="alphabet-popup-wrapper hidden">
+          <div class="alphabet-popup">
+            <div>
+              <span class="single-digit">1:A</span
+              ><span class="single-digit">2:B</span
+              ><span class="single-digit">3:C</span
+              ><span class="single-digit">4:D</span
+              ><span class="single-digit">5:E</span>
+            </div>
+            <div>
+              <span class="single-digit">6:F</span
+              ><span class="single-digit">7:G</span
+              ><span class="single-digit">8:H</span
+              ><span class="single-digit">9:I</span
+              ><span class=>10:J</span>
+            </div>
+            <div>
+              <span>11:K</span><span>12:L</span><span>13:M</span
+              ><span>14:N</span><span>15:0</span>
+            </div>
+            <div>
+              <span>16:P</span><span>17:Q</span><span>18:R</span
+              ><span>19:S</span><span>20:T</span>
+            </div>
+            <div>
+              <span>21:U</span><span>22:V</span><span>23:W</span
+              ><span>24:X</span><span>25:Y</span>
+            </div>
+            <div>
+              <span>26:Z</span>
+              <div class="mini-btn-wrapper">
+                <button class="mini-btn zero-btn">0 Start</button>
+                <button class="mini-btn one-btn selected">1 Start</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
     <div class="popup-overlay hidden">
       <form action="" class="edgework-form">
@@ -120,15 +159,9 @@
         </div>
 
         <div class="btn-group">
-          <button type="button" class="form-btn close-btn clickable">
-            Close
-          </button>
-          <button type="button" class="form-btn reset-btn clickable">
-            Reset
-          </button>
-          <button type="submit" class="form-btn create-btn clickable">
-            Create
-          </button>
+          <button type="button" class="form-btn close-btn">Close</button>
+          <button type="button" class="form-btn reset-btn">Reset</button>
+          <button type="submit" class="form-btn create-btn">Create</button>
         </div>
       </form>
     </div>

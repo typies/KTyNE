@@ -28,8 +28,18 @@
   font-family: "special-elite";
 }
 
-button:hover {
-  cursor: pointer;
+button {
+  color: skyblue;
+  font-size: 20px;
+  background-color: var(--color-jet);
+  border-radius: 10px;
+  border: 1px solid var(--color-gray);
+  padding: 6px 12px;
+  &:hover {
+    cursor: pointer;
+    opacity: 0.9;
+    color: white;
+  }
 }
 
 ul,
@@ -44,20 +54,10 @@ li {
     "edgework edgework edgework" minmax(50px, auto)
     "header header header" minmax(50px, auto)
     "sidebar modules notes" 1fr
-    "footer footer footer" 30px
+    "footer footer footer" minmax(30px, 50px)
     / minmax(20ch, 200px) minmax(50%, 1fr) minmax(20ch, 50ch);
   height: 100dvh;
   height: 100vh;
-}
-
-.clickable:hover {
-  opacity: 0.9;
-  cursor: pointer;
-  color: white;
-}
-
-.clickable:active {
-  opacity: 0.5;
 }
 
 /* Header css */
@@ -82,11 +82,21 @@ li {
   padding: 4px;
   border-radius: 10px;
   border-bottom: 4px solid black;
+  cursor: pointer;
+  &:hover {
+    opacity: 0.9;
+    cursor: pointer;
+    color: white;
+  }
 }
 
 .open-module-list-item.current-header-item {
   color: white;
   border-bottom-color: white;
+}
+
+.selected {
+  color: white;
 }
 
 /* Sidebar css */
@@ -116,6 +126,11 @@ li {
   color: skyblue;
   padding: 6px 12px;
   border-radius: 6px;
+  &:hover {
+    opacity: 0.9;
+    cursor: pointer;
+    color: white;
+  }
 }
 
 .module-list-item > div {
@@ -153,12 +168,6 @@ li {
 }
 
 .edgework-btn {
-  color: skyblue;
-  font-size: 20px;
-  background-color: var(--color-jet);
-  border-radius: 10px;
-  border: 1px solid var(--color-gray);
-  padding: 6px 12px;
   margin: 12px 12px;
 }
 
@@ -177,14 +186,6 @@ li {
   vertical-align: bottom;
   position: relative;
 }
-
-/* .widget:hover:after {
-  position: absolute;
-  top: 40%;
-  left: 30%;
-  content: "Text";
-  color: white;
-} */
 
 .widget.serial {
   background-image: url(images/Serial\ number.png);
@@ -300,8 +301,54 @@ li {
 
 .footer {
   grid-area: footer;
-
   background-color: var(--color-jet);
+
+  display: flex;
+  justify-content: end;
+  padding: 10px;
+}
+
+.alphabet-popup-wrapper {
+  position: relative;
+}
+
+.alphabet-popup {
+  position: absolute;
+  background-color: var(--color-gray);
+  right: 0;
+  bottom: calc(100% + 4px);
+  border: 1px solid var(--color-jet);
+  padding: 8px;
+  border-radius: 8px;
+  display: grid;
+  grid:
+    "first second" 1fr
+    "third forth" 1fr
+    "fifth sixth" 1fr
+    / 1fr 1fr;
+}
+
+.alphabet-popup > * {
+  white-space: nowrap;
+  color: var(--color-jet);
+}
+
+.alphabet-popup > *:last-child {
+  display: flex;
+  justify-content: space-between;
+}
+
+.alphabet-popup > div > span {
+  padding-right: 1ch;
+}
+
+.single-digit {
+  padding-left: 1ch;
+}
+
+.mini-btn {
+  font-size: 12px;
+  padding: 3px 6px;
 }
 
 /* pop ups */
@@ -323,7 +370,7 @@ form div.title {
   align-items: center;
 }
 
-.popup-overlay.hidden {
+.hidden {
   display: none;
 }
 

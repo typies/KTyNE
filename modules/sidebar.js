@@ -40,11 +40,7 @@ class Sidebar {
 
   createSidebarLi(sidebarItem) {
     let newSidebarListItem = document.createElement("li");
-    newSidebarListItem.classList.add(
-      "module-list-item",
-      "sidebar-item",
-      "clickable"
-    );
+    newSidebarListItem.classList.add("module-list-item", "sidebar-item");
 
     newSidebarListItem.textContent = sidebarItem.moduleName;
     this.domElements.sidebarListElement.appendChild(newSidebarListItem);
