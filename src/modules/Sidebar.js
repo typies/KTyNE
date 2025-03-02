@@ -7,6 +7,7 @@ class Sidebar {
     this.sidebarItems = itemList;
     this.init();
     mainPubSub.subscribe("addNewModule", this.addSidebarItem.bind(this));
+    mainPubSub.subscribe("addNewModules", this.addSidebarItems.bind(this));
     return this;
   }
 
@@ -24,7 +25,7 @@ class Sidebar {
   init() {
     this.importProjectsFromLocal();
     this.render();
-    this.configureSidebarBtns();
+    this.configureStaticSidebarBtns();
   }
 
   render() {
@@ -38,18 +39,50 @@ class Sidebar {
     this.sortSidebar();
   }
 
-  addSidebarItem(sidebarItem) {
-    if (sidebarItem.moduleName === "") {
-      const regex = /HTML\/([\w%20]+).html/;
-      const regexResult = sidebarItem.manualUrl.match(regex);
-      if (!regexResult) return;
+  getSidebarItem(mName) {
+    return this.sidebarItems.find((item) => {
+      if (item.moduleName === mName) return item;
+    });
+  }
 
-      const regexName = regexResult[1].split("%20").join(" ");
-      sidebarItem.moduleName = regexName;
+  addSidebarItem(sidebarItem, reRender = true) {
+    if (!sidebarItem.moduleName || sidebarItem.moduleName === "") {
+      try {
+        const regex = /HTML\/([\w%20]+).html/;
+        const regexResult = sidebarItem.manualUrl.match(regex);
+        if (!regexResult) return;
+
+        const regexName = regexResult[1].split("%20").join(" ");
+        sidebarItem.moduleName = regexName;
+      } catch {
+        console.log(
+          `Error matching URL regex for ("${sidebarItem.manualUrl}")`
+        );
+      }
+    }
+    if (this.getSidebarItem(sidebarItem.moduleName)) {
+      console.log(`Skipping add for: ${sidebarItem.moduleName}. Is duplicated`);
+      return "skipped";
     }
     this.sidebarItems.push(sidebarItem);
     this.localStorageAdd(sidebarItem);
+    if (reRender) this.render();
+  }
+
+  addSidebarItems(sidebarItemsList) {
+    let skippedFlag = false;
+    sidebarItemsList.forEach((sidebarItem) => {
+      const newSidebarItemFormatted = {
+        moduleName: sidebarItem.name,
+        manualUrl: sidebarItem.url,
+      };
+      const skipped = this.addSidebarItem(newSidebarItemFormatted, false);
+      if (skipped === "skipped") skippedFlag = true;
+    });
     this.render();
+    if (skippedFlag) {
+      alert("One or more duplicatse where found. Those items where skipped");
+    }
   }
 
   removeSidebarItem(sidebarItem) {
@@ -106,7 +139,7 @@ class Sidebar {
     sidebarListElement.appendChild(newSidebarListItem);
   }
 
-  configureSidebarBtns() {
+  configureStaticSidebarBtns() {
     const filter = this.domElements.filter;
     const filterClear = this.domElements.filterClear;
     const newRepoTabBtn = this.domElements.newRepoTabBtn;
@@ -135,6 +168,7 @@ class Sidebar {
   toggleEditMode() {
     const title = this.domElements.moduleListTitle;
     const addNewModuleBtn = this.domElements.addNewModuleBtn;
+    const addNewRepoTabBtn = this.domElements.newRepoTabBtn;
     const moduleList = document.querySelectorAll(".sidebar-item");
     this.editMode = !this.editMode;
     title.classList.toggle("red");
@@ -144,8 +178,10 @@ class Sidebar {
     });
     if (this.editMode) {
       title.textContent = "DELETEING MODULES";
+      addNewRepoTabBtn.classList.toggle("hidden");
     } else {
       title.textContent = "Modules";
+      addNewRepoTabBtn.classList.toggle("hidden");
     }
   }
 
@@ -173,12 +209,11 @@ class Sidebar {
   filterSidebar(filterTerm) {
     const sidebarListElement = this.domElements.sidebarListElement;
     const filterTermCleaned = filterTerm.toLowerCase().trim();
+    const sidebarListChildren = Array.from(sidebarListElement.children);
     if (filterTermCleaned === "") {
       this.render();
       return;
     }
-    const sidebarListChildren = Array.from(sidebarListElement.children);
-
     sidebarListChildren.forEach((ele) => {
       if (ele.textContent.toLowerCase().includes(filterTermCleaned)) {
         ele.classList.remove("hidden");

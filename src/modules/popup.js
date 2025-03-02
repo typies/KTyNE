@@ -208,8 +208,9 @@ class NewModuleListItemPopup {
   domElements = {
     newModuleBtn: document.querySelector("#add-new-module-btn"),
     popupOverlay: document.querySelector(".popup-overlay"),
-    newModuleForm: document.querySelector(".add-new-module-form"),
-    closeFormBtn: document.querySelector("#close-new-module-form"),
+    newModuleForm: document.querySelector("#add-new-module-form"),
+    manyNewModuleBtn: document.querySelector("#add-many-new-module-btn"),
+    closeFormBtn: document.querySelector("#close-new-module-form-btn"),
   };
 
   configureFormButtons() {
@@ -217,11 +218,16 @@ class NewModuleListItemPopup {
     const popupOverlay = this.domElements.popupOverlay;
     const closeFormBtn = this.domElements.closeFormBtn;
     const newModuleForm = this.domElements.newModuleForm;
+    const manyNewModuleBtn = this.domElements.manyNewModuleBtn;
     newModuleBtn.addEventListener("click", () => {
       newModuleForm.reset();
       popupOverlay.classList.remove("hidden");
       newModuleForm.classList.remove("hidden");
       document.querySelector("#add-new-module-url").focus();
+    });
+
+    manyNewModuleBtn.addEventListener("click", () => {
+      newModuleForm.classList.add("hidden");
     });
 
     closeFormBtn.addEventListener("click", () => {
@@ -253,4 +259,142 @@ class NewModuleListItemPopup {
   }
 }
 
-export default { EdgeworkPopup, NumberedAlphabetPopup, NewModuleListItemPopup };
+class NewModuleListItemManyPopup {
+  constructor() {
+    return this;
+  }
+  domElements = {
+    popupOverlay: document.querySelector(".popup-overlay"),
+    manyNewModuleBtn: document.querySelector("#add-many-new-module-btn"),
+    manyNewModuleForm: document.querySelector("#add-many-new-module-form"),
+    closeFormBtn: document.querySelector("#close-many-new-module-form-btn"),
+    resetFormBtn: document.querySelector("#reset-many-new-module-form-btn"),
+    textAreaInput: document.querySelector("#add-many-new-module-text"),
+    fileUploadInput: document.querySelector("#add-many-new-module-file"),
+    addExampleBtn: document.querySelector("#add-many-example"),
+  };
+
+  configureFormButtons() {
+    const manyNewModuleBtn = this.domElements.manyNewModuleBtn;
+    const popupOverlay = this.domElements.popupOverlay;
+    const resetFormBtn = this.domElements.resetFormBtn;
+    const closeFormBtn = this.domElements.closeFormBtn;
+    const manyNewModuleForm = this.domElements.manyNewModuleForm;
+    const textAreaInput = this.domElements.textAreaInput;
+    const fileUploadInput = this.domElements.fileUploadInput;
+    const addExampleBtn = this.domElements.addExampleBtn;
+    manyNewModuleBtn.addEventListener("click", () => {
+      manyNewModuleForm.reset();
+      popupOverlay.classList.remove("hidden");
+      manyNewModuleForm.classList.remove("hidden");
+    });
+
+    resetFormBtn.addEventListener("click", () => {
+      this.resetForm();
+      textAreaInput.focus();
+    });
+
+    closeFormBtn.addEventListener("click", () => {
+      popupOverlay.classList.add("hidden");
+      manyNewModuleForm.classList.add("hidden");
+    });
+
+    addExampleBtn.addEventListener("click", (event) =>
+      this.handleExample(event)
+    );
+
+    fileUploadInput.addEventListener(
+      "change",
+      this.handleFileUpload.bind(this)
+    );
+
+    manyNewModuleForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const formText = textAreaInput.textContent;
+      if (formText && formText !== "") {
+        if (!this.processTextarea(formText)) return;
+      }
+
+      popupOverlay.classList.add("hidden");
+      manyNewModuleForm.classList.add("hidden");
+      this.resetForm();
+    });
+  }
+
+  handleExample(event) {
+    const textAreaInput = this.domElements.textAreaInput;
+    const example = `[\n  {\n    "name": "Logic",\n    "url": "https://ktane.timwi.de/HTML/Logic.html"\n  },\n  {\n    "name": "Silly Slots",\n    "url": "https://ktane.timwi.de/HTML/Silly%20Slots.html"\n  },\n  {\n    "url": "https://ktane.timwi.de/HTML/Yippee.html"\n  }\n]`;
+
+    if (textAreaInput.hasAttribute("contenteditable")) {
+      this.currentTextInputValue = textAreaInput.textContent;
+
+      event.target.textContent = "Hide Example";
+      textAreaInput.textContent = example;
+      textAreaInput.removeAttribute("contenteditable");
+      return;
+    }
+
+    event.target.textContent = "Show me an example";
+    textAreaInput.textContent = this.currentTextInputValue;
+    textAreaInput.setAttribute("contenteditable", "");
+  }
+
+  processTextarea(formText) {
+    try {
+      console.log(formText);
+      const formTextCleaned = formText.replace(/(|\t|\n|\r)/gm, "");
+      console.log(formTextCleaned);
+      const newModules = JSON.parse(formTextCleaned);
+      mainPubSub.publish("addNewModules", newModules);
+      return true;
+    } catch (error) {
+      if (error instanceof SyntaxError) {
+        alert(
+          "Unable to Add Modules: Misformed JSON. Ensure all strings (including name/url) are wrapped in double quotes"
+        );
+      }
+      console.log(error);
+      console.log("Add JSON from text failed.");
+      return false;
+    }
+  }
+
+  handleFileUpload(event) {
+    const file = event.target.files[0];
+    const textAreaInput = this.domElements.textAreaInput;
+    if (!file) return;
+
+    const fr = new FileReader();
+    fr.onload = () => {
+      textAreaInput.textContent = fr.result;
+    };
+    fr.onerror = () => {
+      alert(
+        "Unable to read file. Please use a properly formatted .json or .txt"
+      );
+    };
+    fr.readAsText(file);
+  }
+
+  resetForm() {
+    const manyNewModuleForm = this.domElements.manyNewModuleForm;
+    const textAreaInput = this.domElements.textAreaInput;
+    const addExampleBtn = this.domElements.addExampleBtn;
+    manyNewModuleForm.reset();
+    textAreaInput.textContent = "";
+    if (textAreaInput.hasAttribute("readonly")) addExampleBtn.click();
+    return this;
+  }
+
+  init() {
+    this.configureFormButtons();
+    return this;
+  }
+}
+
+export default {
+  EdgeworkPopup,
+  NumberedAlphabetPopup,
+  NewModuleListItemPopup,
+  NewModuleListItemManyPopup,
+};

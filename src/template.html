@@ -218,8 +218,12 @@
           <button type="submit" class="form-btn">Create</button>
         </div>
       </form>
-      <form action="" class="add-new-module-form form hidden">
+      <form action="" id="add-new-module-form" class="form hidden">
         <div class="title">Add New Module</div>
+
+        <button type="button" class="form-btn" id="add-many-new-module-btn">
+          Add Many
+        </button>
         <label for="url">Module URL</label>
         <input
           type="text"
@@ -238,12 +242,52 @@
           autocomplete="off"
         />
         <div class="btn-group">
-          <button type="button" class="form-btn" id="close-new-module-form">
+          <button type="button" class="form-btn" id="close-new-module-form-btn">
             Close
           </button>
-          <button type="submit" class="form-btn" id="add-new-module-form">
-            Create
+          <button type="submit" class="form-btn">Add</button>
+        </div>
+      </form>
+
+      <form action="" id="add-many-new-module-form" class="form hidden">
+        <div class="title">Add many modules</div>
+        <div class="title">(Duplicates Will be Skipped)</div>
+        <label for="add-many-text">Enter/Upload JSON </label>
+        <div id="file-wrapper">
+          <input
+            type="file"
+            name="add-many-file"
+            id="add-many-new-module-file"
+            autocomplete="off"
+          />
+          <button id="add-many-example" type="button">
+            Show me an example
           </button>
+        </div>
+        <div
+          name="add-many-text"
+          id="add-many-new-module-text"
+          autocomplete="off"
+          contenteditable
+          spellcheck="false"
+        ></div>
+
+        <div class="btn-group">
+          <button
+            type="button"
+            class="form-btn"
+            id="close-many-new-module-form-btn"
+          >
+            Close
+          </button>
+          <button
+            type="button"
+            class="form-btn"
+            id="reset-many-new-module-form-btn"
+          >
+            Reset
+          </button>
+          <button type="submit" class="form-btn">Add All</button>
         </div>
       </form>
     </div>
