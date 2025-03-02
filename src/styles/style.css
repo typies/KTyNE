@@ -207,11 +207,10 @@ svg {
 }
 
 svg#add-new-module-btn:hover {
-  stroke: var(--color-green);
+  fill: var(--color-green);
 }
 
 #edit-module-list-btn:hover {
-  stroke: var(--color-red);
   fill: var(--color-red);
 }
 
