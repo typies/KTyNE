@@ -1,3 +1,5 @@
+import mainPubSub from "./PubSub";
+
 class EdgeworkPopup {
   constructor() {
     return this;
@@ -6,10 +8,10 @@ class EdgeworkPopup {
     popupOverlay: document.querySelector(".popup-overlay"),
     edgework: document.querySelector(".edgework"),
     edgeworkForm: document.querySelector(".edgework-form"),
-    newEdgeworkBtn: document.querySelector(".edgework-btn.new"),
+    newEdgeworkBtn: document.querySelector(".edgework-btn"),
     serial: document.querySelector(".widget.serial"),
-    closeFormBtn: document.querySelector(".form-btn.close-btn"),
-    resetFormBtn: document.querySelector(".form-btn.reset-btn"),
+    closeFormBtn: document.querySelector("#edgework-form-close-btn"),
+    resetFormBtn: document.querySelector("#edgework-form-reset-btn"),
   };
   configureFormButtons() {
     const newEdgeworkBtn = this.domElements.newEdgeworkBtn;
@@ -19,11 +21,13 @@ class EdgeworkPopup {
     const edgeworkForm = this.domElements.edgeworkForm;
     newEdgeworkBtn.addEventListener("click", () => {
       popupOverlay.classList.remove("hidden");
+      edgeworkForm.classList.remove("hidden");
       document.querySelector("#serial").focus();
     });
 
     closeFormBtn.addEventListener("click", () => {
       popupOverlay.classList.add("hidden");
+      edgeworkForm.classList.add("hidden");
     });
 
     resetFormBtn.addEventListener("click", () => {
@@ -45,6 +49,7 @@ class EdgeworkPopup {
       );
       this.populatePortPlates(formData.get("ports"));
       popupOverlay.classList.add("hidden");
+      edgeworkForm.classList.add("hidden");
     });
   }
 
@@ -196,4 +201,55 @@ class NumberedAlphabetPopup {
   }
 }
 
-export default { EdgeworkPopup, NumberedAlphabetPopup };
+class NewModuleListItemPopup {
+  constructor() {
+    return this;
+  }
+  domElements = {
+    newModuleBtn: document.querySelector("#add-new-module-btn"),
+    popupOverlay: document.querySelector(".popup-overlay"),
+    newModuleForm: document.querySelector(".add-new-module-form"),
+    closeFormBtn: document.querySelector("#close-new-module-form"),
+  };
+
+  configureFormButtons() {
+    const newModuleBtn = this.domElements.newModuleBtn;
+    const popupOverlay = this.domElements.popupOverlay;
+    const closeFormBtn = this.domElements.closeFormBtn;
+    const newModuleForm = this.domElements.newModuleForm;
+    newModuleBtn.addEventListener("click", () => {
+      popupOverlay.classList.remove("hidden");
+      newModuleForm.classList.remove("hidden");
+      document.querySelector("#add-new-module-url").focus();
+    });
+
+    closeFormBtn.addEventListener("click", () => {
+      popupOverlay.classList.add("hidden");
+      newModuleForm.classList.add("hidden");
+    });
+
+    newModuleForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const formData = new FormData(newModuleForm);
+      mainPubSub.publish("addNewModule", {
+        moduleName: formData.get("name"),
+        manualUrl: formData.get("url"),
+      });
+      popupOverlay.classList.add("hidden");
+      newModuleForm.classList.add("hidden");
+    });
+  }
+
+  resetForm() {
+    const newModuleForm = this.domElements.newModuleForm;
+    newModuleForm.reset();
+    return this;
+  }
+
+  init() {
+    this.configureFormButtons();
+    return this;
+  }
+}
+
+export default { EdgeworkPopup, NumberedAlphabetPopup, NewModuleListItemPopup };

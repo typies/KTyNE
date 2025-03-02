@@ -117,7 +117,7 @@ li {
   margin-bottom: 4px;
 }
 
-#add-this-tab-btn {
+#add-new-module-btn {
   width: 100%;
   margin-bottom: 4px;
   color: var(--color-green);
@@ -126,6 +126,7 @@ li {
 .sidebar-filter {
   width: 100%;
   position: relative;
+  margin-bottom: 12px;
 }
 
 #filter {
@@ -156,11 +157,15 @@ button.clear-filter:hover {
 }
 
 .module-list {
-  margin-top: 40px;
   display: flex;
   flex-direction: column;
   gap: 2px;
   font-size: 20px;
+}
+
+.module-list-title {
+  font-size: 24px;
+  padding-bottom: 8px;
 }
 
 .sidebar-item {
@@ -414,10 +419,10 @@ form div.title {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
-.edgework-form {
+.form {
   background-color: white;
   padding: 20px;
   border-radius: 5px;
@@ -426,25 +431,27 @@ form div.title {
   font-size: 24px;
 }
 
-.edgework-form label {
+.form label {
   margin-top: 10px;
 }
 
-label[for="serial"] {
+.form input {
+  padding-left: 4px;
+  font-size: inherit;
+}
+
+label[for="serial"],
+label[for="url"] {
   position: relative;
 }
-label[for="serial"]:after {
+label[for="serial"]:after,
+label[for="url"]:after {
   content: "required";
   color: red;
   font-size: 0.5em;
   position: absolute;
   right: 0;
   bottom: 0;
-}
-
-.edgework-form input {
-  padding-left: 4px;
-  font-size: inherit;
 }
 
 .inds {

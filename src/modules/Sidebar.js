@@ -6,16 +6,14 @@ class Sidebar {
   constructor(itemList = []) {
     this.sidebarItems = itemList;
     this.init();
-    mainPubSub.subscribe("tabChange", this.reactToTabChange.bind(this));
+    mainPubSub.subscribe("addNewModule", this.addSidebarItem.bind(this));
     return this;
   }
 
   domElements = {
     sidebarListElement: document.querySelector(".sidebar .module-list"),
-    addTabBtn: document.querySelector("#add-this-tab-btn"),
     newRepoTabBtn: document.querySelector("#new-repo-tab-btn"),
     filter: document.querySelector("#filter"),
-    currentHeaderItem: document.querySelector(".current-header-item"),
     filterClear: document.querySelector("button.clear-filter"),
   };
 
@@ -36,6 +34,12 @@ class Sidebar {
   }
 
   addSidebarItem(sidebarItem) {
+    if (sidebarItem.moduleName === "") {
+      const regex = /HTML\/([\w%20]+).html/;
+      const regexResult = sidebarItem.manualUrl.match(regex);
+      const regexName = regexResult[1].split("%20").join(" ");
+      sidebarItem.moduleName = regexName;
+    }
     this.sidebarItems.push(sidebarItem);
     this.render();
   }
@@ -86,23 +90,6 @@ class Sidebar {
       iframeId: sharedIdCounter.getId(),
     });
     sharedIdCounter.incrementId();
-  }
-
-  reactToTabChange(pubSubData) {
-    const addTabBtn = this.domElements.addTabBtn;
-    if (!pubSubData.moduleName || pubSubData.moduleName === "") {
-      addTabBtn.classList.add("hidden");
-      return;
-    }
-    const matchingSidebarItems = this.sidebarItems.filter(
-      (item) =>
-        item.moduleName.toLowerCase() === pubSubData.moduleName.toLowerCase()
-    );
-    if (matchingSidebarItems.length === 0) {
-      addTabBtn.classList.remove("hidden");
-    } else {
-      addTabBtn.classList.add("hidden");
-    }
   }
 
   sortSidebar() {

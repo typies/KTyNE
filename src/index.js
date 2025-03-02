@@ -51,3 +51,4 @@ new IframeManager();
 new Sidebar().addSidebarItems(defaultModuleList);
 new popups.EdgeworkPopup().init();
 new popups.NumberedAlphabetPopup().init();
+new popups.NewModuleListItemPopup().init();
