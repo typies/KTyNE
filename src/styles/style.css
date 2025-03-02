@@ -54,11 +54,10 @@ li {
   display: grid;
   background: var(--page-bg-color);
   grid:
-    "edgework edgework edgework" minmax(50px, auto)
-    "header header header" minmax(50px, auto)
-    "sidebar modules notes" 1fr
-    "footer footer footer" minmax(30px, 50px)
-    / minmax(20ch, 200px) minmax(50%, 1fr) minmax(20ch, 50ch);
+    "header header edgework edgework" minmax(50px, auto)
+    "sidebar manuals manuals notes" 1fr
+    "footer footer footer footer" minmax(30px, 50px)
+    / minmax(20ch, 200px) minmax(25%, 1fr) 25% minmax(20ch, 50ch);
   height: 100dvh;
   height: 100vh;
 }
@@ -276,9 +275,8 @@ svg#add-new-module-btn:hover {
 
 /* Main frame css */
 
-.modules {
-  grid-area: modules;
-  position: relative;
+.manuals {
+  grid-area: manuals;
 }
 
 .hidden-iframe {
@@ -299,17 +297,23 @@ svg#add-new-module-btn:hover {
 .edgework-wrapper {
   grid-area: edgework;
   display: flex;
+  flex-direction: row-reverse;
   background-color: var(--color-jet);
   width: 100%;
 }
 
 .edgework-btn {
   margin: 12px 12px;
+  max-height: 2em;
+  width: 130px;
+  position: absolute;
 }
 
 .edgework {
   padding: 0 20px;
-  overflow: auto;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row-reverse;
 }
 
 .widget {
@@ -326,6 +330,8 @@ svg#add-new-module-btn:hover {
 .widget.serial {
   background-image: url(/src/images/Serial\ number.png);
   width: 100px;
+  padding: 0 15px;
+  margin-right: 130px; /* Extra space for edgework button */
   font-size: 24px;
   font-weight: bold;
   color: black;
@@ -335,11 +341,13 @@ svg#add-new-module-btn:hover {
 
 .widget.battery.aa {
   width: 90px;
+  padding: 0 25px;
   background-image: url(/src/images/BatteryAA.png);
 }
 
 .widget.battery.d {
   width: 90px;
+  padding: 0 25px;
   background-image: url(/src/images/BatteryD.png);
 }
 
@@ -361,6 +369,7 @@ svg#add-new-module-btn:hover {
 
 .widget.portplate {
   width: 112px;
+  padding: 0 3px;
   background-image: url(/src/images/PortPlate.png);
   position: relative;
 }

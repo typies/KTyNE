@@ -81,30 +81,30 @@ class EdgeworkPopup {
   }
 
   populateIndicators(indicators) {
-    const unlitInds = [];
     const edgework = this.domElements.edgework;
+    const litIndDiv = document.createElement("div");
+    const unlitIndDiv = document.createElement("div");
     indicators.forEach((ind) => {
       const newIndicator = document.createElement("div");
       newIndicator.classList.add("widget", "indicator");
       newIndicator.textContent = ind.split("-")[1].toUpperCase();
       if (ind.includes("unlit")) {
         newIndicator.classList.add("unlit");
-        unlitInds.push(newIndicator);
+        unlitIndDiv.appendChild(newIndicator);
       } else {
         newIndicator.classList.add("lit");
-        // Add lit ind asap, delay unlit until all lits are added (Better grouping)
-        edgework.appendChild(newIndicator);
+        litIndDiv.appendChild(newIndicator);
       }
     });
-    if (unlitInds.length > 0) {
-      edgework.appendChild(...unlitInds);
-    }
+    edgework.append(litIndDiv);
+    edgework.append(unlitIndDiv);
   }
 
   populatePortPlates(portList) {
     const edgework = this.domElements.edgework;
     if (!portList || portList === "") return;
     const portPlates = portList.split(" ");
+    const plateDiv = document.createElement("div");
     portPlates.forEach((plate) => {
       if (!plate || plate == "") return;
       const newPlate = document.createElement("div");
@@ -115,8 +115,9 @@ class EdgeworkPopup {
         newPort.classList.add(port.toLowerCase());
         newPlate.appendChild(newPort);
       });
-      edgework.appendChild(newPlate);
+      plateDiv.appendChild(newPlate);
     });
+    edgework.appendChild(plateDiv);
   }
 
   resetForm() {
