@@ -1,7 +1,7 @@
 import mainPubSub from "./PubSub.js";
+import sharedIdCounter from "./sharedIdCounter.js";
 
 class IframeManager {
-  #idCounter = 0;
   constructor() {
     mainPubSub.subscribe("addIframe", this.createNewIframe.bind(this));
     mainPubSub.subscribe("removeIframe", this.removeIframeById.bind(this));
@@ -15,12 +15,13 @@ class IframeManager {
   };
 
   setIframeById(pubsubData) {
+    const currentIframe = this.domElements.currentIframe;
     if (Number.isInteger(pubsubData.iframeId)) {
       let nextIframe = this.getIframeById(pubsubData.iframeId);
-      if (nextIframe === this.domElements.currentIframe) {
+      if (nextIframe === currentIframe) {
         this.toggleHidden(nextIframe);
       } else {
-        this.hideIframe(this.domElements.currentIframe);
+        this.hideIframe(currentIframe);
         this.showIframe(nextIframe);
         this.domElements.currentIframe = nextIframe;
       }
@@ -28,21 +29,23 @@ class IframeManager {
   }
 
   changeIframe(iframeId) {
-    if (this.domElements.currentIframe) {
-      this.hideIframe(this.domElements.currentIframe);
+    const currentIframe = this.domElements.currentIframe;
+    if (currentIframe) {
+      this.hideIframe(currentIframe);
     }
     const newIframe = this.getIframeById(iframeId);
     this.domElements.currentIframe = newIframe;
   }
 
   createNewIframe(pubsubData) {
-    const newIframeId = this.#idCounter++;
+    const manualsDiv = this.domElements.manualsDiv;
+    const newIframeId = sharedIdCounter.getId();
     let newIframe = document.createElement("iframe");
     newIframe.setAttribute("src", pubsubData.manualUrl);
     newIframe.setAttribute("data-iframe-id", newIframeId);
     newIframe.classList.add("hidden-iframe");
 
-    this.domElements.manualsDiv.appendChild(newIframe);
+    manualsDiv.appendChild(newIframe);
     this.changeIframe(newIframeId);
   }
 
@@ -51,9 +54,8 @@ class IframeManager {
   }
 
   getIframeById(iframeId) {
-    return this.domElements.manualsDiv.querySelector(
-      `[data-iframe-id="${iframeId}"]`
-    );
+    const manualsDiv = this.domElements.manualsDiv;
+    return manualsDiv.querySelector(`[data-iframe-id="${iframeId}"]`);
   }
 
   toggleHidden(iframe) {

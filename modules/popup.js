@@ -12,24 +12,29 @@ class EdgeworkPopup {
     resetFormBtn: document.querySelector(".form-btn.reset-btn"),
   };
   configureFormButtons() {
-    this.domElements.newEdgeworkBtn.addEventListener("click", () => {
-      this.domElements.popupOverlay.classList.remove("hidden");
+    const newEdgeworkBtn = this.domElements.newEdgeworkBtn;
+    const popupOverlay = this.domElements.popupOverlay;
+    const closeFormBtn = this.domElements.closeFormBtn;
+    const resetFormBtn = this.domElements.resetFormBtn;
+    const edgeworkForm = this.domElements.edgeworkForm;
+    newEdgeworkBtn.addEventListener("click", () => {
+      popupOverlay.classList.remove("hidden");
       document.querySelector("#serial").focus();
     });
 
-    this.domElements.closeFormBtn.addEventListener("click", () => {
-      this.domElements.popupOverlay.classList.add("hidden");
+    closeFormBtn.addEventListener("click", () => {
+      popupOverlay.classList.add("hidden");
     });
 
-    this.domElements.resetFormBtn.addEventListener("click", () => {
+    resetFormBtn.addEventListener("click", () => {
       this.resetForm();
       document.querySelector("#serial").focus();
     });
 
-    this.domElements.edgeworkForm.addEventListener("submit", (event) => {
+    edgeworkForm.addEventListener("submit", (event) => {
       event.preventDefault();
       this.resetEdgework();
-      const formData = new FormData(this.domElements.edgeworkForm);
+      const formData = new FormData(edgeworkForm);
       this.populateSerial(formData.get("serial"));
       this.populateBatteries(
         formData.get("batteries"),
@@ -39,37 +44,40 @@ class EdgeworkPopup {
         formData.keys().filter((key) => key.includes("ind"))
       );
       this.populatePortPlates(formData.get("ports"));
-      this.domElements.popupOverlay.classList.add("hidden");
+      popupOverlay.classList.add("hidden");
     });
   }
 
   populateSerial(serial) {
+    const edgework = this.domElements.edgework;
     if (!serial) return;
     const newSerial = document.createElement("div");
     newSerial.classList.add("widget", "serial");
     newSerial.textContent = serial.toUpperCase();
-    this.domElements.edgework.appendChild(newSerial);
+    edgework.appendChild(newSerial);
   }
 
   populateBatteries(batteries, holders) {
     const numOfAAPairs = batteries - holders;
     const numOfD = batteries - 2 * numOfAAPairs;
+    const edgework = this.domElements.edgework;
 
     for (let i = 0; i < numOfAAPairs; i++) {
       const newAAWidget = document.createElement("div");
       newAAWidget.classList.add("widget", "battery", "aa");
-      this.domElements.edgework.appendChild(newAAWidget);
+      edgework.appendChild(newAAWidget);
     }
 
     for (let i = 0; i < numOfD; i++) {
       const newDWidget = document.createElement("div");
       newDWidget.classList.add("widget", "battery", "d");
-      this.domElements.edgework.appendChild(newDWidget);
+      edgework.appendChild(newDWidget);
     }
   }
 
   populateIndicators(indicators) {
     const unlitInds = [];
+    const edgework = this.domElements.edgework;
     indicators.forEach((ind) => {
       const newIndicator = document.createElement("div");
       newIndicator.classList.add("widget", "indicator");
@@ -80,15 +88,16 @@ class EdgeworkPopup {
       } else {
         newIndicator.classList.add("lit");
         // Add lit ind asap, delay unlit until all lits are added (Better grouping)
-        this.domElements.edgework.appendChild(newIndicator);
+        edgework.appendChild(newIndicator);
       }
     });
     if (unlitInds.length > 0) {
-      this.domElements.edgework.appendChild(...unlitInds);
+      edgework.appendChild(...unlitInds);
     }
   }
 
   populatePortPlates(portList) {
+    const edgework = this.domElements.edgework;
     if (!portList || portList === "") return;
     const portPlates = portList.split(" ");
     portPlates.forEach((plate) => {
@@ -101,17 +110,19 @@ class EdgeworkPopup {
         newPort.classList.add(port.toLowerCase());
         newPlate.appendChild(newPort);
       });
-      this.domElements.edgework.appendChild(newPlate);
+      edgework.appendChild(newPlate);
     });
   }
 
   resetForm() {
-    this.domElements.edgeworkForm.reset();
+    const edgeworkForm = this.domElements.edgeworkForm;
+    edgeworkForm.reset();
     return this;
   }
 
   resetEdgework() {
-    this.domElements.edgework.replaceChildren();
+    const edgework = this.domElements.edgework;
+    edgework.replaceChildren();
     return this;
   }
 
@@ -131,21 +142,26 @@ class NumberedAlphabetPopup {
     alphaPopupWrapper: document.querySelector(".alphabet-popup-wrapper"),
   };
   configureFormButtons() {
-    this.domElements.alphaBtn.addEventListener("click", () => {
-      this.domElements.alphaPopupWrapper.classList.toggle("hidden");
-      this.domElements.alphaPopupWrapper.classList.toggle("selected");
+    const alphaBtn = this.domElements.alphaBtn;
+    const alphaPopupWrapper = this.domElements.alphaPopupWrapper;
+    const zeroBtn = this.domElements.zeroBtn;
+    const oneBtn = this.domElements.oneBtn;
+    alphaBtn.addEventListener("click", () => {
+      alphaPopupWrapper.classList.toggle("hidden");
+      alphaPopupWrapper.classList.toggle("selected");
     });
 
-    this.domElements.zeroBtn.addEventListener("click", () => {
+    zeroBtn.addEventListener("click", () => {
       this.changeLabelsZero();
     });
 
-    this.domElements.oneBtn.addEventListener("click", () => {
+    oneBtn.addEventListener("click", () => {
       this.changeLabelsOne();
     });
   }
 
   changeLabelsZero() {
+    const zeroBtn = this.domElements.zeroBtn;
     const spans =
       this.domElements.alphaPopupWrapper.querySelectorAll("div span");
     spans.forEach((span, index) => {
@@ -154,11 +170,13 @@ class NumberedAlphabetPopup {
       span.textContent = spanParts.join(":");
     });
     spans[9].classList.add("single-digit");
-    this.domElements.zeroBtn.classList.add("selected");
-    this.domElements.oneBtn.classList.remove("selected");
+    zeroBtn.classList.add("selected");
+    oneBtn.classList.remove("selected");
   }
 
   changeLabelsOne() {
+    const zeroBtn = this.domElements.zeroBtn;
+    const oneBtn = this.domElements.oneBtn;
     const spans =
       this.domElements.alphaPopupWrapper.querySelectorAll("div span");
     spans.forEach((span, index) => {
@@ -167,8 +185,8 @@ class NumberedAlphabetPopup {
       span.textContent = spanParts.join(":");
     });
     spans[9].classList.remove("single-digit");
-    this.domElements.zeroBtn.classList.remove("selected");
-    this.domElements.oneBtn.classList.add("selected");
+    zeroBtn.classList.remove("selected");
+    oneBtn.classList.add("selected");
   }
 
   init() {

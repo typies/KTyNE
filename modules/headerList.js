@@ -1,4 +1,5 @@
 import mainPubSub from "./PubSub.js";
+import sharedIdCounter from "./sharedIdCounter.js";
 
 class HeaderList {
   constructor() {
@@ -9,16 +10,14 @@ class HeaderList {
     mainPubSub.subscribe("tabChange", this.reactToTabChange.bind(this));
   }
 
-  #idCounter = 0;
-
   domElements = {
     headerList: document.querySelector(".open-modules-list"),
     currentlyHighlightedHeaderItem: null,
   };
 
   addHeaderListItem(pubsubData) {
-    const newHeaderListItemId = this.#idCounter++;
-
+    const headerList = this.domElements.headerList;
+    const newHeaderListItemId = sharedIdCounter.getId();
     let newHeaderListItem = document.createElement("li");
     newHeaderListItem.classList.add("open-module-list-item");
     newHeaderListItem.setAttribute("data-module-id", newHeaderListItemId);
@@ -43,26 +42,24 @@ class HeaderList {
       this.headerItemRename(newHeaderListItemId);
     });
 
-    this.domElements.headerList.appendChild(newHeaderListItem);
+    headerList.appendChild(newHeaderListItem);
     this.sortHeaderList();
-    mainPubSub.publish("tabChange", {
-      moduleName: pubsubData.moduleName,
-      iframeId: newHeaderListItemId,
-    });
   }
 
   sortHeaderList() {
-    const headerList = Array.from(this.domElements.headerList.children);
-    headerList.sort((a, b) => {
+    const headerList = this.domElements.headerList;
+    const headerListChildren = Array.from(headerList.children);
+    headerListChildren.sort((a, b) => {
       if (a.textContent.toLowerCase() < b.textContent.toLowerCase()) return -1;
       return 1;
     });
-    this.domElements.headerList.replaceChildren(...headerList);
+    headerList.replaceChildren(...headerListChildren);
   }
 
   closeHeaderListItem(headerListItemId) {
+    const highlightedItem = this.domElements.currentlyHighlightedHeaderItem;
     const itemToRemove = this.getHeaderListItem(headerListItemId);
-    if (itemToRemove === this.domElements.currentlyHighlightedHeaderItem) {
+    if (itemToRemove === highlightedItem) {
       mainPubSub.publish("tabChange", {});
     }
     itemToRemove.remove();
@@ -70,9 +67,8 @@ class HeaderList {
   }
 
   getHeaderListItem(headerListItemId) {
-    return this.domElements.headerList.querySelector(
-      `[data-module-id="${headerListItemId}"]`
-    );
+    const headerList = this.domElements.headerList;
+    return headerList.querySelector(`[data-module-id="${headerListItemId}"]`);
   }
 
   headerItemRename(headerListItemId) {
