@@ -145,16 +145,16 @@ class NumberedAlphabetPopup {
     alphaBtn: document.querySelector(".alphabet-btn"),
     zeroBtn: document.querySelector(".zero-btn"),
     oneBtn: document.querySelector(".one-btn"),
-    alphaPopupWrapper: document.querySelector(".alphabet-popup-wrapper"),
+    alphaPopup: document.querySelector(".alphabet-popup"),
   };
   configureFormButtons() {
     const alphaBtn = this.domElements.alphaBtn;
-    const alphaPopupWrapper = this.domElements.alphaPopupWrapper;
+    const alphaPopup = this.domElements.alphaPopup;
     const zeroBtn = this.domElements.zeroBtn;
     const oneBtn = this.domElements.oneBtn;
     alphaBtn.addEventListener("click", () => {
-      alphaPopupWrapper.classList.toggle("hidden");
-      alphaPopupWrapper.classList.toggle("selected");
+      alphaPopup.classList.toggle("hidden");
+      alphaPopup.classList.toggle("selected");
     });
 
     zeroBtn.addEventListener("click", () => {
@@ -169,8 +169,7 @@ class NumberedAlphabetPopup {
   changeLabelsZero() {
     const zeroBtn = this.domElements.zeroBtn;
     const oneBtn = this.domElements.oneBtn;
-    const spans =
-      this.domElements.alphaPopupWrapper.querySelectorAll("div span");
+    const spans = this.domElements.alphaPopup.querySelectorAll("div span");
     spans.forEach((span, index) => {
       const spanParts = span.textContent.split(":");
       spanParts[0] = index;
@@ -184,8 +183,7 @@ class NumberedAlphabetPopup {
   changeLabelsOne() {
     const zeroBtn = this.domElements.zeroBtn;
     const oneBtn = this.domElements.oneBtn;
-    const spans =
-      this.domElements.alphaPopupWrapper.querySelectorAll("div span");
+    const spans = this.domElements.alphaPopup.querySelectorAll("div span");
     spans.forEach((span, index) => {
       const spanParts = span.textContent.split(":");
       spanParts[0] = index + 1;

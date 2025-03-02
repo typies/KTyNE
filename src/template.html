@@ -9,12 +9,12 @@
   </head>
   <body>
     <div class="main-container">
-      <div class="edgework-wrapper">
-        <button class="edgework-btn">Edgework?</button>
-        <div class="edgework"></div>
-      </div>
       <header class="header">
         <ul class="open-modules-list"></ul>
+        <div class="edgework-wrapper">
+          <button class="edgework-btn">Edgework?</button>
+          <div class="edgework"></div>
+        </div>
       </header>
       <div class="sidebar">
         <div class="module-list-title-wrapper">
@@ -48,7 +48,7 @@
             </svg>
           </div>
         </div>
-        <div class="sidebar-filter">
+        <div class="sidebar-filter-wrapper">
           <input type="text" name="filter" id="filter" placeholder="filter" />
           <svg
             id="filter-clear"
@@ -66,9 +66,7 @@
             />
           </svg>
         </div>
-        <div>
-          <button id="new-repo-tab-btn">New Repo Tab</button>
-        </div>
+        <button id="new-repo-tab-btn">New Repo Tab</button>
         <ul class="module-list"></ul>
       </div>
       <div class="manuals"></div>
@@ -80,40 +78,36 @@
 
       <footer class="footer">
         <button class="alphabet-btn">Numbered Alphabet</button>
-        <div class="alphabet-popup-wrapper hidden">
-          <div class="alphabet-popup">
-            <div>
-              <span class="single-digit">1:A</span
-              ><span class="single-digit">2:B</span
-              ><span class="single-digit">3:C</span
-              ><span class="single-digit">4:D</span
-              ><span class="single-digit">5:E</span>
-            </div>
-            <div>
-              <span class="single-digit">6:F</span
-              ><span class="single-digit">7:G</span
-              ><span class="single-digit">8:H</span
-              ><span class="single-digit">9:I</span><span class="">10:J</span>
-            </div>
-            <div>
-              <span>11:K</span><span>12:L</span><span>13:M</span
-              ><span>14:N</span><span>15:0</span>
-            </div>
-            <div>
-              <span>16:P</span><span>17:Q</span><span>18:R</span
-              ><span>19:S</span><span>20:T</span>
-            </div>
-            <div>
-              <span>21:U</span><span>22:V</span><span>23:W</span
-              ><span>24:X</span><span>25:Y</span>
-            </div>
-            <div>
-              <span>26:Z</span>
-              <div class="mini-btn-wrapper">
-                <button class="mini-btn zero-btn">0 Start</button>
-                <button class="mini-btn one-btn selected">1 Start</button>
-              </div>
-            </div>
+        <div class="alphabet-popup hidden">
+          <span class="single-digit">1:A</span>
+          <span class="single-digit">2:B</span>
+          <span class="single-digit">3:C</span>
+          <span class="single-digit">4:D</span>
+          <span class="single-digit">5:E</span>
+          <span class="single-digit">6:F</span>
+          <span class="single-digit">7:G</span>
+          <span class="single-digit">8:H</span>
+          <span class="single-digit">9:I</span>
+          <span class="">10:J</span>
+          <span>11:K</span>
+          <span>12:L</span>
+          <span>13:M</span>
+          <span>14:N</span>
+          <span>15:0</span>
+          <span>16:P</span>
+          <span>17:Q</span>
+          <span>18:R</span>
+          <span>19:S</span>
+          <span>20:T</span>
+          <span>21:U</span>
+          <span>22:V</span>
+          <span>23:W</span>
+          <span>24:X</span>
+          <span>25:Y</span>
+          <span>26:Z</span>
+          <div class="mini-btn-wrapper">
+            <button class="mini-btn zero-btn">0 Start</button>
+            <button class="mini-btn one-btn selected">1 Start</button>
           </div>
         </div>
       </footer>
@@ -145,85 +139,189 @@
           autocomplete="off"
         />
 
-        <div class="inds">
+        <div class="ind-list">
           <label>
             <span> Lit </span>
             <span> -</span>
             <span>Unlit</span>
           </label>
           <div>
-            <input type="checkbox" name="lit-bob-ind" id="lit-bob-ind" />
+            <input
+              type="checkbox"
+              class="ind-checkbox"
+              name="lit-bob-ind"
+              id="lit-bob-ind"
+            />
             <span>BOB</span>
-            <input type="checkbox" name="unlit-bob-ind" id="unlit-bob-ind" />
+            <input
+              type="checkbox"
+              class="ind-checkbox"
+              name="unlit-bob-ind"
+              id="unlit-bob-ind"
+            />
           </div>
           <div>
-            <input type="checkbox" name="lit-car-ind" id="lit-car-ind" />
+            <input
+              type="checkbox"
+              class="ind-checkbox"
+              name="lit-car-ind"
+              id="lit-car-ind"
+            />
             <span>CAR</span>
-            <input type="checkbox" name="unlit-car-ind" id="unlit-car-ind" />
+            <input
+              type="checkbox"
+              class="ind-checkbox"
+              name="unlit-car-ind"
+              id="unlit-car-ind"
+            />
           </div>
           <div>
-            <input type="checkbox" name="lit-clr-ind" id="lit-clr-ind" />
+            <input
+              type="checkbox"
+              class="ind-checkbox"
+              name="lit-clr-ind"
+              id="lit-clr-ind"
+            />
             <span>CLR</span>
-            <input type="checkbox" name="unlit-clr-ind" id="unlit-clr-ind" />
+            <input
+              type="checkbox"
+              class="ind-checkbox"
+              name="unlit-clr-ind"
+              id="unlit-clr-ind"
+            />
           </div>
           <div>
-            <input type="checkbox" name="lit-frk-ind" id="lit-frk-ind" />
+            <input
+              type="checkbox"
+              class="ind-checkbox"
+              name="lit-frk-ind"
+              id="lit-frk-ind"
+            />
             <span>FRK</span>
-            <input type="checkbox" name="unlit-frk-ind" id="unlit-frk-ind" />
+            <input
+              type="checkbox"
+              class="ind-checkbox"
+              name="unlit-frk-ind"
+              id="unlit-frk-ind"
+            />
           </div>
           <div>
-            <input type="checkbox" name="lit-frq-ind" id="lit-frq-ind" />
+            <input
+              type="checkbox"
+              class="ind-checkbox"
+              name="lit-frq-ind"
+              id="lit-frq-ind"
+            />
             <span>FRQ</span>
-            <input type="checkbox" name="unlit-frq-ind" id="unlit-frq-ind" />
+            <input
+              type="checkbox"
+              class="ind-checkbox"
+              name="unlit-frq-ind"
+              id="unlit-frq-ind"
+            />
           </div>
           <div>
-            <input type="checkbox" name="lit-ind-ind" id="lit-ind-ind" />
+            <input
+              type="checkbox"
+              class="ind-checkbox"
+              name="lit-ind-ind"
+              id="lit-ind-ind"
+            />
             <span>IND</span>
-            <input type="checkbox" name="unlit-ind-ind" id="unlit-ind-ind" />
+            <input
+              type="checkbox"
+              class="ind-checkbox"
+              name="unlit-ind-ind"
+              id="unlit-ind-ind"
+            />
           </div>
           <div>
-            <input type="checkbox" name="lit-msa-ind" id="lit-msa-ind" />
+            <input
+              type="checkbox"
+              class="ind-checkbox"
+              name="lit-msa-ind"
+              id="lit-msa-ind"
+            />
             <span>MSA</span>
-            <input type="checkbox" name="unlit-msa-ind" id="unlit-msa-ind" />
+            <input
+              type="checkbox"
+              class="ind-checkbox"
+              name="unlit-msa-ind"
+              id="unlit-msa-ind"
+            />
           </div>
           <div>
-            <input type="checkbox" name="lit-nsa-ind" id="lit-nsa-ind" />
+            <input
+              type="checkbox"
+              class="ind-checkbox"
+              name="lit-nsa-ind"
+              id="lit-nsa-ind"
+            />
             <span>NSA</span>
-            <input type="checkbox" name="unlit-nsa-ind" id="unlit-nsa-ind" />
+            <input
+              type="checkbox"
+              class="ind-checkbox"
+              name="unlit-nsa-ind"
+              id="unlit-nsa-ind"
+            />
           </div>
           <div>
-            <input type="checkbox" name="lit-sig-ind" id="lit-sig-ind" />
+            <input
+              type="checkbox"
+              class="ind-checkbox"
+              name="lit-sig-ind"
+              id="lit-sig-ind"
+            />
             <span>SIG</span>
-            <input type="checkbox" name="unlit-sig-ind" id="unlit-sig-ind" />
+            <input
+              type="checkbox"
+              class="ind-checkbox"
+              name="unlit-sig-ind"
+              id="unlit-sig-ind"
+            />
           </div>
           <div>
-            <input type="checkbox" name="lit-snd-ind" id="lit-snd-ind" />
+            <input
+              type="checkbox"
+              class="ind-checkbox"
+              name="lit-snd-ind"
+              id="lit-snd-ind"
+            />
             <span>SND</span>
-            <input type="checkbox" name="unlit-snd-ind" id="unlit-snd-ind" />
+            <input
+              type="checkbox"
+              class="ind-checkbox"
+              name="unlit-snd-ind"
+              id="unlit-snd-ind"
+            />
           </div>
           <div>
-            <input type="checkbox" name="lit-trn-ind" id="lit-trn-ind" />
+            <input
+              type="checkbox"
+              class="ind-checkbox"
+              name="lit-trn-ind"
+              id="lit-trn-ind"
+            />
             <span>TRN</span>
-            <input type="checkbox" name="unlit-trn-ind" id="unlit-trn-ind" />
+            <input
+              type="checkbox"
+              class="ind-checkbox"
+              name="unlit-trn-ind"
+              id="unlit-trn-ind"
+            />
           </div>
         </div>
 
-        <div class="btn-group">
-          <button type="button" class="form-btn" id="edgework-form-close-btn">
-            Close
-          </button>
-          <button type="button" class="form-btn" id="edgework-form-reset-btn">
-            Reset
-          </button>
-          <button type="submit" class="form-btn">Create</button>
+        <div class="form-btn-group">
+          <button type="button" id="edgework-form-close-btn">Close</button>
+          <button type="button" id="edgework-form-reset-btn">Reset</button>
+          <button type="submit">Create</button>
         </div>
       </form>
       <form action="" id="add-new-module-form" class="form hidden">
         <div class="title">Add New Module</div>
 
-        <button type="button" class="form-btn" id="add-many-new-module-btn">
-          Add Many
-        </button>
+        <button type="button" id="add-many-new-module-btn">Add Many</button>
         <label for="url">Module URL</label>
         <input
           type="text"
@@ -241,11 +339,9 @@
           placeholder="Logic"
           autocomplete="off"
         />
-        <div class="btn-group">
-          <button type="button" class="form-btn" id="close-new-module-form-btn">
-            Close
-          </button>
-          <button type="submit" class="form-btn">Add</button>
+        <div class="form-btn-group">
+          <button type="button" id="close-new-module-form-btn">Close</button>
+          <button type="submit">Add</button>
         </div>
       </form>
 
@@ -272,22 +368,14 @@
           spellcheck="false"
         ></div>
 
-        <div class="btn-group">
-          <button
-            type="button"
-            class="form-btn"
-            id="close-many-new-module-form-btn"
-          >
+        <div class="form-btn-group">
+          <button type="button" id="close-many-new-module-form-btn">
             Close
           </button>
-          <button
-            type="button"
-            class="form-btn"
-            id="reset-many-new-module-form-btn"
-          >
+          <button type="button" id="reset-many-new-module-form-btn">
             Reset
           </button>
-          <button type="submit" class="form-btn">Add All</button>
+          <button type="submit">Add All</button>
         </div>
       </form>
     </div>
