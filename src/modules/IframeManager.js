@@ -6,6 +6,7 @@ class IframeManager {
     mainPubSub.subscribe("addIframe", this.createNewIframe.bind(this));
     mainPubSub.subscribe("removeIframe", this.removeIframeById.bind(this));
     mainPubSub.subscribe("tabChange", this.setIframeById.bind(this));
+    return this;
   }
 
   domElements = {
@@ -77,4 +78,4 @@ class IframeManager {
   }
 }
 
-export default new IframeManager();
+export default IframeManager;

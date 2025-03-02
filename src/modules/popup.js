@@ -162,6 +162,7 @@ class NumberedAlphabetPopup {
 
   changeLabelsZero() {
     const zeroBtn = this.domElements.zeroBtn;
+    const oneBtn = this.domElements.oneBtn;
     const spans =
       this.domElements.alphaPopupWrapper.querySelectorAll("div span");
     spans.forEach((span, index) => {

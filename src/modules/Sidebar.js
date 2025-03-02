@@ -7,6 +7,7 @@ class Sidebar {
     this.sidebarItems = itemList;
     this.init();
     mainPubSub.subscribe("tabChange", this.reactToTabChange.bind(this));
+    return this;
   }
 
   domElements = {
@@ -134,4 +135,4 @@ class Sidebar {
   }
 }
 
-export default new Sidebar();
+export default Sidebar;

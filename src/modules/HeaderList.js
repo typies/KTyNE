@@ -8,6 +8,7 @@ class HeaderList {
       this.addHeaderListItem.bind(this)
     );
     mainPubSub.subscribe("tabChange", this.reactToTabChange.bind(this));
+    return this;
   }
 
   domElements = {
@@ -24,7 +25,7 @@ class HeaderList {
     newHeaderListItem.textContent = pubsubData.moduleName;
 
     // Left click
-    newHeaderListItem.addEventListener("click", (event) => {
+    newHeaderListItem.addEventListener("click", () => {
       mainPubSub.publish("tabChange", {
         moduleName: pubsubData.moduleName,
         iframeId: newHeaderListItemId,
@@ -103,5 +104,4 @@ class HeaderList {
   }
 }
 
-const pageHeaderList = new HeaderList([]);
-export default pageHeaderList;
+export default HeaderList;

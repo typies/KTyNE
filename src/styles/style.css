@@ -14,12 +14,12 @@
 
 @font-face {
   font-family: "special-elite";
-  src: url("./fonts/SpecialElite-Regular.ttf") format("truetype");
+  src: url("/src/fonts/SpecialElite-Regular.ttf") format("truetype");
 }
 
 @font-face {
   font-family: "anonymous pro";
-  src: url("./fonts/AnonymousPro-Regular.ttf") format("truetype");
+  src: url("/src/fonts/AnonymousPro-Regular.ttf") format("truetype");
 }
 
 * {
@@ -231,7 +231,7 @@ button.clear-filter:hover {
 }
 
 .widget.serial {
-  background-image: url(images/Serial\ number.png);
+  background-image: url(/src/images/Serial\ number.png);
   width: 100px;
   font-size: 24px;
   font-weight: bold;
@@ -242,12 +242,12 @@ button.clear-filter:hover {
 
 .widget.battery.aa {
   width: 90px;
-  background-image: url(images/BatteryAA.png);
+  background-image: url(/src/images/BatteryAA.png);
 }
 
 .widget.battery.d {
   width: 90px;
-  background-image: url(images/BatteryD.png);
+  background-image: url(/src/images/BatteryD.png);
 }
 
 .widget.indicator {
@@ -259,16 +259,16 @@ button.clear-filter:hover {
 }
 
 .widget.indicator.lit {
-  background-image: url(images/LitIndicator.png);
+  background-image: url(/src/images/LitIndicator.png);
 }
 
 .widget.indicator.unlit {
-  background-image: url(images/UnlitIndicator.png);
+  background-image: url(/src/images/UnlitIndicator.png);
 }
 
 .widget.portplate {
   width: 112px;
-  background-image: url(images/PortPlate.png);
+  background-image: url(/src/images/PortPlate.png);
   position: relative;
 }
 
@@ -285,32 +285,32 @@ button.clear-filter:hover {
 
 .widget.portplate span.dvi,
 .widget.portplate span.dvid {
-  background-image: url(images/PortDVI.png);
+  background-image: url(/src/images/PortDVI.png);
 }
 
 .widget.portplate span.para,
 .widget.portplate span.parallel,
 .widget.portplate span.paralel {
-  background-image: url(images/PortParallel.png);
+  background-image: url(/src/images/PortParallel.png);
 }
 
 .widget.portplate span.ps2 {
-  background-image: url(images/PortPS2.png);
+  background-image: url(/src/images/PortPS2.png);
 }
 
 .widget.portplate span.rj45,
 .widget.portplate span.rj {
-  background-image: url(images/PortRJ.png);
+  background-image: url(/src/images/PortRJ.png);
 }
 
 .widget.portplate span.serial {
-  background-image: url(images/PortSerial.png);
+  background-image: url(/src/images/PortSerial.png);
 }
 
 .widget.portplate span.rca,
 .widget.portplate span.stereorca,
 .widget.portplate span.stereo {
-  background-image: url(images/PortRCA.png);
+  background-image: url(/src/images/PortRCA.png);
 }
 
 /* Notes css */

@@ -1,6 +1,7 @@
 class PubSub {
   constructor() {
     this.events = {};
+    return this;
   }
 
   // Subscribe to an event
