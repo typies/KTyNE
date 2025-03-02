@@ -78,7 +78,7 @@ class Sidebar {
     this.importProjectsFromLocal();
   }
 
-  addSidebarItems(sidebarItems) {
+  addDefaultSidebarItems(sidebarItems) {
     sidebarItems.forEach((sidebarItem) => {
       this.sidebarItems.push(sidebarItem);
     });

@@ -48,7 +48,7 @@ let defaultModuleList = [
 
 new HeaderList();
 new IframeManager();
-new Sidebar().addSidebarItems(defaultModuleList);
+new Sidebar().addDefaultSidebarItems(defaultModuleList);
 new popups.EdgeworkPopup().init();
 new popups.NumberedAlphabetPopup().init();
 new popups.NewModuleListItemPopup().init();
