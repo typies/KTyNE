@@ -111,6 +111,10 @@ class Sidebar {
     const filterClear = this.domElements.filterClear;
     const newRepoTabBtn = this.domElements.newRepoTabBtn;
     const editModuleListBtn = this.domElements.editModuleListBtn;
+    filter.addEventListener("keydown", () => {
+      this.filterSidebar(filter.value);
+    });
+    // Both keydown and up are used to handle multiple situations
     filter.addEventListener("keyup", () => {
       this.filterSidebar(filter.value);
     });
