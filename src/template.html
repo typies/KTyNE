@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>KTyNE</title>
     <link rel="stylesheet" href="./styles/style.css" />
-    <link rel="icon" href="./favicon.ico" type="image/png" />
+    <link rel="icon" href="./images/favicon.ico" type="image/png" />
   </head>
   <body>
     <div class="main-container">
@@ -19,13 +19,56 @@
       <div class="sidebar">
         <div>
           <button id="new-repo-tab-btn">New Repo Tab</button>
-          <button id="add-new-module-btn">Add One</button>
+        </div>
+        <div class="module-list-title-wrapper">
+          <div class="module-list-title">Modules</div>
+          <div class="title-btn-list">
+            <svg
+              id="add-new-module-btn"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M15 12H12M12 12H9M12 12V9M12 12V15M17 21H7C4.79086 21 3 19.2091 3 17V7C3 4.79086 4.79086 3 7 3H17C19.2091 3 21 4.79086 21 7V17C21 19.2091 19.2091 21 17 21Z"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+            <svg
+              id="edit-module-list-btn"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M18 6L17.1991 18.0129C17.129 19.065 17.0939 19.5911 16.8667 19.99C16.6666 20.3412 16.3648 20.6235 16.0011 20.7998C15.588 21 15.0607 21 14.0062 21H9.99377C8.93927 21 8.41202 21 7.99889 20.7998C7.63517 20.6235 7.33339 20.3412 7.13332 19.99C6.90607 19.5911 6.871 19.065 6.80086 18.0129L6 6M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6M14 10V17M10 10V17"
+                stroke="#000000"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </div>
         </div>
         <div class="sidebar-filter">
           <input type="text" name="filter" id="filter" placeholder="filter" />
-          <button class="clear-filter">x</button>
+          <svg
+            id="filter-clear"
+            fill="#000000"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 460 460"
+          >
+            <path
+              d="M285.08,230.397L456.218,59.27c6.076-6.077,6.076-15.911,0-21.986L423.511,4.565c-2.913-2.911-6.866-4.55-10.992-4.55
+	c-4.127,0-8.08,1.639-10.993,4.55l-171.138,171.14L59.25,4.565c-2.913-2.911-6.866-4.55-10.993-4.55
+	c-4.126,0-8.08,1.639-10.992,4.55L4.558,37.284c-6.077,6.075-6.077,15.909,0,21.986l171.138,171.128L4.575,401.505
+	c-6.074,6.077-6.074,15.911,0,21.986l32.709,32.719c2.911,2.911,6.865,4.55,10.992,4.55c4.127,0,8.08-1.639,10.994-4.55
+	l171.117-171.12l171.118,171.12c2.913,2.911,6.866,4.55,10.993,4.55c4.128,0,8.081-1.639,10.992-4.55l32.709-32.719
+	c6.074-6.075,6.074-15.909,0-21.986L285.08,230.397z"
+            />
+          </svg>
         </div>
-        <div class="module-list-title">Modules</div>
         <ul class="module-list"></ul>
       </div>
       <div class="manuals"></div>
@@ -176,6 +219,7 @@
         </div>
       </form>
       <form action="" class="add-new-module-form form hidden">
+        <div class="title">Add New Module</div>
         <label for="url">Module URL</label>
         <input
           type="text"

@@ -14,10 +14,15 @@ class Sidebar {
     sidebarListElement: document.querySelector(".sidebar .module-list"),
     newRepoTabBtn: document.querySelector("#new-repo-tab-btn"),
     filter: document.querySelector("#filter"),
-    filterClear: document.querySelector("button.clear-filter"),
+    filterClear: document.querySelector("#filter-clear"),
+    sidebarSettings: document.querySelector(".cog-svg"),
+    editModuleListBtn: document.querySelector("#edit-module-list-btn"),
+    moduleListTitle: document.querySelector(".module-list-title"),
+    addNewModuleBtn: document.querySelector("#add-new-module-btn"),
   };
 
   init() {
+    this.importProjectsFromLocal();
     this.render();
     this.configureSidebarBtns();
   }
@@ -41,7 +46,36 @@ class Sidebar {
       sidebarItem.moduleName = regexName;
     }
     this.sidebarItems.push(sidebarItem);
+    this.localStorageAdd(sidebarItem);
     this.render();
+  }
+
+  removeSidebarItem(sidebarItem) {
+    this.localStorageRemove(sidebarItem.textContent);
+    sidebarItem.remove();
+    this.syncLists();
+  }
+
+  localStorageAdd(module) {
+    localStorage.setItem(module.moduleName, module.manualUrl);
+  }
+
+  localStorageRemove(moduleName) {
+    localStorage.removeItem(moduleName);
+  }
+
+  importProjectsFromLocal() {
+    for (let i = 0; i < window.localStorage.length; i++) {
+      const moduleName = window.localStorage.key(i);
+      const manualUrl = window.localStorage.getItem(moduleName);
+      this.sidebarItems.push({ moduleName, manualUrl });
+    }
+  }
+
+  syncLists() {
+    // Syncs the local storage list with the page list
+    this.sidebarItems = [];
+    this.importProjectsFromLocal();
   }
 
   addSidebarItems(sidebarItems) {
@@ -55,8 +89,16 @@ class Sidebar {
     const sidebarListElement = this.domElements.sidebarListElement;
     const newSidebarListItem = document.createElement("li");
     newSidebarListItem.classList.add("sidebar-item");
+    if (this.editMode) {
+      // Used to maintain red color when filter is cleared
+      newSidebarListItem.classList.add("red");
+    }
     newSidebarListItem.addEventListener("click", () => {
-      this.openNewModule(sidebarItem.moduleName, sidebarItem.manualUrl);
+      if (this.editMode) {
+        this.removeSidebarItem(newSidebarListItem);
+      } else {
+        this.openNewModule(sidebarItem.moduleName, sidebarItem.manualUrl);
+      }
     });
     newSidebarListItem.textContent = sidebarItem.moduleName;
     sidebarListElement.appendChild(newSidebarListItem);
@@ -66,6 +108,7 @@ class Sidebar {
     const filter = this.domElements.filter;
     const filterClear = this.domElements.filterClear;
     const newRepoTabBtn = this.domElements.newRepoTabBtn;
+    const editModuleListBtn = this.domElements.editModuleListBtn;
     filter.addEventListener("keyup", () => {
       this.filterSidebar(filter.value);
     });
@@ -80,6 +123,24 @@ class Sidebar {
       navigator.clipboard.writeText(newTabName);
       this.openNewModule(newTabName, KTANE_TIMWI_URL);
     });
+    editModuleListBtn.addEventListener("click", () => this.toggleEditMode());
+  }
+
+  toggleEditMode() {
+    const title = this.domElements.moduleListTitle;
+    const addNewModuleBtn = this.domElements.addNewModuleBtn;
+    const moduleList = document.querySelectorAll(".sidebar-item");
+    this.editMode = !this.editMode;
+    title.classList.toggle("red");
+    addNewModuleBtn.classList.toggle("hidden");
+    moduleList.forEach((item) => {
+      item.classList.toggle("red");
+    });
+    if (this.editMode) {
+      title.textContent = "DELETEING MODULES";
+    } else {
+      title.textContent = "Modules";
+    }
   }
 
   openNewModule(modName, url) {
