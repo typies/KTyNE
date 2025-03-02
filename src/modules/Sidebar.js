@@ -42,6 +42,8 @@ class Sidebar {
     if (sidebarItem.moduleName === "") {
       const regex = /HTML\/([\w%20]+).html/;
       const regexResult = sidebarItem.manualUrl.match(regex);
+      if (!regexResult) return;
+
       const regexName = regexResult[1].split("%20").join(" ");
       sidebarItem.moduleName = regexName;
     }

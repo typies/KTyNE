@@ -218,6 +218,7 @@ class NewModuleListItemPopup {
     const closeFormBtn = this.domElements.closeFormBtn;
     const newModuleForm = this.domElements.newModuleForm;
     newModuleBtn.addEventListener("click", () => {
+      newModuleForm.reset();
       popupOverlay.classList.remove("hidden");
       newModuleForm.classList.remove("hidden");
       document.querySelector("#add-new-module-url").focus();

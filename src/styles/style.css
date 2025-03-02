@@ -486,7 +486,7 @@ form div.title {
 }
 
 .form input {
-  padding-left: 4px;
+  padding: 4px;
   font-size: inherit;
 }
 
