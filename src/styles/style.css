@@ -377,7 +377,7 @@ svg#filter-clear {
   max-height: 80vh;
 }
 
-#add-many-new-module-form {
+#import-modules-form {
   display: flex;
   flex-direction: column;
 }
@@ -387,15 +387,15 @@ svg#filter-clear {
   justify-content: space-between;
 }
 
-#add-many-new-module-file {
+#import-modules-file {
   font-size: 10px;
 }
 
-#add-many-example {
+#import-modules-example {
   font-size: 0.5em;
 }
 
-#add-many-new-module-text {
+.popup-text-area {
   overflow: scroll;
   white-space: pre-wrap;
   margin-top: 10px;
@@ -409,7 +409,7 @@ svg#filter-clear {
   font-size: 0.8em;
 }
 
-#add-many-new-module-text:not([contenteditable]) {
+.popup-text-area:not([contenteditable]) {
   background-color: var(--color-silver);
 }
 
@@ -552,7 +552,8 @@ form div.title {
   text-align: center;
 }
 
-.popup-overlay {
+.popup-overlay,
+#super-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -616,4 +617,12 @@ label[for="url"]:after {
 
 #nuke-btn:hover {
   color: var(--color-red);
+}
+
+#general-popup {
+  z-index: 100;
+}
+
+#super-overlay {
+  z-index: 100;
 }

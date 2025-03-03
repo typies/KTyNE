@@ -30,11 +30,12 @@
                 <div id="sidebar-options-menu" class="options-menu hidden">
                   <ul class="options-list">
                     <li id="add-new-module-btn">Add New Module</li>
-                    <li id="add-many-new-module-btn">
-                      Add Multiple New Modules
-                    </li>
                     <li id="edit-module-list-btn">Enter Edit Mode</li>
-                    <li id="nuke-module-list-btn">Delete All Modules</li>
+                    <li id="export-modules-btn">Export Module List</li>
+                    <li id="import-modules-btn">Import Module List</li>
+                    <li id="nuke-module-list-btn" class="red">
+                      Delete All Modules
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -137,8 +138,13 @@
         </div>
       </footer>
     </div>
-    <div class="popup-overlay hidden">
-      <form action="" class="edgework-form form hidden" novalidate>
+    <div class="popup-overlay hidden" onclick='this.classList.add("hidden")'>
+      <form
+        action=""
+        class="edgework-form form hidden"
+        novalidate
+        onclick="event.stopPropagation()"
+      >
         <div class="title">Edgework</div>
         <label for="serial">Serial #</label>
         <input
@@ -243,7 +249,12 @@
           <button type="submit">Create</button>
         </div>
       </form>
-      <form action="" id="add-new-module-form" class="form hidden">
+      <form
+        action=""
+        id="add-new-module-form"
+        class="form hidden"
+        onclick="event.stopPropagation()"
+      >
         <div class="title">Add New Module</div>
         <label for="url">Module URL</label>
         <input
@@ -267,40 +278,69 @@
           <button type="submit">Add</button>
         </div>
       </form>
-      <form action="" id="add-many-new-module-form" class="form hidden">
-        <div class="title">Add many modules</div>
+      <form
+        action=""
+        id="import-modules-form"
+        class="form hidden"
+        onclick="event.stopPropagation()"
+      >
+        <div class="title">Import Modules</div>
         <div class="title">(Duplicates Will be Skipped)</div>
-        <label for="add-many-text">Enter/Upload JSON </label>
+        <label for="import-modules-text">Enter/Upload JSON </label>
         <div id="file-wrapper">
           <input
             type="file"
-            name="add-many-file"
-            id="add-many-new-module-file"
+            name="import-modules-file"
+            id="import-modules-file"
             autocomplete="off"
           />
-          <button id="add-many-example" type="button">
+          <button id="import-modules-example" type="button">
             Show me an example
           </button>
         </div>
         <div
-          name="add-many-text"
-          id="add-many-new-module-text"
+          name="import-modules-text"
+          id="import-modules-text"
+          class="popup-text-area"
           autocomplete="off"
           contenteditable
           spellcheck="false"
         ></div>
 
         <div class="form-btn-group">
-          <button type="button" id="close-many-new-module-form-btn">
-            Close
-          </button>
-          <button type="button" id="reset-many-new-module-form-btn">
-            Reset
-          </button>
+          <button type="button" id="close-import-form-btn">Close</button>
+          <button type="button" id="reset-import-form-btn">Reset</button>
           <button type="submit">Add All</button>
         </div>
       </form>
-      <form action="" id="nuke-warning" class="form hidden">
+      <form
+        action=""
+        id="export-modules-form"
+        class="form hidden"
+        onclick="event.stopPropagation()"
+      >
+        <div class="title">Export Modules</div>
+
+        <div
+          name="export-modules-text"
+          id="export-modules-text"
+          class="popup-text-area"
+          autocomplete="off"
+          spellcheck="false"
+        ></div>
+
+        <div class="form-btn-group">
+          <button type="button" id="close-export-form-btn">Close</button>
+          <button type="button" id="copy-export-form-btn">Copy</button>
+          <button type="submit">Export</button>
+        </div>
+      </form>
+      <form
+        action=""
+        id="nuke-warning"
+        class="form hidden"
+        onclick="event.stopPropagation()"
+      >
         <div class="title nuke-title">
           Are you sure you want to
           <span class="red">DELETE ALL SAVED MODULE</span>?
@@ -311,6 +351,27 @@
           <button type="button" id="close-nuke-warning-btn">Close</button>
           <button type="submit" id="nuke-btn">
             Yes, I know what I'm doing
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div
+      id="super-overlay"
+      class="hidden"
+      onclick='this.classList.add("hidden")'
+    >
+      <form
+        action=""
+        id="general-popup"
+        class="form hidden"
+        onclick="event.stopPropagation()"
+      >
+        <div id="general-popup-title" class="title">Title</div>
+        <div class="form-btn-group">
+          <button type="button" id="general-close-btn">Close</button>
+          <button type="submit" id="general-submit-btn" class="hidden">
+            Submit
           </button>
         </div>
       </form>

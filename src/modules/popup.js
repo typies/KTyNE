@@ -309,7 +309,7 @@ class NewModuleListItemPopup {
     newModuleBtn: document.querySelector("#add-new-module-btn"),
     popupOverlay: document.querySelector(".popup-overlay"),
     newModuleForm: document.querySelector("#add-new-module-form"),
-    manyNewModuleBtn: document.querySelector("#add-many-new-module-btn"),
+    importModuleBtn: document.querySelector("#import-modules-btn"),
     closeFormBtn: document.querySelector("#close-new-module-form-btn"),
     sidebarMenu: document.querySelector("#sidebar-options-menu"),
   };
@@ -319,7 +319,7 @@ class NewModuleListItemPopup {
     const popupOverlay = this.domElements.popupOverlay;
     const closeFormBtn = this.domElements.closeFormBtn;
     const newModuleForm = this.domElements.newModuleForm;
-    const manyNewModuleBtn = this.domElements.manyNewModuleBtn;
+    const importModuleBtn = this.domElements.importModuleBtn;
     const sidebarMenu = this.domElements.sidebarMenu;
     newModuleBtn.addEventListener("click", () => {
       newModuleForm.reset();
@@ -329,7 +329,7 @@ class NewModuleListItemPopup {
       document.querySelector("#add-new-module-url").focus();
     });
 
-    manyNewModuleBtn.addEventListener("click", () => {
+    importModuleBtn.addEventListener("click", () => {
       newModuleForm.classList.add("hidden");
     });
 
@@ -363,36 +363,36 @@ class NewModuleListItemPopup {
   }
 }
 
-class NewModuleListItemManyPopup {
+class ImportModulesPopup {
   constructor() {
     return this;
   }
   domElements = {
     popupOverlay: document.querySelector(".popup-overlay"),
-    manyNewModuleBtn: document.querySelector("#add-many-new-module-btn"),
-    manyNewModuleForm: document.querySelector("#add-many-new-module-form"),
-    closeFormBtn: document.querySelector("#close-many-new-module-form-btn"),
-    resetFormBtn: document.querySelector("#reset-many-new-module-form-btn"),
-    textAreaInput: document.querySelector("#add-many-new-module-text"),
-    fileUploadInput: document.querySelector("#add-many-new-module-file"),
-    addExampleBtn: document.querySelector("#add-many-example"),
+    importModuleBtn: document.querySelector("#import-modules-btn"),
+    importModuleForm: document.querySelector("#import-modules-form"),
+    closeFormBtn: document.querySelector("#close-import-form-btn"),
+    resetFormBtn: document.querySelector("#reset-import-form-btn"),
+    textAreaInput: document.querySelector("#import-modules-text"),
+    fileUploadInput: document.querySelector("#import-modules-file"),
+    addExampleBtn: document.querySelector("#import-modules-example"),
     sidebarMenu: document.querySelector("#sidebar-options-menu"),
   };
 
   configureFormButtons() {
-    const manyNewModuleBtn = this.domElements.manyNewModuleBtn;
+    const importModuleBtn = this.domElements.importModuleBtn;
     const popupOverlay = this.domElements.popupOverlay;
     const resetFormBtn = this.domElements.resetFormBtn;
     const closeFormBtn = this.domElements.closeFormBtn;
-    const manyNewModuleForm = this.domElements.manyNewModuleForm;
+    const importModuleForm = this.domElements.importModuleForm;
     const textAreaInput = this.domElements.textAreaInput;
     const fileUploadInput = this.domElements.fileUploadInput;
     const addExampleBtn = this.domElements.addExampleBtn;
     const sidebarMenu = this.domElements.sidebarMenu;
-    manyNewModuleBtn.addEventListener("click", () => {
-      manyNewModuleForm.reset();
+    importModuleBtn.addEventListener("click", () => {
+      importModuleForm.reset();
       popupOverlay.classList.remove("hidden");
-      manyNewModuleForm.classList.remove("hidden");
+      importModuleForm.classList.remove("hidden");
       sidebarMenu.classList.add("hidden");
     });
 
@@ -403,7 +403,7 @@ class NewModuleListItemManyPopup {
 
     closeFormBtn.addEventListener("click", () => {
       popupOverlay.classList.add("hidden");
-      manyNewModuleForm.classList.add("hidden");
+      importModuleForm.classList.add("hidden");
     });
 
     addExampleBtn.addEventListener("click", (event) =>
@@ -415,7 +415,7 @@ class NewModuleListItemManyPopup {
       this.handleFileUpload.bind(this)
     );
 
-    manyNewModuleForm.addEventListener("submit", (event) => {
+    importModuleForm.addEventListener("submit", (event) => {
       event.preventDefault();
       const formText = textAreaInput.textContent;
       if (formText && formText !== "") {
@@ -423,7 +423,7 @@ class NewModuleListItemManyPopup {
       }
 
       popupOverlay.classList.add("hidden");
-      manyNewModuleForm.classList.add("hidden");
+      importModuleForm.classList.add("hidden");
       this.resetForm();
     });
   }
@@ -482,10 +482,10 @@ class NewModuleListItemManyPopup {
   }
 
   resetForm() {
-    const manyNewModuleForm = this.domElements.manyNewModuleForm;
+    const importModuleForm = this.domElements.importModuleForm;
     const textAreaInput = this.domElements.textAreaInput;
     const addExampleBtn = this.domElements.addExampleBtn;
-    manyNewModuleForm.reset();
+    importModuleForm.reset();
     textAreaInput.textContent = "";
     if (textAreaInput.hasAttribute("readonly")) addExampleBtn.click();
     return this;
@@ -494,6 +494,118 @@ class NewModuleListItemManyPopup {
   init() {
     this.configureFormButtons();
     return this;
+  }
+}
+
+class ExportModulesPopup {
+  constructor() {
+    return this;
+  }
+  domElements = {
+    popupOverlay: document.querySelector(".popup-overlay"),
+    exportModuleBtn: document.querySelector("#export-modules-btn"),
+    exportModuleForm: document.querySelector("#export-modules-form"),
+    closeFormBtn: document.querySelector("#close-export-form-btn"),
+    copyBtn: document.querySelector("#copy-export-form-btn"),
+    textAreaOutput: document.querySelector("#export-modules-text"),
+    sidebarMenu: document.querySelector("#sidebar-options-menu"),
+  };
+
+  configureFormButtons() {
+    const exportModuleBtn = this.domElements.exportModuleBtn;
+    const popupOverlay = this.domElements.popupOverlay;
+    const closeFormBtn = this.domElements.closeFormBtn;
+    const copyBtn = this.domElements.copyBtn;
+    const exportModuleForm = this.domElements.exportModuleForm;
+    const textAreaOutput = this.domElements.textAreaOutput;
+    const sidebarMenu = this.domElements.sidebarMenu;
+    exportModuleBtn.addEventListener("click", () => {
+      exportModuleForm.reset();
+      popupOverlay.classList.remove("hidden");
+      exportModuleForm.classList.remove("hidden");
+      sidebarMenu.classList.add("hidden");
+    });
+    closeFormBtn.addEventListener("click", () => {
+      popupOverlay.classList.add("hidden");
+      exportModuleForm.classList.add("hidden");
+    });
+    copyBtn.addEventListener("click", () => {
+      console.log("enter'");
+      navigator.clipboard.writeText(textAreaOutput.textContent);
+      new BasicPopup("Copied");
+    });
+
+    exportModuleForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      //export modules list and put it in textAreaOutput
+      const storageItems = [];
+      for (let i = 0; i < window.localStorage.length; i++) {
+        const moduleName = window.localStorage.key(i);
+        const manualUrl = window.localStorage.getItem(moduleName);
+        storageItems.push({ name: moduleName, url: manualUrl });
+      }
+
+      textAreaOutput.textContent = JSON.stringify(storageItems, null, 2);
+    });
+  }
+
+  resetForm() {
+    const exportModuleForm = this.domElements.exportModuleForm;
+    const textAreaOutput = this.domElements.textAreaOutput;
+    exportModuleForm.reset();
+    textAreaOutput.textContent = "";
+    return this;
+  }
+
+  init() {
+    this.configureFormButtons();
+    return this;
+  }
+}
+
+class BasicPopup {
+  constructor(message, closeBtnText = "Close", submitBtnText, submitCallback) {
+    this.message = message;
+    this.closeBtnText = closeBtnText;
+    this.submitBtnText = submitBtnText;
+    this.submitCallback = submitCallback;
+    this.init();
+    return this;
+  }
+  domElements = {
+    superOverlay: document.querySelector("#super-overlay"),
+    generalForm: document.querySelector("#general-popup"),
+    generalPopupTitle: document.querySelector("#general-popup-title"),
+    closePopup: document.querySelector("#general-close-btn"),
+    submitPopup: document.querySelector("#general-submit-btn"),
+  };
+
+  init() {
+    const superOverlay = this.domElements.superOverlay;
+    const generalForm = this.domElements.generalForm;
+    const generalPopupTitle = this.domElements.generalPopupTitle;
+    const closePopup = this.domElements.closePopup;
+    const submitPopup = this.domElements.submitPopup;
+
+    superOverlay.classList.remove("hidden");
+    generalForm.classList.remove("hidden");
+
+    generalPopupTitle.textContent = this.message;
+    closePopup.textContent = this.closeBtnText;
+
+    closePopup.addEventListener("click", () => {
+      superOverlay.classList.add("hidden");
+      generalForm.classList.add("hidden");
+    });
+
+    if (this.submitBtnText) {
+      submitPopup.textContent = this.submitBtnText;
+      submitPopup.addEventListener("click", () => {
+        superOverlay.classList.add("hidden");
+        generalForm.classList.add("hidden");
+        this.submitCallback();
+      });
+    }
   }
 }
 
@@ -544,6 +656,8 @@ export default {
   EdgeworkPopup,
   NumberedAlphabetPopup,
   NewModuleListItemPopup,
-  NewModuleListItemManyPopup,
+  ImportModulesPopup,
+  ExportModulesPopup,
   NukeWarningPopup,
+  BasicPopup,
 };
