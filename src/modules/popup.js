@@ -134,7 +134,7 @@ class EdgeworkPopup {
     const numOfD = batteries - 2 * numOfAAPairs;
     const edgework = this.domElements.edgework;
     const batteryDiv = document.createElement("div");
-    batteryDiv.classList.add("flex-wrapper");
+    batteryDiv.classList.add("ind-wrapper");
 
     for (let i = 0; i < numOfAAPairs; i++) {
       const newAAWidget = document.createElement("div");
@@ -153,11 +153,10 @@ class EdgeworkPopup {
   populateIndicators(formData, indicatorKeys) {
     const edgework = this.domElements.edgework;
     const indDiv = document.createElement("div");
-    indDiv.classList.add("flex-wrapper");
     const litIndDiv = document.createElement("div");
-    litIndDiv.classList.add("flex-wrapper");
+    litIndDiv.classList.add("ind-wrapper");
     const unlitIndDiv = document.createElement("div");
-    litIndDiv.classList.add("flex-wrapper");
+    litIndDiv.classList.add("ind-wrapper");
     indicatorKeys.forEach((key) => {
       const indVal = formData.get(key);
       if (indVal === "none") return;

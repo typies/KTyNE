@@ -17,6 +17,7 @@ class Sidebar {
   }
 
   domElements = {
+    sidebar: document.querySelector(".sidebar"),
     sidebarListElement: document.querySelector(".sidebar .module-list"),
     newRepoTabBtn: document.querySelector("#new-repo-tab-btn"),
     filter: document.querySelector("#filter"),
@@ -26,6 +27,7 @@ class Sidebar {
     moduleListTitle: document.querySelector(".module-list-title"),
     addNewModuleBtn: document.querySelector("#add-new-module-btn"),
     nukeModulesBtn: document.querySelector("#nuke-module-list-btn"),
+    collapseSidebarBtn: document.querySelector("#collapse-sidebar-btn"),
   };
 
   init() {
@@ -159,6 +161,8 @@ class Sidebar {
     const filterClear = this.domElements.filterClear;
     const newRepoTabBtn = this.domElements.newRepoTabBtn;
     const editModuleListBtn = this.domElements.editModuleListBtn;
+    const collapseSidebarBtn = this.domElements.collapseSidebarBtn;
+    const sidebar = this.domElements.sidebar;
     filter.addEventListener("keydown", () => {
       this.filterSidebar(filter.value);
     });
@@ -169,6 +173,10 @@ class Sidebar {
     filterClear.addEventListener("click", () => {
       filter.value = "";
       this.filterSidebar("");
+    });
+    collapseSidebarBtn.addEventListener("click", () => {
+      sidebar.classList.toggle("hidden");
+      collapseSidebarBtn.toggleAttribute("rotate180");
     });
     newRepoTabBtn.addEventListener("click", () => {
       sharedIdCounter.incrementId();
