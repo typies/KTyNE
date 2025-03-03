@@ -1,5 +1,6 @@
 import mainPubSub from "./PubSub.js";
 import sharedIdCounter from "./sharedIdCounter.js";
+import defaultModules from "./vanillaModules.json";
 const KTANE_TIMWI_URL = "https://ktane.timwi.de/";
 
 class Sidebar {
@@ -24,6 +25,9 @@ class Sidebar {
 
   init() {
     this.importProjectsFromLocal();
+    if (this.sidebarItems.length === 0) {
+      this.addSidebarItems(defaultModules);
+    }
     this.render();
     this.configureStaticSidebarBtns();
   }
