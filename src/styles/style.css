@@ -146,6 +146,35 @@ svg {
   position: relative;
 }
 
+#ind-table {
+  display: grid;
+  grid-template-columns: 5ch repeat(11, 4ch);
+  text-align: center;
+  gap: 2px;
+  margin-top: 10px;
+}
+
+.row-labels {
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+}
+
+.none-text,
+.ind-group:has(input[value="none"]:checked) {
+  color: #2b2926;
+}
+
+.lit-text,
+.ind-group:has(input[value="lit"]:checked) {
+  color: white;
+}
+
+.unlit-text,
+.ind-group:has(input[value="unlit"]:checked) {
+  color: rgba(0, 0, 0, 0.15);
+}
+
 .widget.serial {
   background-image: url(/src/images/Serial\ number.png);
   width: 100px;
@@ -295,6 +324,15 @@ svg#filter-clear {
   position: relative;
 }
 
+.form {
+  max-height: 80vh;
+}
+
+#add-many-new-module-form {
+  display: flex;
+  flex-direction: column;
+}
+
 #add-many-new-module-btn {
   position: absolute;
   top: 0;
@@ -316,10 +354,14 @@ svg#filter-clear {
 }
 
 #add-many-new-module-text {
+  overflow: scroll;
   white-space: pre-wrap;
   margin-top: 10px;
   padding: 8px;
-  min-height: 20em;
+  min-height: 2em;
+  height: 20em;
+  min-width: 20ch;
+  width: 60ch;
   text-wrap: nowrap;
   background-color: white;
   font-size: 0.8em;
@@ -483,6 +525,7 @@ input.ind-checkbox {
 
 .form input {
   padding: 4px;
+  line-height: 1.4em;
   font-size: inherit;
 }
 

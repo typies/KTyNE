@@ -113,7 +113,7 @@
       </footer>
     </div>
     <div class="popup-overlay hidden">
-      <form action="" class="edgework-form form hidden">
+      <form action="" class="edgework-form form hidden" novalidate>
         <div class="title">Edgework</div>
         <label for="serial">Serial #</label>
         <input
@@ -135,11 +135,85 @@
           type="text"
           name="ports"
           id="ports"
-          placeholder="ex: dvi-ps2 para-serial"
+          placeholder="ex: (dvi rj) (serial para) (empty)"
           autocomplete="off"
         />
 
-        <div class="ind-list">
+        <div id="ind-table">
+          <div class="row-labels">
+            <div class="none-text">NONE</div>
+            <div class="lit-text">LIT</div>
+            <div class="unlit-text">UNLIT</div>
+          </div>
+          <div class="ind-group">
+            <label for="bob">BOB</label>
+            <input type="radio" name="bob-ind" id="bob" value="none" checked />
+            <input type="radio" name="bob-ind" id="lit-bob" value="lit" />
+            <input type="radio" name="bob-ind" id="unlit-bob" value="unlit" />
+          </div>
+          <div class="ind-group">
+            <label>CAR</label>
+            <input type="radio" name="car-ind" id="car" value="none" checked />
+            <input type="radio" name="car-ind" id="lit-car" value="lit" />
+            <input type="radio" name="car-ind" id="unlit-car" value="unlit" />
+          </div>
+          <div class="ind-group">
+            <label>CLR</label>
+            <input type="radio" name="clr-ind" id="clr" value="none" checked />
+            <input type="radio" name="clr-ind" id="lit-clr" value="lit" />
+            <input type="radio" name="clr-ind" id="unlit-clr" value="unlit" />
+          </div>
+          <div class="ind-group">
+            <label>FRK</label>
+            <input type="radio" name="frk-ind" id="frk" value="none" checked />
+            <input type="radio" name="frk-ind" id="lit-frk" value="lit" />
+            <input type="radio" name="frk-ind" id="unlit-frk" value="unlit" />
+          </div>
+          <div class="ind-group">
+            <label>FRQ</label>
+            <input type="radio" name="frq-ind" id="frq" value="none" checked />
+            <input type="radio" name="frq-ind" id="lit-frq" value="lit" />
+            <input type="radio" name="frq-ind" id="unlit-frq" value="unlit" />
+          </div>
+          <div class="ind-group">
+            <label>IND</label>
+            <input type="radio" name="ind-ind" id="ind" value="none" checked />
+            <input type="radio" name="ind-ind" id="lit-ind" value="lit" />
+            <input type="radio" name="ind-ind" id="unlit-ind" value="unlit" />
+          </div>
+          <div class="ind-group">
+            <label>MSA</label>
+            <input type="radio" name="msa-ind" id="msa" value="none" checked />
+            <input type="radio" name="msa-ind" id="lit-msa" value="lit" />
+            <input type="radio" name="msa-ind" id="unlit-msa" value="unlit" />
+          </div>
+          <div class="ind-group">
+            <label>NSA</label>
+            <input type="radio" name="nsa-ind" id="nsa" value="none" checked />
+            <input type="radio" name="nsa-ind" id="lit-nsa" value="lit" />
+            <input type="radio" name="nsa-ind" id="unlit-nsa" value="unlit" />
+          </div>
+          <div class="ind-group">
+            <label>SIG</label>
+            <input type="radio" name="sig-ind" id="sig" value="none" checked />
+            <input type="radio" name="sig-ind" id="lit-sig" value="lit" />
+            <input type="radio" name="sig-ind" id="unlit-sig" value="unlit" />
+          </div>
+          <div class="ind-group">
+            <label>SND</label>
+            <input type="radio" name="smd-ind" id="smd" value="none" checked />
+            <input type="radio" name="smd-ind" id="lit-smd" value="lit" />
+            <input type="radio" name="smd-ind" id="unlit-smd" value="unlit" />
+          </div>
+          <div class="ind-group">
+            <label>TRN</label>
+            <input type="radio" name="trn-ind" id="trn" value="none" checked />
+            <input type="radio" name="trn-ind" id="lit-trn" value="lit" />
+            <input type="radio" name="trn-ind" id="unlit-trn" value="unlit" />
+          </div>
+        </div>
+
+        <!-- <div class="ind-list">
           <label>
             <span> Lit </span>
             <span> -</span>
@@ -310,7 +384,7 @@
               id="unlit-trn-ind"
             />
           </div>
-        </div>
+        </div> -->
 
         <div class="form-btn-group">
           <button type="button" id="edgework-form-close-btn">Close</button>
