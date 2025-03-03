@@ -75,7 +75,7 @@ svg {
     "header header" minmax(50px, auto)
     "main notes" 1fr
     "footer footer" minmax(30px, auto)
-    / 1fr minmax(20ch, 50ch);
+    / 1fr minmax(20ch, 25%);
   height: 100dvh;
   height: 100vh;
   gap: 1px;
@@ -430,6 +430,7 @@ svg#filter-clear {
   border-left: 1px solid var(--color-jet);
   border-right: 1px solid var(--color-jet);
   position: relative;
+  background-color: white;
 }
 
 #collapse-sidebar-btn {
