@@ -9,6 +9,10 @@ class Sidebar {
     this.init();
     mainPubSub.subscribe("addNewModule", this.addSidebarItem.bind(this));
     mainPubSub.subscribe("addNewModules", this.addSidebarItems.bind(this));
+    mainPubSub.subscribe(
+      "nukeModuleList",
+      this.removeAllSidebarItems.bind(this)
+    );
     return this;
   }
 
@@ -21,6 +25,7 @@ class Sidebar {
     editModuleListBtn: document.querySelector("#edit-module-list-btn"),
     moduleListTitle: document.querySelector(".module-list-title"),
     addNewModuleBtn: document.querySelector("#add-new-module-btn"),
+    nukeModulesBtn: document.querySelector("#nuke-module-list-btn"),
   };
 
   init() {
@@ -87,6 +92,12 @@ class Sidebar {
     if (skippedFlag) {
       alert("One or more duplicatse where found. Those items where skipped");
     }
+  }
+
+  removeAllSidebarItems() {
+    localStorage.clear();
+    this.syncLists();
+    this.render();
   }
 
   removeSidebarItem(sidebarItem) {
@@ -172,16 +183,18 @@ class Sidebar {
   toggleEditMode() {
     const title = this.domElements.moduleListTitle;
     const addNewModuleBtn = this.domElements.addNewModuleBtn;
+    const nukeModulesBtn = this.domElements.nukeModulesBtn;
     const addNewRepoTabBtn = this.domElements.newRepoTabBtn;
     const moduleList = document.querySelectorAll(".sidebar-item");
     this.editMode = !this.editMode;
     title.classList.toggle("red");
     addNewModuleBtn.classList.toggle("hidden");
+    nukeModulesBtn.classList.toggle("hidden");
     moduleList.forEach((item) => {
       item.classList.toggle("red");
     });
     if (this.editMode) {
-      title.textContent = "DELETEING MODULES";
+      title.textContent = "DELETE MODULES";
       addNewRepoTabBtn.classList.toggle("hidden");
     } else {
       title.textContent = "Modules";

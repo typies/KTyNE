@@ -11,3 +11,4 @@ new popups.EdgeworkPopup().init();
 new popups.NumberedAlphabetPopup().init();
 new popups.NewModuleListItemPopup().init();
 new popups.NewModuleListItemManyPopup().init();
+new popups.NukeWarningPopup().init();

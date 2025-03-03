@@ -484,9 +484,50 @@ class NewModuleListItemManyPopup {
   }
 }
 
+class NukeWarningPopup {
+  constructor() {
+    return this;
+  }
+  domElements = {
+    popupOverlay: document.querySelector(".popup-overlay"),
+    closeFormBtn: document.querySelector("#close-nuke-warning-btn"),
+    startNukeBtn: document.querySelector("#nuke-module-list-btn"),
+    nukePopup: document.querySelector("#nuke-warning"),
+  };
+
+  configureFormButtons() {
+    const startNukeBtn = this.domElements.startNukeBtn;
+    const nukePopup = this.domElements.nukePopup;
+    const popupOverlay = this.domElements.popupOverlay;
+    const closeFormBtn = this.domElements.closeFormBtn;
+    startNukeBtn.addEventListener("click", () => {
+      popupOverlay.classList.remove("hidden");
+      nukePopup.classList.remove("hidden");
+    });
+
+    closeFormBtn.addEventListener("click", () => {
+      popupOverlay.classList.add("hidden");
+      nukePopup.classList.add("hidden");
+    });
+
+    nukePopup.addEventListener("submit", (event) => {
+      event.preventDefault();
+      mainPubSub.publish("nukeModuleList");
+      popupOverlay.classList.add("hidden");
+      nukePopup.classList.add("hidden");
+    });
+  }
+
+  init() {
+    this.configureFormButtons();
+    return this;
+  }
+}
+
 export default {
   EdgeworkPopup,
   NumberedAlphabetPopup,
   NewModuleListItemPopup,
   NewModuleListItemManyPopup,
+  NukeWarningPopup,
 };

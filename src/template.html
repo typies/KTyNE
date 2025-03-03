@@ -19,7 +19,7 @@
       <div class="sidebar">
         <div class="module-list-title-wrapper">
           <div class="module-list-title">Modules</div>
-          <div class="title-btn-list">
+          <div id="title-btn-list">
             <svg
               id="add-new-module-btn"
               viewBox="0 0 24 24"
@@ -30,6 +30,29 @@
                 d="M15 12H12M12 12H9M12 12V9M12 12V15M17 21H7C4.79086 21 3 19.2091 3 17V7C3 4.79086 4.79086 3 7 3H17C19.2091 3 21 4.79086 21 7V17C21 19.2091 19.2091 21 17 21Z"
                 stroke-width="2"
                 stroke-linecap="round"
+              />
+            </svg>
+            <svg
+              id="nuke-module-list-btn"
+              class="hidden"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle cx="12" cy="17" r="1" fill="#000000" />
+              <path
+                d="M12 10L12 14"
+                stroke="#000000"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M3.44722 18.1056L10.2111 4.57771C10.9482 3.10361 13.0518 3.10362 13.7889 4.57771L20.5528 18.1056C21.2177 19.4354 20.2507 21 18.7639 21H5.23607C3.7493 21 2.78231 19.4354 3.44722 18.1056Z"
+                stroke="#000000"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
               />
             </svg>
             <svg
@@ -212,180 +235,6 @@
             <input type="radio" name="trn-ind" id="unlit-trn" value="unlit" />
           </div>
         </div>
-
-        <!-- <div class="ind-list">
-          <label>
-            <span> Lit </span>
-            <span> -</span>
-            <span>Unlit</span>
-          </label>
-          <div>
-            <input
-              type="checkbox"
-              class="ind-checkbox"
-              name="lit-bob-ind"
-              id="lit-bob-ind"
-            />
-            <span>BOB</span>
-            <input
-              type="checkbox"
-              class="ind-checkbox"
-              name="unlit-bob-ind"
-              id="unlit-bob-ind"
-            />
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              class="ind-checkbox"
-              name="lit-car-ind"
-              id="lit-car-ind"
-            />
-            <span>CAR</span>
-            <input
-              type="checkbox"
-              class="ind-checkbox"
-              name="unlit-car-ind"
-              id="unlit-car-ind"
-            />
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              class="ind-checkbox"
-              name="lit-clr-ind"
-              id="lit-clr-ind"
-            />
-            <span>CLR</span>
-            <input
-              type="checkbox"
-              class="ind-checkbox"
-              name="unlit-clr-ind"
-              id="unlit-clr-ind"
-            />
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              class="ind-checkbox"
-              name="lit-frk-ind"
-              id="lit-frk-ind"
-            />
-            <span>FRK</span>
-            <input
-              type="checkbox"
-              class="ind-checkbox"
-              name="unlit-frk-ind"
-              id="unlit-frk-ind"
-            />
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              class="ind-checkbox"
-              name="lit-frq-ind"
-              id="lit-frq-ind"
-            />
-            <span>FRQ</span>
-            <input
-              type="checkbox"
-              class="ind-checkbox"
-              name="unlit-frq-ind"
-              id="unlit-frq-ind"
-            />
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              class="ind-checkbox"
-              name="lit-ind-ind"
-              id="lit-ind-ind"
-            />
-            <span>IND</span>
-            <input
-              type="checkbox"
-              class="ind-checkbox"
-              name="unlit-ind-ind"
-              id="unlit-ind-ind"
-            />
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              class="ind-checkbox"
-              name="lit-msa-ind"
-              id="lit-msa-ind"
-            />
-            <span>MSA</span>
-            <input
-              type="checkbox"
-              class="ind-checkbox"
-              name="unlit-msa-ind"
-              id="unlit-msa-ind"
-            />
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              class="ind-checkbox"
-              name="lit-nsa-ind"
-              id="lit-nsa-ind"
-            />
-            <span>NSA</span>
-            <input
-              type="checkbox"
-              class="ind-checkbox"
-              name="unlit-nsa-ind"
-              id="unlit-nsa-ind"
-            />
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              class="ind-checkbox"
-              name="lit-sig-ind"
-              id="lit-sig-ind"
-            />
-            <span>SIG</span>
-            <input
-              type="checkbox"
-              class="ind-checkbox"
-              name="unlit-sig-ind"
-              id="unlit-sig-ind"
-            />
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              class="ind-checkbox"
-              name="lit-snd-ind"
-              id="lit-snd-ind"
-            />
-            <span>SND</span>
-            <input
-              type="checkbox"
-              class="ind-checkbox"
-              name="unlit-snd-ind"
-              id="unlit-snd-ind"
-            />
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              class="ind-checkbox"
-              name="lit-trn-ind"
-              id="lit-trn-ind"
-            />
-            <span>TRN</span>
-            <input
-              type="checkbox"
-              class="ind-checkbox"
-              name="unlit-trn-ind"
-              id="unlit-trn-ind"
-            />
-          </div>
-        </div> -->
-
         <div class="form-btn-group">
           <button type="button" id="edgework-form-close-btn">Close</button>
           <button type="button" id="edgework-form-reset-btn">Reset</button>
@@ -418,7 +267,6 @@
           <button type="submit">Add</button>
         </div>
       </form>
-
       <form action="" id="add-many-new-module-form" class="form hidden">
         <div class="title">Add many modules</div>
         <div class="title">(Duplicates Will be Skipped)</div>
@@ -450,6 +298,20 @@
             Reset
           </button>
           <button type="submit">Add All</button>
+        </div>
+      </form>
+      <form action="" id="nuke-warning" class="form hidden">
+        <div class="title nuke-title">
+          Are you sure you want to
+          <span class="red">DELETE ALL SAVED MODULE</span>?
+        </div>
+        <div class="title">This is not reversable</div>
+
+        <div class="form-btn-group">
+          <button type="button" id="close-nuke-warning-btn">Close</button>
+          <button type="submit" id="nuke-btn">
+            Yes, I know what I'm doing
+          </button>
         </div>
       </form>
     </div>

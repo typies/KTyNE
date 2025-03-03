@@ -271,6 +271,12 @@ svg {
 .module-list-title-wrapper {
   display: flex;
   justify-content: space-between;
+  position: relative;
+}
+
+#title-btn-list {
+  position: absolute;
+  right: 0;
 }
 
 .module-list-title {
@@ -293,6 +299,10 @@ svg#add-new-module-btn:hover {
 }
 
 svg#edit-module-list-btn:hover {
+  fill: var(--color-red);
+}
+
+svg#nuke-module-list-btn:hover {
   fill: var(--color-red);
 }
 
@@ -554,4 +564,8 @@ label[for="url"]:after {
   justify-content: center;
   gap: 4px;
   margin-top: 8px;
+}
+
+#nuke-btn:hover {
+  color: var(--color-red);
 }
