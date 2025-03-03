@@ -87,16 +87,20 @@ svg {
   grid-area: header;
   background-color: var(--color-jet);
   display: flex;
+  justify-content: space-between;
+  position: relative;
 }
 
 .open-modules-list {
-  flex: 3;
-  display: flex;
-  flex-wrap: wrap;
+  flex: 1;
+  flex-basis: auto;
   margin: 10px;
   gap: 10px;
   color: var(--color-blue);
   align-self: flex-end;
+  max-width: fit-content;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .open-module-list-item {
@@ -118,16 +122,23 @@ svg {
 /* Edgework */
 
 .edgework-wrapper {
-  flex: 2;
-  display: flex;
-  flex-direction: row-reverse;
+  flex: 1;
+  flex-basis: auto;
+  flex-wrap: wrap;
   background-color: var(--color-jet);
   width: 100%;
+  max-width: fit-content;
+  align-self: flex-end;
+  justify-content: flex-start;
+  display: flex;
+  flex-direction: row-reverse;
 }
 
 .edgework-btn {
   margin: 12px 12px;
   position: absolute;
+  top: 0;
+  right: 0;
 }
 
 .edgework {
@@ -202,6 +213,10 @@ svg {
   font-family: "Ostrich", "Anonymous pro";
   font-size: 30px;
   padding: 10px 0 0 50px;
+}
+
+.flex-wrapper {
+  display: flex;
 }
 
 .widget.indicator.lit {

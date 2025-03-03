@@ -71,11 +71,11 @@ class EdgeworkPopup {
         formData.get("batteries"),
         formData.get("holders")
       );
+      this.populatePortPlates(this.standardizePorts(formData.get("ports")));
       this.populateIndicators(
         formData,
         formData.keys().filter((key) => key.includes("ind"))
       );
-      this.populatePortPlates(this.standardizePorts(formData.get("ports")));
       popupOverlay.classList.add("hidden");
       edgeworkForm.classList.add("hidden");
     });
@@ -133,24 +133,31 @@ class EdgeworkPopup {
     const numOfAAPairs = batteries - holders;
     const numOfD = batteries - 2 * numOfAAPairs;
     const edgework = this.domElements.edgework;
+    const batteryDiv = document.createElement("div");
+    batteryDiv.classList.add("flex-wrapper");
 
     for (let i = 0; i < numOfAAPairs; i++) {
       const newAAWidget = document.createElement("div");
       newAAWidget.classList.add("widget", "battery", "aa");
-      edgework.appendChild(newAAWidget);
+      batteryDiv.appendChild(newAAWidget);
     }
 
     for (let i = 0; i < numOfD; i++) {
       const newDWidget = document.createElement("div");
       newDWidget.classList.add("widget", "battery", "d");
-      edgework.appendChild(newDWidget);
+      batteryDiv.appendChild(newDWidget);
     }
+    edgework.appendChild(batteryDiv);
   }
 
   populateIndicators(formData, indicatorKeys) {
     const edgework = this.domElements.edgework;
+    const indDiv = document.createElement("div");
+    indDiv.classList.add("flex-wrapper");
     const litIndDiv = document.createElement("div");
+    litIndDiv.classList.add("flex-wrapper");
     const unlitIndDiv = document.createElement("div");
+    litIndDiv.classList.add("flex-wrapper");
     indicatorKeys.forEach((key) => {
       const indVal = formData.get(key);
       if (indVal === "none") return;
@@ -166,8 +173,8 @@ class EdgeworkPopup {
         unlitIndDiv.appendChild(newIndicator);
       }
     });
-    edgework.append(litIndDiv);
-    edgework.append(unlitIndDiv);
+    indDiv.replaceChildren(litIndDiv, unlitIndDiv);
+    edgework.append(indDiv);
   }
 
   populatePortPlates(portList) {
