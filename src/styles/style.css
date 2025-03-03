@@ -72,10 +72,10 @@ svg {
   display: grid;
   background: var(--page-bg-color);
   grid:
-    "header header header header" minmax(50px, auto)
-    "main main main notes" 1fr
-    "footer footer footer footer" minmax(30px, auto)
-    / minmax(20ch, 200px) minmax(25%, 1fr) 25% minmax(20ch, 50ch);
+    "header header" minmax(50px, auto)
+    "main notes" 1fr
+    "footer footer" minmax(30px, auto)
+    / 1fr minmax(20ch, 50ch);
   height: 100dvh;
   height: 100vh;
   gap: 1px;
@@ -84,6 +84,7 @@ svg {
 .main {
   grid-area: main;
   display: flex;
+  overflow: hidden;
 }
 
 /* Header css */
