@@ -311,6 +311,7 @@ class NewModuleListItemPopup {
     newModuleForm: document.querySelector("#add-new-module-form"),
     manyNewModuleBtn: document.querySelector("#add-many-new-module-btn"),
     closeFormBtn: document.querySelector("#close-new-module-form-btn"),
+    sidebarMenu: document.querySelector("#sidebar-options-menu"),
   };
 
   configureFormButtons() {
@@ -319,10 +320,12 @@ class NewModuleListItemPopup {
     const closeFormBtn = this.domElements.closeFormBtn;
     const newModuleForm = this.domElements.newModuleForm;
     const manyNewModuleBtn = this.domElements.manyNewModuleBtn;
+    const sidebarMenu = this.domElements.sidebarMenu;
     newModuleBtn.addEventListener("click", () => {
       newModuleForm.reset();
       popupOverlay.classList.remove("hidden");
       newModuleForm.classList.remove("hidden");
+      sidebarMenu.classList.add("hidden");
       document.querySelector("#add-new-module-url").focus();
     });
 
@@ -333,6 +336,7 @@ class NewModuleListItemPopup {
     closeFormBtn.addEventListener("click", () => {
       popupOverlay.classList.add("hidden");
       newModuleForm.classList.add("hidden");
+      sidebarMenu.classList.add("hidden");
     });
 
     newModuleForm.addEventListener("submit", (event) => {
@@ -372,6 +376,7 @@ class NewModuleListItemManyPopup {
     textAreaInput: document.querySelector("#add-many-new-module-text"),
     fileUploadInput: document.querySelector("#add-many-new-module-file"),
     addExampleBtn: document.querySelector("#add-many-example"),
+    sidebarMenu: document.querySelector("#sidebar-options-menu"),
   };
 
   configureFormButtons() {
@@ -383,10 +388,12 @@ class NewModuleListItemManyPopup {
     const textAreaInput = this.domElements.textAreaInput;
     const fileUploadInput = this.domElements.fileUploadInput;
     const addExampleBtn = this.domElements.addExampleBtn;
+    const sidebarMenu = this.domElements.sidebarMenu;
     manyNewModuleBtn.addEventListener("click", () => {
       manyNewModuleForm.reset();
       popupOverlay.classList.remove("hidden");
       manyNewModuleForm.classList.remove("hidden");
+      sidebarMenu.classList.add("hidden");
     });
 
     resetFormBtn.addEventListener("click", () => {
@@ -499,6 +506,7 @@ class NukeWarningPopup {
     closeFormBtn: document.querySelector("#close-nuke-warning-btn"),
     startNukeBtn: document.querySelector("#nuke-module-list-btn"),
     nukePopup: document.querySelector("#nuke-warning"),
+    sidebarMenu: document.querySelector("#sidebar-options-menu"),
   };
 
   configureFormButtons() {
@@ -506,9 +514,11 @@ class NukeWarningPopup {
     const nukePopup = this.domElements.nukePopup;
     const popupOverlay = this.domElements.popupOverlay;
     const closeFormBtn = this.domElements.closeFormBtn;
+    const sidebarMenu = this.domElements.sidebarMenu;
     startNukeBtn.addEventListener("click", () => {
       popupOverlay.classList.remove("hidden");
       nukePopup.classList.remove("hidden");
+      sidebarMenu.classList.add("hidden");
     });
 
     closeFormBtn.addEventListener("click", () => {

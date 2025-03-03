@@ -284,7 +284,6 @@ svg {
 /* Sidebar */
 
 .sidebar {
-  overflow: auto;
   scrollbar-width: none;
   padding: 10px;
   position: relative;
@@ -317,16 +316,33 @@ svg {
     1px 1px 0 #000;
 }
 
-svg#add-new-module-btn:hover {
-  fill: var(--color-blue);
+#sidebar-menu-wrapper {
+  position: relative;
 }
 
-svg#edit-module-list-btn:hover {
-  fill: var(--color-red);
+#sidebar-options-menu {
+  position: absolute;
+  background-color: var(--color-gray);
+  left: 0;
+  z-index: 1;
+  border: 1px solid var(--color-jet);
+  border-radius: 5px;
 }
 
-svg#nuke-module-list-btn:hover {
-  fill: var(--color-red);
+.options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px;
+  text-wrap: nowrap;
+}
+
+.options-list > li {
+  color: var(--color-blue);
+  background-color: var(--color-jet);
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
 }
 
 .sidebar-filter-wrapper {
@@ -364,13 +380,6 @@ svg#filter-clear {
 #add-many-new-module-form {
   display: flex;
   flex-direction: column;
-}
-
-#add-many-new-module-btn {
-  position: absolute;
-  top: 0;
-  right: 0;
-  font-size: 0.5em;
 }
 
 #file-wrapper {
@@ -466,7 +475,7 @@ svg#filter-clear {
   grid-area: notes;
   padding: 10px;
 
-  overflow: auto;
+  overflow: scroll;
   font-family: "special-elite";
 
   background-image: linear-gradient(

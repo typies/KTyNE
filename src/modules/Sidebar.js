@@ -28,6 +28,8 @@ class Sidebar {
     addNewModuleBtn: document.querySelector("#add-new-module-btn"),
     nukeModulesBtn: document.querySelector("#nuke-module-list-btn"),
     collapseSidebarBtn: document.querySelector("#collapse-sidebar-btn"),
+    sidebarMenuSidebarBtn: document.querySelector("#options-btn"),
+    sidebarMenu: document.querySelector("#sidebar-options-menu"),
   };
 
   init() {
@@ -162,6 +164,8 @@ class Sidebar {
     const newRepoTabBtn = this.domElements.newRepoTabBtn;
     const editModuleListBtn = this.domElements.editModuleListBtn;
     const collapseSidebarBtn = this.domElements.collapseSidebarBtn;
+    const sidebarMenuSidebarBtn = this.domElements.sidebarMenuSidebarBtn;
+    const sidebarMenu = this.domElements.sidebarMenu;
     const sidebar = this.domElements.sidebar;
     filter.addEventListener("keydown", () => {
       this.filterSidebar(filter.value);
@@ -178,6 +182,9 @@ class Sidebar {
       sidebar.classList.toggle("hidden");
       collapseSidebarBtn.toggleAttribute("rotate180");
     });
+    sidebarMenuSidebarBtn.addEventListener("click", () => {
+      sidebarMenu.classList.toggle("hidden");
+    });
     newRepoTabBtn.addEventListener("click", () => {
       sharedIdCounter.incrementId();
       const newTabName = prompt("New Tab Name");
@@ -190,21 +197,22 @@ class Sidebar {
 
   toggleEditMode() {
     const title = this.domElements.moduleListTitle;
-    const addNewModuleBtn = this.domElements.addNewModuleBtn;
-    const nukeModulesBtn = this.domElements.nukeModulesBtn;
     const addNewRepoTabBtn = this.domElements.newRepoTabBtn;
+    const sidebarMenu = this.domElements.sidebarMenu;
+    const editModuleListBtn = this.domElements.editModuleListBtn;
+    sidebarMenu.classList.toggle("hidden");
     const moduleList = document.querySelectorAll(".sidebar-item");
     this.editMode = !this.editMode;
     title.classList.toggle("red");
-    addNewModuleBtn.classList.toggle("hidden");
-    nukeModulesBtn.classList.toggle("hidden");
     moduleList.forEach((item) => {
       item.classList.toggle("red");
     });
     if (this.editMode) {
-      title.textContent = "DELETE MODULES";
+      editModuleListBtn.textContent = "Exit Edit Mode";
+      title.textContent = "Click Module To Delete";
       addNewRepoTabBtn.classList.toggle("hidden");
     } else {
+      editModuleListBtn.textContent = "Enter Edit Mode";
       title.textContent = "Modules";
       addNewRepoTabBtn.classList.toggle("hidden");
     }
