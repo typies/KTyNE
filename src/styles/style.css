@@ -106,7 +106,7 @@ svg {
   align-self: flex-end;
   max-width: fit-content;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: wrap-reverse;
 }
 
 .open-module-list-item {
