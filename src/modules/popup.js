@@ -53,6 +53,7 @@ class EdgeworkPopup {
 
     resetFormBtn.addEventListener("click", () => {
       this.resetForm();
+      this.resetEdgework();
       document.querySelector("#serial").focus();
     });
 
@@ -133,7 +134,7 @@ class EdgeworkPopup {
     const numOfD = batteries - 2 * numOfAAPairs;
     const edgework = this.domElements.edgework;
     const batteryDiv = document.createElement("div");
-    batteryDiv.classList.add("ind-wrapper");
+    batteryDiv.classList.add("battery-wrapper");
 
     for (let i = 0; i < numOfAAPairs; i++) {
       const newAAWidget = document.createElement("div");
@@ -151,12 +152,10 @@ class EdgeworkPopup {
 
   populateIndicators(formData, indicatorKeys) {
     const edgework = this.domElements.edgework;
-    const indDiv = document.createElement("div");
-    indDiv.classList.add("ind-wrapper");
     const litIndDiv = document.createElement("div");
     litIndDiv.classList.add("ind-wrapper");
     const unlitIndDiv = document.createElement("div");
-    litIndDiv.classList.add("ind-wrapper");
+    unlitIndDiv.classList.add("ind-wrapper");
     indicatorKeys.forEach((key) => {
       const indVal = formData.get(key);
       if (indVal === "none") return;
@@ -172,8 +171,8 @@ class EdgeworkPopup {
         unlitIndDiv.appendChild(newIndicator);
       }
     });
-    indDiv.replaceChildren(litIndDiv, unlitIndDiv);
-    edgework.append(indDiv);
+    edgework.append(litIndDiv);
+    edgework.append(unlitIndDiv);
   }
 
   populatePortPlates(portList) {

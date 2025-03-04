@@ -200,6 +200,25 @@ label[for="serial"]:after {
   justify-content: end;
 }
 
+.ind-group,
+.row-labels {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.row-labels {
+  align-items: end;
+  gap: 0;
+}
+
+.ind-group input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
 .none-text,
 .ind-group:has(input[value="none"]:checked) {
   color: #2b2926;
@@ -245,6 +264,12 @@ label[for="serial"]:after {
 }
 
 .ind-wrapper {
+  display: flex;
+  flex-direction: row-reverse;
+  flex-wrap: nowrap;
+}
+
+.battery-wrapper {
   display: flex;
   flex-direction: row-reverse;
 }
@@ -378,6 +403,10 @@ label[for="serial"]:after {
   height: 2em;
   padding-left: 4px;
   border-radius: 6px;
+}
+
+svg#options-btn:hover {
+  fill: var(--color-blue);
 }
 
 svg#filter-clear {
