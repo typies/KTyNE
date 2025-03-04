@@ -157,20 +157,28 @@
         onclick="event.stopPropagation()"
       >
         <div class="title">Edgework</div>
-        <label for="serial">Serial #</label>
-        <input
-          type="text"
-          name="serial"
-          id="serial"
-          maxlength="6"
-          minlength="6"
-          autocomplete="off"
-          required
-        />
-        <label for="batteries">Batteries</label>
-        <input type="number" name="batteries" id="batteries" min="0" />
-        <label for="holders">Battery Holders</label>
-        <input type="number" name="holders" id="holders" min="0" />
+        <div id="edgework-first">
+          <label for="serial">Serial #</label>
+          <input
+            type="text"
+            name="serial"
+            id="serial"
+            maxlength="6"
+            minlength="6"
+            autocomplete="off"
+            required
+          />
+          <label for="batteries">Batteries</label>
+          <input
+            type="number"
+            name="batteries"
+            id="batteries"
+            min="0"
+            max="9"
+          />
+          <label for="holders">Battery Holders</label>
+          <input type="number" name="holders" id="holders" min="0" max="9" />
+        </div>
 
         <label for="ports">Ports</label>
         <input

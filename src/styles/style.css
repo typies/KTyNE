@@ -153,6 +153,30 @@ svg {
   flex-direction: row-reverse;
 }
 
+#edgework-first {
+  text-align: center;
+}
+
+#serial {
+  padding: 8px;
+  width: 8ch;
+  text-align: center;
+}
+
+label[for="serial"]:after {
+  content: "required";
+  color: red;
+  font-size: 0.5em;
+  position: absolute;
+  right: 0;
+}
+
+#holders,
+#batteries {
+  width: 4ch;
+  padding: 4px;
+}
+
 .widget {
   height: 50px;
   display: inline-block;
@@ -555,7 +579,8 @@ svg#filter-clear {
 /* pop ups */
 
 form div.title {
-  font-size: 24px;
+  font-size: 36px;
+  margin-bottom: 24px;
   text-align: center;
 }
 
@@ -599,7 +624,7 @@ label[for="serial"],
 label[for="url"] {
   position: relative;
 }
-label[for="serial"]:after,
+
 label[for="url"]:after {
   content: "required";
   color: red;
