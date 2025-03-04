@@ -443,7 +443,8 @@ svg#filter-clear {
   background-color: white;
 }
 
-#collapse-sidebar-btn {
+#collapse-sidebar-btn,
+#add-one-btn {
   border-radius: 0;
   margin: 4px;
   position: absolute;
@@ -454,9 +455,14 @@ svg#filter-clear {
   transform: rotate(180deg);
 }
 
-#collapse-sidebar-btn:hover {
+#collapse-sidebar-btn:hover,
+#add-one-btn:hover {
   stroke: var(--color-blue);
   fill: var(--color-blue);
+}
+
+#add-one-btn {
+  top: 24px;
 }
 
 .hidden-iframe {

@@ -31,6 +31,7 @@ class Sidebar {
     collapseSidebarBtn: document.querySelector("#collapse-sidebar-btn"),
     sidebarMenuSidebarBtn: document.querySelector("#options-btn"),
     sidebarMenu: document.querySelector("#sidebar-options-menu"),
+    addOneBtn: document.querySelector("#add-one-btn"),
   };
 
   init() {
@@ -156,6 +157,11 @@ class Sidebar {
       } else {
         this.openNewModule(sidebarItem.moduleName, sidebarItem.manualUrl);
       }
+
+      if (this.addOneMode) {
+        this.addOneMode = false;
+        this.collapseToggle();
+      }
     });
     newSidebarListItem.textContent = sidebarItem.moduleName;
     sidebarListElement.appendChild(newSidebarListItem);
@@ -167,9 +173,9 @@ class Sidebar {
     const newRepoTabBtn = this.domElements.newRepoTabBtn;
     const editModuleListBtn = this.domElements.editModuleListBtn;
     const collapseSidebarBtn = this.domElements.collapseSidebarBtn;
+    const addOneBtn = this.domElements.addOneBtn;
     const sidebarMenuSidebarBtn = this.domElements.sidebarMenuSidebarBtn;
     const sidebarMenu = this.domElements.sidebarMenu;
-    const sidebar = this.domElements.sidebar;
     filter.addEventListener("keydown", () => {
       this.filterSidebar(filter.value);
     });
@@ -181,9 +187,11 @@ class Sidebar {
       filter.value = "";
       this.filterSidebar("");
     });
-    collapseSidebarBtn.addEventListener("click", () => {
-      sidebar.classList.toggle("hidden");
-      collapseSidebarBtn.toggleAttribute("rotate180");
+    collapseSidebarBtn.addEventListener("click", () => this.collapseToggle());
+    addOneBtn.addEventListener("click", () => {
+      this.collapseToggle();
+      filter.focus();
+      this.addOneMode = true;
     });
     sidebarMenuSidebarBtn.addEventListener("click", () => {
       sidebarMenu.classList.toggle("hidden");
@@ -201,6 +209,15 @@ class Sidebar {
       );
     });
     editModuleListBtn.addEventListener("click", () => this.toggleEditMode());
+  }
+
+  collapseToggle() {
+    const sidebar = this.domElements.sidebar;
+    const collapseSidebarBtn = this.domElements.collapseSidebarBtn;
+    const addOneBtn = this.domElements.addOneBtn;
+    sidebar.classList.toggle("hidden");
+    collapseSidebarBtn.toggleAttribute("rotate180");
+    addOneBtn.classList.toggle("hidden");
   }
 
   toggleEditMode() {
