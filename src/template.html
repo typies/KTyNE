@@ -138,7 +138,7 @@
         </div>
       </footer>
     </div>
-    <div class="popup-overlay hidden" onclick='this.classList.add("hidden")'>
+    <div class="popup-overlay hidden">
       <form
         action=""
         class="edgework-form form hidden"
@@ -356,18 +356,26 @@
       </form>
     </div>
 
-    <div
-      id="super-overlay"
-      class="hidden"
-      onclick='this.classList.add("hidden")'
-    >
+    <div id="super-overlay" class="hidden" onsubmit="event.preventDefault()">
       <form
         action=""
         id="general-popup"
         class="form hidden"
         onclick="event.stopPropagation()"
       >
-        <div id="general-popup-title" class="title">Title</div>
+        <div id="general-popup-title" class="title"></div>
+        <label
+          for="general-input"
+          class="hidden"
+          id="general-popup-label"
+        ></label>
+        <input
+          type="text"
+          name="general-input"
+          id="general-input"
+          class="hidden"
+          autocomplete="off"
+        />
         <div class="form-btn-group">
           <button type="button" id="general-close-btn">Close</button>
           <button type="submit" id="general-submit-btn" class="hidden">

@@ -59,7 +59,6 @@ class EdgeworkPopup {
     edgeworkForm.addEventListener("submit", (event) => {
       event.preventDefault();
       this.validateForm();
-      console.log(edgeworkForm.checkValidity());
       if (!edgeworkForm.checkValidity()) {
         edgeworkForm.reportValidity();
         return;
@@ -222,7 +221,6 @@ class EdgeworkPopup {
     plates.forEach((plate, i) => {
       plates[i] = plates[i].replaceAll(/\(|\)|\[|\]/g, "");
     });
-    console.log(input, replacedInput, plates);
     return plates;
   }
 
@@ -453,13 +451,7 @@ class ImportModulesPopup {
       mainPubSub.publish("addNewModules", newModules);
       return true;
     } catch (error) {
-      if (error instanceof SyntaxError) {
-        alert(
-          "Unable to Add Modules: Misformed JSON. Ensure all strings (including name/url) are wrapped in double quotes"
-        );
-      }
-      console.log(error);
-      console.log("Add JSON from text failed.");
+      new BasicPopup("Adding JSON From text failed.\nError: " + error);
       return false;
     }
   }
@@ -530,7 +522,6 @@ class ExportModulesPopup {
       exportModuleForm.classList.add("hidden");
     });
     copyBtn.addEventListener("click", () => {
-      console.log("enter'");
       navigator.clipboard.writeText(textAreaOutput.textContent);
       new BasicPopup("Copied");
     });
@@ -564,11 +555,18 @@ class ExportModulesPopup {
 }
 
 class BasicPopup {
-  constructor(message, closeBtnText = "Close", submitBtnText, submitCallback) {
+  constructor(
+    message,
+    inputLabel,
+    submitBtnText,
+    submitCallback,
+    closeBtnText = "Close"
+  ) {
     this.message = message;
-    this.closeBtnText = closeBtnText;
+    this.inputLabel = inputLabel;
     this.submitBtnText = submitBtnText;
     this.submitCallback = submitCallback;
+    this.closeBtnText = closeBtnText;
     this.init();
     return this;
   }
@@ -578,6 +576,8 @@ class BasicPopup {
     generalPopupTitle: document.querySelector("#general-popup-title"),
     closePopup: document.querySelector("#general-close-btn"),
     submitPopup: document.querySelector("#general-submit-btn"),
+    generalPopupLabel: document.querySelector("#general-popup-label"),
+    generalPopupInput: document.querySelector("#general-input"),
   };
 
   init() {
@@ -586,25 +586,45 @@ class BasicPopup {
     const generalPopupTitle = this.domElements.generalPopupTitle;
     const closePopup = this.domElements.closePopup;
     const submitPopup = this.domElements.submitPopup;
+    const generalPopupLabel = this.domElements.generalPopupLabel;
+    const generalPopupInput = this.domElements.generalPopupInput;
+
+    const doCallback = () => {
+      this.submitCallback(generalPopupInput.value);
+      close();
+    };
+
+    const close = () => {
+      superOverlay.classList.add("hidden");
+      generalForm.classList.add("hidden");
+      generalPopupLabel.classList.add("hidden");
+      generalPopupInput.classList.add("hidden");
+      closePopup.classList.remove("hidden");
+      submitPopup.classList.add("hidden");
+      closePopup.removeEventListener("click", close);
+      submitPopup.removeEventListener("click", doCallback);
+    };
 
     superOverlay.classList.remove("hidden");
     generalForm.classList.remove("hidden");
 
     generalPopupTitle.textContent = this.message;
+    generalPopupInput.value = "";
     closePopup.textContent = this.closeBtnText;
 
-    closePopup.addEventListener("click", () => {
-      superOverlay.classList.add("hidden");
-      generalForm.classList.add("hidden");
-    });
+    closePopup.addEventListener("click", close);
+
+    if (this.inputLabel) {
+      generalPopupLabel.textContent = this.inputLabel;
+      generalPopupLabel.classList.remove("hidden");
+      generalPopupInput.classList.remove("hidden");
+      submitPopup.classList.remove("hidden");
+      generalPopupInput.focus();
+    }
 
     if (this.submitBtnText) {
       submitPopup.textContent = this.submitBtnText;
-      submitPopup.addEventListener("click", () => {
-        superOverlay.classList.add("hidden");
-        generalForm.classList.add("hidden");
-        this.submitCallback();
-      });
+      submitPopup.addEventListener("click", doCallback);
     }
   }
 }
@@ -652,7 +672,7 @@ class NukeWarningPopup {
   }
 }
 
-export default {
+export {
   EdgeworkPopup,
   NumberedAlphabetPopup,
   NewModuleListItemPopup,

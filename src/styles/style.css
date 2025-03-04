@@ -288,6 +288,7 @@ svg {
   padding: 10px;
   position: relative;
   max-width: 25ch;
+  overflow: scroll;
 }
 
 .module-list-title-wrapper {
@@ -323,7 +324,7 @@ svg {
 #sidebar-options-menu {
   position: absolute;
   background-color: var(--color-gray);
-  left: 0;
+  right: 0;
   z-index: 1;
   border: 1px solid var(--color-jet);
   border-radius: 5px;
@@ -620,6 +621,8 @@ label[for="url"]:after {
 }
 
 #general-popup {
+  display: flex;
+  flex-direction: column;
   z-index: 100;
 }
 

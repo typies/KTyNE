@@ -1,3 +1,4 @@
+import { BasicPopup } from "./popup.js";
 import mainPubSub from "./PubSub.js";
 import sharedIdCounter from "./sharedIdCounter.js";
 import defaultModules from "./vanillaModules.json";
@@ -68,13 +69,15 @@ class Sidebar {
         const regexName = regexResult[1].split("%20").join(" ");
         sidebarItem.moduleName = regexName;
       } catch {
-        console.log(
-          `Error matching URL regex for ("${sidebarItem.manualUrl}")`
+        new BasicPopup(
+          `Error processing the following URL: ${sidebarItem.manualUrl}`
         );
       }
     }
     if (this.getSidebarItem(sidebarItem.moduleName)) {
-      console.log(`Skipping add for: ${sidebarItem.moduleName}. Is duplicated`);
+      new BasicPopup(
+        `Skipping add for: ${sidebarItem.moduleName}. Is duplicated`
+      );
       return "skipped";
     }
     this.sidebarItems.push(sidebarItem);
@@ -186,11 +189,16 @@ class Sidebar {
       sidebarMenu.classList.toggle("hidden");
     });
     newRepoTabBtn.addEventListener("click", () => {
-      sharedIdCounter.incrementId();
-      const newTabName = prompt("New Tab Name");
-      if (!newTabName || newTabName === "") return;
-      navigator.clipboard.writeText(newTabName);
-      this.openNewModule(newTabName, KTANE_TIMWI_URL);
+      new BasicPopup(
+        "Opening New KTANE.TIMEWI.DE Tab",
+        "New Tab Name",
+        "Open",
+        (newTabName) => {
+          if (!newTabName || newTabName === "") return;
+          navigator.clipboard.writeText(newTabName);
+          this.openNewModule(newTabName, KTANE_TIMWI_URL);
+        }
+      );
     });
     editModuleListBtn.addEventListener("click", () => this.toggleEditMode());
   }

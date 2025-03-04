@@ -1,3 +1,4 @@
+import { BasicPopup } from "./popup.js";
 import mainPubSub from "./PubSub.js";
 import sharedIdCounter from "./sharedIdCounter.js";
 
@@ -27,7 +28,6 @@ class HeaderList {
     // Left click
     newHeaderListItem.addEventListener("click", () => {
       mainPubSub.publish("tabChange", {
-        moduleName: pubsubData.moduleName,
         iframeId: newHeaderListItemId,
       });
     });
@@ -40,7 +40,18 @@ class HeaderList {
     // Right Click( Rename header items instead of opening context menu)
     newHeaderListItem.addEventListener("contextmenu", (event) => {
       event.preventDefault();
-      this.headerItemRename(newHeaderListItemId);
+      new BasicPopup(
+        `Renaming ${pubsubData.moduleName}`,
+        "New name",
+        "Submit",
+        (popupInput) => {
+          if (popupInput) {
+            newHeaderListItem.textContent = popupInput;
+            navigator.clipboard.writeText(popupInput);
+            this.sortHeaderList();
+          }
+        }
+      );
     });
 
     headerList.appendChild(newHeaderListItem);
@@ -70,16 +81,6 @@ class HeaderList {
   getHeaderListItem(headerListItemId) {
     const headerList = this.domElements.headerList;
     return headerList.querySelector(`[data-module-id="${headerListItemId}"]`);
-  }
-
-  headerItemRename(headerListItemId) {
-    const headerItem = this.getHeaderListItem(headerListItemId);
-    const renameInput = prompt(`Renaming ${headerItem.textContent}`);
-    if (renameInput) {
-      headerItem.textContent = renameInput;
-      navigator.clipboard.writeText(renameInput);
-      this.sortHeaderList();
-    }
   }
 
   reactToTabChange(pubsubData) {
