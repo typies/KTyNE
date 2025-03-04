@@ -208,8 +208,7 @@ class Sidebar {
       }
 
       if (this.addOneMode) {
-        this.addOneMode = false;
-        this.collapseToggle();
+        this.toggleAddOneMode();
       }
     });
     newSidebarListItem.textContent = sidebarItem.moduleName;
@@ -238,7 +237,7 @@ class Sidebar {
     });
     collapseSidebarBtn.addEventListener("click", () => this.collapseToggle());
     addOneBtn.addEventListener("click", () => {
-      this.enableAddOneMode();
+      this.toggleAddOneMode();
     });
     sidebarMenuSidebarBtn.addEventListener("click", () => {
       sidebarMenu.classList.toggle("hidden");
@@ -267,10 +266,12 @@ class Sidebar {
     addOneBtn.classList.toggle("hidden");
   }
 
-  enableAddOneMode() {
+  toggleAddOneMode() {
+    this.addOneMode = !this.addOneMode;
     const filter = this.domElements.filter;
     const title = this.domElements.moduleListTitle;
-    this.addOneMode = true;
+    const collapseSidebarBtn = this.domElements.collapseSidebarBtn;
+    collapseSidebarBtn.classList.toggle("hidden");
     this.collapseToggle();
     filter.focus();
     if (this.addOneMode) {
