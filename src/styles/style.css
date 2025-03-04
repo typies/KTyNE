@@ -349,11 +349,15 @@ label[for="serial"]:after {
 /* Sidebar */
 
 .sidebar {
-  scrollbar-width: none;
   padding: 10px;
   position: relative;
-  max-width: 25ch;
+  width: 25ch;
+}
+
+.module-list {
   overflow: scroll;
+  scrollbar-width: none;
+  height: 100%;
 }
 
 .module-list-title-wrapper {
