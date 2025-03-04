@@ -189,9 +189,7 @@ class Sidebar {
     });
     collapseSidebarBtn.addEventListener("click", () => this.collapseToggle());
     addOneBtn.addEventListener("click", () => {
-      this.collapseToggle();
-      filter.focus();
-      this.addOneMode = true;
+      this.enableAddOneMode();
     });
     sidebarMenuSidebarBtn.addEventListener("click", () => {
       sidebarMenu.classList.toggle("hidden");
@@ -218,6 +216,19 @@ class Sidebar {
     sidebar.classList.toggle("hidden");
     collapseSidebarBtn.toggleAttribute("rotate180");
     addOneBtn.classList.toggle("hidden");
+  }
+
+  enableAddOneMode() {
+    const filter = this.domElements.filter;
+    const title = this.domElements.moduleListTitle;
+    this.addOneMode = true;
+    this.collapseToggle();
+    filter.focus();
+    if (this.addOneMode) {
+      title.textContent = "Add One Mode";
+    } else {
+      title.textContent = "Modules";
+    }
   }
 
   toggleEditMode() {
