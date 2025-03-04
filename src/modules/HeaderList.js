@@ -44,7 +44,15 @@ class HeaderList {
       }
     });
     tabClose.addEventListener("click", () => {
-      this.closeHeaderListItem(newHeaderListItemId);
+      new BasicPopup(
+        `Close ${headerText.textContent} Tab?`,
+        null,
+        "Yes",
+        () => {
+          this.closeHeaderListItem(newHeaderListItemId);
+        },
+        "No"
+      );
     });
     // Right Click( Rename header items instead of opening context menu)
     newHeaderListItem.addEventListener("contextmenu", (event) => {

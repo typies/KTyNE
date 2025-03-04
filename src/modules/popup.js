@@ -624,12 +624,12 @@ class BasicPopup {
       generalPopupLabel.textContent = this.inputLabel;
       generalPopupLabel.classList.remove("hidden");
       generalPopupInput.classList.remove("hidden");
-      submitPopup.classList.remove("hidden");
       generalPopupInput.focus();
     }
 
     if (this.submitBtnText) {
       submitPopup.textContent = this.submitBtnText;
+      submitPopup.classList.remove("hidden");
       submitPopup.addEventListener("click", doCallback);
     }
   }
