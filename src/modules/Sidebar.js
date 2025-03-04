@@ -10,6 +10,7 @@ class Sidebar {
     this.init();
     mainPubSub.subscribe("addNewModule", this.addSidebarItem.bind(this));
     mainPubSub.subscribe("addNewModules", this.addSidebarItems.bind(this));
+    mainPubSub.subscribe("deleteModule", this.deleteModule.bind(this));
     mainPubSub.subscribe(
       "nukeModuleList",
       this.removeAllSidebarItems.bind(this)
@@ -24,9 +25,8 @@ class Sidebar {
     filter: document.querySelector("#filter"),
     filterClear: document.querySelector("#filter-clear"),
     sidebarSettings: document.querySelector(".cog-svg"),
-    editModuleListBtn: document.querySelector("#edit-module-list-btn"),
+    editModeBtn: document.querySelector("#edit-mode-btn"),
     moduleListTitle: document.querySelector(".module-list-title"),
-    addNewModuleBtn: document.querySelector("#add-new-module-btn"),
     nukeModulesBtn: document.querySelector("#nuke-module-list-btn"),
     collapseSidebarBtn: document.querySelector("#collapse-sidebar-btn"),
     sidebarMenuSidebarBtn: document.querySelector("#options-btn"),
@@ -85,7 +85,6 @@ class Sidebar {
         );
       }
     }
-
     const moduleNameCleaned = sidebarItem.moduleName
       .trim()
       .toLowerCase()
@@ -111,16 +110,17 @@ class Sidebar {
         null,
         "Yes",
         () => {
-          this.removeSidebarItem(existingSidebarItem);
+          this.removeSidebarItemElement(existingSidebarItem);
           this.sidebarItems.push(sidebarItem);
           this.localStorageAdd(sidebarItem);
           if (reRender) this.render();
         }
       );
+    } else {
+      this.sidebarItems.push(sidebarItem);
+      this.localStorageAdd(sidebarItem);
+      if (reRender) this.render();
     }
-    this.sidebarItems.push(sidebarItem);
-    this.localStorageAdd(sidebarItem);
-    if (reRender) this.render();
   }
 
   addSidebarItems(sidebarItemsList) {
@@ -143,13 +143,18 @@ class Sidebar {
     }
   }
 
+  deleteModule(pubsubData) {
+    const moduleToDelete = this.getSidebarItemElement(pubsubData.moduleName);
+    this.removeSidebarItemElement(moduleToDelete);
+  }
+
   removeAllSidebarItems() {
     localStorage.clear();
     this.syncLists();
     this.render();
   }
 
-  removeSidebarItem(sidebarItem) {
+  removeSidebarItemElement(sidebarItem) {
     this.localStorageRemove(sidebarItem.textContent);
     sidebarItem.remove();
     this.syncLists();
@@ -189,12 +194,15 @@ class Sidebar {
     const newSidebarListItem = document.createElement("li");
     newSidebarListItem.classList.add("sidebar-item");
     if (this.editMode) {
-      // Used to maintain red color when filter is cleared
-      newSidebarListItem.classList.add("red");
+      // Used to maintain orange color when filter is cleared
+      newSidebarListItem.classList.toggle("orange");
     }
     newSidebarListItem.addEventListener("click", () => {
       if (this.editMode) {
-        this.removeSidebarItem(newSidebarListItem);
+        mainPubSub.publish("editModule", {
+          moduleName: sidebarItem.moduleName,
+          manualUrl: sidebarItem.manualUrl,
+        });
       } else {
         this.openNewModule(sidebarItem.moduleName, sidebarItem.manualUrl);
       }
@@ -212,7 +220,7 @@ class Sidebar {
     const filter = this.domElements.filter;
     const filterClear = this.domElements.filterClear;
     const newRepoTabBtn = this.domElements.newRepoTabBtn;
-    const editModuleListBtn = this.domElements.editModuleListBtn;
+    const editModeBtn = this.domElements.editModeBtn;
     const collapseSidebarBtn = this.domElements.collapseSidebarBtn;
     const addOneBtn = this.domElements.addOneBtn;
     const sidebarMenuSidebarBtn = this.domElements.sidebarMenuSidebarBtn;
@@ -247,7 +255,7 @@ class Sidebar {
         }
       );
     });
-    editModuleListBtn.addEventListener("click", () => this.toggleEditMode());
+    editModeBtn.addEventListener("click", () => this.toggleEditMode());
   }
 
   collapseToggle() {
@@ -276,20 +284,20 @@ class Sidebar {
     const title = this.domElements.moduleListTitle;
     const addNewRepoTabBtn = this.domElements.newRepoTabBtn;
     const sidebarMenu = this.domElements.sidebarMenu;
-    const editModuleListBtn = this.domElements.editModuleListBtn;
+    const editModeBtn = this.domElements.editModeBtn;
     sidebarMenu.classList.toggle("hidden");
     const moduleList = document.querySelectorAll(".sidebar-item");
     this.editMode = !this.editMode;
-    title.classList.toggle("red");
     moduleList.forEach((item) => {
-      item.classList.toggle("red");
+      item.classList.toggle("orange");
     });
+    editModeBtn.classList.toggle("orange");
     if (this.editMode) {
-      editModuleListBtn.textContent = "Exit Edit Mode";
-      title.textContent = "Click Module To Delete";
+      editModeBtn.textContent = "Exit Edit Mode";
+      title.textContent = "Click Module To Edit";
       addNewRepoTabBtn.classList.toggle("hidden");
     } else {
-      editModuleListBtn.textContent = "Enter Edit Mode";
+      editModeBtn.textContent = "Enter Edit Mode";
       title.textContent = "Modules";
       addNewRepoTabBtn.classList.toggle("hidden");
     }

@@ -299,25 +299,23 @@ class NumberedAlphabetPopup {
   }
 }
 
-class NewModuleListItemPopup {
+class AddModuleListItemPopup {
   constructor() {
     return this;
   }
   domElements = {
-    newModuleBtn: document.querySelector("#add-new-module-btn"),
     popupOverlay: document.querySelector(".popup-overlay"),
     newModuleForm: document.querySelector("#add-new-module-form"),
-    importModuleBtn: document.querySelector("#import-modules-btn"),
-    closeFormBtn: document.querySelector("#close-new-module-form-btn"),
     sidebarMenu: document.querySelector("#sidebar-options-menu"),
+    addModuleBtn: document.querySelector("#add-new-module-btn"),
+    closeFormBtn: document.querySelector("#close-new-module-form-btn"),
   };
 
   configureFormButtons() {
-    const newModuleBtn = this.domElements.newModuleBtn;
+    const newModuleBtn = this.domElements.addModuleBtn;
     const popupOverlay = this.domElements.popupOverlay;
     const closeFormBtn = this.domElements.closeFormBtn;
     const newModuleForm = this.domElements.newModuleForm;
-    const importModuleBtn = this.domElements.importModuleBtn;
     const sidebarMenu = this.domElements.sidebarMenu;
     newModuleBtn.addEventListener("click", () => {
       newModuleForm.reset();
@@ -325,10 +323,6 @@ class NewModuleListItemPopup {
       newModuleForm.classList.remove("hidden");
       sidebarMenu.classList.add("hidden");
       document.querySelector("#add-new-module-url").focus();
-    });
-
-    importModuleBtn.addEventListener("click", () => {
-      newModuleForm.classList.add("hidden");
     });
 
     closeFormBtn.addEventListener("click", () => {
@@ -352,6 +346,81 @@ class NewModuleListItemPopup {
   resetForm() {
     const newModuleForm = this.domElements.newModuleForm;
     newModuleForm.reset();
+    return this;
+  }
+
+  init() {
+    this.configureFormButtons();
+    return this;
+  }
+}
+
+class EditModuleListItemPopup {
+  constructor() {
+    mainPubSub.subscribe("editModule", this.handleEditModule.bind(this));
+    return this;
+  }
+  domElements = {
+    popupOverlay: document.querySelector(".popup-overlay"),
+    sidebarMenu: document.querySelector("#sidebar-options-menu"),
+    editModuleForm: document.querySelector("#edit-module-form"),
+    manualUrlInput: document.querySelector("#edit-module-url"),
+    moduleNameInput: document.querySelector("#edit-module-name"),
+    closeFormBtn: document.querySelector("#close-edit-module-form-btn"),
+    deleteModuleBtn: document.querySelector("#delete-edit-module-form-btn"),
+    editModuleBtn: document.querySelector("#edit-edit-module-form-btn"),
+  };
+
+  configureFormButtons() {
+    const editModuleBtn = this.domElements.editModuleBtn;
+    const closeFormBtn = this.domElements.closeFormBtn;
+    const editModuleForm = this.domElements.editModuleForm;
+    const deleteModuleBtn = this.domElements.deleteModuleBtn;
+    closeFormBtn.addEventListener("click", () => {
+      this.toggleHidden();
+    });
+
+    deleteModuleBtn.addEventListener("click", () => {
+      mainPubSub.publish("deleteModule", {
+        moduleName: this.pubsubData.moduleName,
+        manualUrl: this.pubsubData.manualUrl,
+      });
+      this.toggleHidden();
+    });
+
+    editModuleBtn.addEventListener("click", () => {
+      const formData = new FormData(editModuleForm);
+      deleteModuleBtn.click();
+      mainPubSub.publish("addNewModule", {
+        moduleName: formData.get("name"),
+        manualUrl: formData.get("url"),
+      });
+    });
+
+    editModuleForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      editModuleBtn.click();
+    });
+  }
+
+  handleEditModule(pubsubData) {
+    const manualUrlInput = this.domElements.manualUrlInput;
+    const moduleNameInput = this.domElements.moduleNameInput;
+    manualUrlInput.value = pubsubData.manualUrl;
+    moduleNameInput.value = pubsubData.moduleName;
+    manualUrlInput.size = pubsubData.manualUrl.length + 1;
+    this.toggleHidden();
+
+    this.pubsubData = pubsubData;
+  }
+
+  toggleHidden() {
+    this.domElements.popupOverlay.classList.toggle("hidden");
+    this.domElements.editModuleForm.classList.toggle("hidden");
+  }
+
+  resetForm() {
+    this.domElements.editModuleForm.reset();
     return this;
   }
 
@@ -681,9 +750,10 @@ class NukeWarningPopup {
 export {
   EdgeworkPopup,
   NumberedAlphabetPopup,
-  NewModuleListItemPopup,
+  AddModuleListItemPopup,
   ImportModulesPopup,
   ExportModulesPopup,
   NukeWarningPopup,
   BasicPopup,
+  EditModuleListItemPopup,
 };

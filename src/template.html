@@ -30,7 +30,7 @@
                 <div id="sidebar-options-menu" class="options-menu hidden">
                   <ul class="options-list">
                     <li id="add-new-module-btn">Add New Module</li>
-                    <li id="edit-module-list-btn">Enter Edit Mode</li>
+                    <li id="edit-mode-btn">Enter Edit Mode</li>
                     <li id="export-modules-btn">Export Module List</li>
                     <li id="import-modules-btn">Import Module List</li>
                     <li id="nuke-module-list-btn" class="red">
@@ -55,7 +55,6 @@
             </svg>
           </div>
           <button id="new-repo-tab-btn">New Repo Tab</button>
-          <div class="collapse-sidebar-wrapper"></div>
           <ul class="module-list"></ul>
         </div>
         <div class="manuals">
@@ -282,6 +281,7 @@
           id="add-new-module-url"
           placeholder="https://ktane.timwi.de/HTML/Logic.html"
           required
+          oninput="this.size = this.value.length + 1"
           autocomplete="off"
         />
         <label for="name">Module name</label>
@@ -295,6 +295,37 @@
         <div class="form-btn-group">
           <button type="button" id="close-new-module-form-btn">Close</button>
           <button type="submit">Add</button>
+        </div>
+      </form>
+      <form
+        action=""
+        id="edit-module-form"
+        class="form hidden"
+        onclick="event.stopPropagation()"
+      >
+        <div class="title">Edit Module</div>
+        <label for="url">Module URL</label>
+        <input
+          type="text"
+          name="url"
+          id="edit-module-url"
+          placeholder="https://ktane.timwi.de/HTML/Logic.html"
+          required
+          oninput="this.size = this.value.length + 1"
+          autocomplete="off"
+        />
+        <label for="name">Module name</label>
+        <input
+          type="text"
+          name="name"
+          id="edit-module-name"
+          placeholder="Logic"
+          autocomplete="off"
+        />
+        <div class="form-btn-group">
+          <button type="button" id="close-edit-module-form-btn">Close</button>
+          <button type="button" id="delete-edit-module-form-btn">Delete</button>
+          <button type="button" id="edit-edit-module-form-btn">Edit</button>
         </div>
       </form>
       <form
@@ -397,7 +428,7 @@
         />
         <div class="form-btn-group">
           <button type="button" id="general-close-btn">Close</button>
-          <button type="submit" id="general-submit-btn" class="hidden">
+          <button type="button" id="general-submit-btn" class="hidden">
             Submit
           </button>
         </div>

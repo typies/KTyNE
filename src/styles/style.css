@@ -7,6 +7,7 @@
   --color-green: #cefb89;
   --color-red: #ed9190;
   --color-blue: skyblue;
+  --color-orange: #edc090;
   --page-bg-color: var(--color-gray, white);
 
   --notes-line-color: #85c1e9;
@@ -59,6 +60,10 @@ li {
 
 .red {
   color: var(--color-red) !important;
+}
+
+.orange {
+  color: var(--color-orange) !important;
 }
 
 svg {
@@ -436,6 +441,10 @@ svg#filter-clear {
 
 #add-new-module-form {
   position: relative;
+}
+
+#add-new-module-url {
+  width: auto;
 }
 
 .form {

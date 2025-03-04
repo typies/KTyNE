@@ -4,7 +4,8 @@ import Sidebar from "./modules/Sidebar.js";
 import {
   EdgeworkPopup,
   NumberedAlphabetPopup,
-  NewModuleListItemPopup,
+  AddModuleListItemPopup,
+  EditModuleListItemPopup,
   ImportModulesPopup,
   ExportModulesPopup,
   NukeWarningPopup,
@@ -16,7 +17,8 @@ new IframeManager();
 new Sidebar();
 new EdgeworkPopup().init();
 new NumberedAlphabetPopup().init();
-new NewModuleListItemPopup().init();
+new AddModuleListItemPopup().init();
+new EditModuleListItemPopup().init();
 new ImportModulesPopup().init();
 new ExportModulesPopup().init();
 new NukeWarningPopup().init();
