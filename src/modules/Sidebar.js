@@ -60,7 +60,17 @@ class Sidebar {
     });
   }
 
-  addSidebarItem(sidebarItem, reRender = true) {
+  getSidebarItemElement(mName) {
+    const sidebarItems = Array.from(
+      this.domElements.sidebarListElement.children
+    );
+    const matchingItem = sidebarItems.find(
+      (child) => child.textContent === mName
+    );
+    return matchingItem;
+  }
+
+  addSidebarItem(sidebarItem, reRender = true, skipDuplicates = false) {
     if (!sidebarItem.moduleName || sidebarItem.moduleName === "") {
       try {
         const regex = /HTML\/([\w%20]+).html/;
@@ -75,11 +85,38 @@ class Sidebar {
         );
       }
     }
-    if (this.getSidebarItem(sidebarItem.moduleName)) {
+
+    const moduleNameCleaned = sidebarItem.moduleName
+      .trim()
+      .toLowerCase()
+      .split(" ")
+      .map((word) => {
+        const firstNonNumber = word.search(/[A-Za-z]/);
+        return (
+          word.substring(0, firstNonNumber) +
+          word.charAt(firstNonNumber).toUpperCase() +
+          word.slice(firstNonNumber + 1)
+        );
+      })
+      .join(" ");
+    sidebarItem.moduleName = moduleNameCleaned;
+
+    const existingSidebarItem = this.getSidebarItemElement(moduleNameCleaned);
+    if (existingSidebarItem) {
+      if (skipDuplicates) {
+        return moduleNameCleaned; // Skipped
+      }
       new BasicPopup(
-        `Skipping add for: ${sidebarItem.moduleName}. Is duplicated`
+        `${moduleNameCleaned} already exists. Would you like to overwrite?`,
+        null,
+        "Yes",
+        () => {
+          this.removeSidebarItem(existingSidebarItem);
+          this.sidebarItems.push(sidebarItem);
+          this.localStorageAdd(sidebarItem);
+          if (reRender) this.render();
+        }
       );
-      return "skipped";
     }
     this.sidebarItems.push(sidebarItem);
     this.localStorageAdd(sidebarItem);
@@ -87,18 +124,22 @@ class Sidebar {
   }
 
   addSidebarItems(sidebarItemsList) {
-    let skippedFlag = false;
+    const skippedItems = [];
     sidebarItemsList.forEach((sidebarItem) => {
       const newSidebarItemFormatted = {
         moduleName: sidebarItem.name,
         manualUrl: sidebarItem.url,
       };
-      const skipped = this.addSidebarItem(newSidebarItemFormatted, false);
-      if (skipped === "skipped") skippedFlag = true;
+      const skipped = this.addSidebarItem(newSidebarItemFormatted, false, true);
+      if (skipped) skippedItems.push(skipped);
     });
     this.render();
-    if (skippedFlag) {
-      alert("One or more duplicatse where found. Those items where skipped");
+    if (skippedItems.length > 0) {
+      new BasicPopup(
+        `The following items were duplicates and were skipped
+        
+        ${skippedItems.join(", ")}`
+      );
     }
   }
 
@@ -268,8 +309,15 @@ class Sidebar {
     const sidebarListElement = this.domElements.sidebarListElement;
     const sidebarList = Array.from(sidebarListElement.children);
     sidebarList.sort((a, b) => {
-      if (a.textContent.toLowerCase().includes("appendix")) return 1;
-      if (a.textContent.toLowerCase() < b.textContent.toLowerCase()) return -1;
+      a = a.textContent.toLowerCase();
+      b = b.textContent.toLowerCase();
+      if (a.includes("appendix") && b.includes("appendix")) {
+        if (a.replace("appendix", "") < b.replace("appendix", "")) return -1;
+        return 1;
+      }
+      if (a.includes("appendix")) return 1;
+      if (b.includes("appendix")) return -1;
+      if (a < b) return -1;
       return 1;
     });
     sidebarListElement.replaceChildren(...sidebarList);

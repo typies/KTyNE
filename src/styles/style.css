@@ -440,6 +440,7 @@ svg#filter-clear {
 
 .form {
   max-height: 80vh;
+  max-width: 90vw;
 }
 
 #import-modules-form {
@@ -695,6 +696,11 @@ label[for="url"]:after {
   display: flex;
   flex-direction: column;
   z-index: 100;
+}
+
+#general-popup-title {
+  overflow-x: auto;
+  white-space: pre-wrap;
 }
 
 #super-overlay {

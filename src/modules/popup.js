@@ -466,7 +466,7 @@ class ImportModulesPopup {
       textAreaInput.textContent = fr.result;
     };
     fr.onerror = () => {
-      alert(
+      new BasicPopup(
         "Unable to read file. Please use a properly formatted .json or .txt"
       );
     };
@@ -614,7 +614,7 @@ class BasicPopup {
     superOverlay.classList.remove("hidden");
     generalForm.classList.remove("hidden");
 
-    generalPopupTitle.textContent = this.message;
+    generalPopupTitle.textContent = `${this.message}`;
     generalPopupInput.value = "";
     closePopup.textContent = this.closeBtnText;
 
