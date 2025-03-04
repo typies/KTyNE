@@ -20,13 +20,19 @@ class HeaderList {
   addHeaderListItem(pubsubData) {
     const headerList = this.domElements.headerList;
     const newHeaderListItemId = sharedIdCounter.getId();
-    let newHeaderListItem = document.createElement("li");
+    const newHeaderListItem = document.createElement("li");
     newHeaderListItem.classList.add("open-module-list-item");
     newHeaderListItem.setAttribute("data-module-id", newHeaderListItemId);
-    newHeaderListItem.textContent = pubsubData.moduleName;
+    const headerText = document.createElement("span");
+    headerText.textContent = pubsubData.moduleName;
+    const tabClose = document.createElement("span");
+    tabClose.classList.add("close-btn");
+    tabClose.textContent = "x";
+    newHeaderListItem.append(headerText);
+    newHeaderListItem.append(tabClose);
 
     // Left click
-    newHeaderListItem.addEventListener("click", () => {
+    headerText.addEventListener("click", () => {
       mainPubSub.publish("tabChange", {
         iframeId: newHeaderListItemId,
       });
@@ -37,6 +43,9 @@ class HeaderList {
         this.closeHeaderListItem(newHeaderListItemId);
       }
     });
+    tabClose.addEventListener("click", () => {
+      this.closeHeaderListItem(newHeaderListItemId);
+    });
     // Right Click( Rename header items instead of opening context menu)
     newHeaderListItem.addEventListener("contextmenu", (event) => {
       event.preventDefault();
@@ -46,7 +55,7 @@ class HeaderList {
         "Submit",
         (popupInput) => {
           if (popupInput) {
-            newHeaderListItem.textContent = popupInput;
+            headerText.textContent = popupInput;
             navigator.clipboard.writeText(popupInput);
             this.sortHeaderList();
           }

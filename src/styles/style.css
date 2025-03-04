@@ -107,13 +107,19 @@ svg {
   max-width: fit-content;
   display: flex;
   flex-wrap: wrap-reverse;
+  max-width: 90vw; /* Keeps tabs from hiding behind edgework button */
 }
 
 .open-module-list-item {
-  padding: 4px;
-  border-radius: 10px;
-  border-bottom: 4px solid black;
+  padding: 6px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-top: 4px solid black;
+  border-left: 4px solid black;
+  border-right: 4px solid black;
   cursor: pointer;
+  display: flex;
+  gap: 10px;
 }
 
 .open-module-list-item:hover {
@@ -122,7 +128,13 @@ svg {
 
 .open-module-list-item.current-header-item {
   color: white;
-  border-bottom-color: white;
+  border-top-color: white;
+  border-left-color: white;
+  border-right-color: white;
+}
+
+.close-btn:hover {
+  color: var(--color-red);
 }
 
 /* Edgework */
