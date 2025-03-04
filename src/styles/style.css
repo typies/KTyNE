@@ -31,6 +31,7 @@
 
 input {
   width: 100%;
+  font-family: "anonymous pro", "sans-serif";
 }
 
 .hidden {
@@ -99,7 +100,6 @@ svg {
 
 .open-modules-list {
   flex: 1;
-  flex-basis: auto;
   margin: 10px;
   gap: 10px;
   color: var(--color-blue);
@@ -129,7 +129,6 @@ svg {
 
 .edgework-wrapper {
   flex: 1;
-  flex-basis: auto;
   flex-wrap: wrap;
   background-color: var(--color-jet);
   width: 100%;
@@ -507,7 +506,7 @@ svg#filter-clear {
   padding: 10px;
 
   overflow: scroll;
-  font-family: "special-elite";
+  font-family: "anonymous pro", "sans-serif";
 
   background-image: linear-gradient(
     to top,

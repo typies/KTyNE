@@ -152,6 +152,7 @@ class EdgeworkPopup {
   populateIndicators(formData, indicatorKeys) {
     const edgework = this.domElements.edgework;
     const indDiv = document.createElement("div");
+    indDiv.classList.add("ind-wrapper");
     const litIndDiv = document.createElement("div");
     litIndDiv.classList.add("ind-wrapper");
     const unlitIndDiv = document.createElement("div");
@@ -535,6 +536,12 @@ class ExportModulesPopup {
         const manualUrl = window.localStorage.getItem(moduleName);
         storageItems.push({ name: moduleName, url: manualUrl });
       }
+      storageItems.sort((a, b) => {
+        if (a.name.toLowerCase().includes("appendix")) return 1;
+        if (b.name.toLowerCase().includes("appendix")) return -1;
+        if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
+        return 1;
+      });
 
       textAreaOutput.textContent = JSON.stringify(storageItems, null, 2);
     });
