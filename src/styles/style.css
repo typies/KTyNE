@@ -180,6 +180,24 @@ svg {
   flex-direction: row-reverse;
 }
 
+#edgework-preview.edgework {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: var(--color-jet);
+  min-height: 150px;
+  width: 35vw;
+  align-self: center;
+}
+
+#serial-preview .serial {
+  margin-right: 5px;
+}
+
+#indicators-preview {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
 #edgework-first {
   text-align: center;
 }

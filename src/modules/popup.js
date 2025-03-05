@@ -15,22 +15,57 @@ class EdgeworkPopup {
     portsInput: document.querySelector("#ports"),
     closeFormBtn: document.querySelector("#edgework-form-close-btn"),
     resetFormBtn: document.querySelector("#edgework-form-reset-btn"),
+    edgeworkPreview: document.querySelector("#edgework-preview"),
+    serialPreview: document.querySelector("#serial-preview"),
+    batteriesPreview: document.querySelector("#batteries-preview"),
+    portsPreview: document.querySelector("#ports-preview"),
+    indicatorsPreview: document.querySelector("#indicators-preview"),
   };
 
   init() {
     this.configureFormButtons();
-    this.domElements.serialInput.addEventListener("input", () =>
-      this.validateSerialInput()
+    this.domElements.serialInput.addEventListener("input", () => {
+      this.validateSerialInput();
+      this.domElements.serialPreview.replaceChildren(
+        this.createSerialEle(this.domElements.serialInput.value)
+      );
+    });
+    this.domElements.batteriesInput.addEventListener("input", () => {
+      this.validateBatteries();
+      const preview = this.createBatteriesEle(
+        this.domElements.batteriesInput.value,
+        this.domElements.holdersInput.value
+      );
+      if (preview) this.domElements.batteriesPreview.replaceChildren(preview);
+    });
+    this.domElements.holdersInput.addEventListener("input", () => {
+      this.validateBatteries();
+      const preview = this.createBatteriesEle(
+        this.domElements.batteriesInput.value,
+        this.domElements.holdersInput.value
+      );
+      if (preview) this.domElements.batteriesPreview.replaceChildren(preview);
+    });
+    this.domElements.portsInput.addEventListener("input", () => {
+      this.validatePorts();
+      console.log(this.standardizePorts(this.domElements.portsInput.value));
+      this.domElements.portsPreview.replaceChildren(
+        this.createPortPlatesEle(
+          this.standardizePorts(this.domElements.portsInput.value)
+        )
+      );
+    });
+    const allIndicators = this.domElements.edgeworkForm.querySelectorAll(
+      "input[type='radio']"
     );
-    this.domElements.batteriesInput.addEventListener("input", () =>
-      this.validateBatteries()
-    );
-    this.domElements.holdersInput.addEventListener("input", () =>
-      this.validateBatteries()
-    );
-    this.domElements.portsInput.addEventListener("input", () =>
-      this.validatePorts()
-    );
+    allIndicators.forEach((ele) => {
+      ele.addEventListener("click", () => {
+        const formData = new FormData(this.domElements.edgeworkForm);
+        this.domElements.indicatorsPreview.replaceChildren(
+          ...this.createIndicatorsEles(formData)
+        );
+      });
+    });
     return this;
   }
 
@@ -71,11 +106,8 @@ class EdgeworkPopup {
         formData.get("batteries"),
         formData.get("holders")
       );
+      this.populateIndicators(formData);
       this.populatePortPlates(this.standardizePorts(formData.get("ports")));
-      this.populateIndicators(
-        formData,
-        formData.keys().filter((key) => key.includes("ind"))
-      );
       popupOverlay.classList.add("hidden");
       edgeworkForm.classList.add("hidden");
     });
@@ -122,17 +154,36 @@ class EdgeworkPopup {
 
   populateSerialEle(serialValue) {
     const edgework = this.domElements.edgework;
+    const serialEle = this.createSerialEle(serialValue);
+    edgework.appendChild(serialEle);
+  }
+
+  createSerialEle(serialValue) {
     if (!serialValue) return;
     const newSerialEle = document.createElement("div");
     newSerialEle.classList.add("widget", "serial");
     newSerialEle.textContent = serialValue.toUpperCase();
-    edgework.appendChild(newSerialEle);
+    console.log(newSerialEle);
+    return newSerialEle;
   }
 
   populateBatteries(batteries, holders) {
+    const edgework = this.domElements.edgework;
+    const batteryDiv = this.createBatteriesEle(batteries, holders);
+    edgework.appendChild(batteryDiv);
+  }
+
+  createBatteriesEle(batteries, holders) {
+    if (
+      batteries > 2 * holders ||
+      holders > batteries ||
+      !batteries ||
+      !holders
+    ) {
+      return null;
+    }
     const numOfAAPairs = batteries - holders;
     const numOfD = batteries - 2 * numOfAAPairs;
-    const edgework = this.domElements.edgework;
     const batteryDiv = document.createElement("div");
     batteryDiv.classList.add("battery-wrapper");
 
@@ -147,11 +198,18 @@ class EdgeworkPopup {
       newDWidget.classList.add("widget", "battery", "d");
       batteryDiv.appendChild(newDWidget);
     }
-    edgework.appendChild(batteryDiv);
+    return batteryDiv;
   }
 
-  populateIndicators(formData, indicatorKeys) {
+  populateIndicators(formData) {
     const edgework = this.domElements.edgework;
+    const indicatorEles = this.createIndicatorsEles(formData);
+    edgework.append(indicatorEles[0]);
+    edgework.append(indicatorEles[1]);
+  }
+
+  createIndicatorsEles(formData) {
+    const indicatorKeys = formData.keys().filter((key) => key.includes("ind"));
     const litIndDiv = document.createElement("div");
     litIndDiv.classList.add("ind-wrapper");
     const unlitIndDiv = document.createElement("div");
@@ -171,14 +229,19 @@ class EdgeworkPopup {
         unlitIndDiv.appendChild(newIndicator);
       }
     });
-    edgework.append(litIndDiv);
-    edgework.append(unlitIndDiv);
+    return [litIndDiv, unlitIndDiv];
   }
 
   populatePortPlates(portList) {
     const edgework = this.domElements.edgework;
-    if (portList.length === 0) return;
+    const plateDiv = this.createPortPlatesEle(portList);
+    edgework.appendChild(plateDiv);
+    return;
+  }
+
+  createPortPlatesEle(portList) {
     const plateDiv = document.createElement("div");
+    if (portList.length === 0) return plateDiv;
     portList.forEach((plate) => {
       const newPlate = document.createElement("div");
       newPlate.classList.add("widget", "portplate");
@@ -190,16 +253,13 @@ class EdgeworkPopup {
       });
       plateDiv.appendChild(newPlate);
     });
-    edgework.appendChild(plateDiv);
-    return;
+    return plateDiv;
   }
 
   validatePorts() {
     const portsInput = this.domElements.portsInput;
     portsInput.setCustomValidity("");
     this.standardizePorts(portsInput.value);
-
-    return true;
   }
 
   standardizePorts(input) {
@@ -214,9 +274,9 @@ class EdgeworkPopup {
       .replaceAll(/stereo|stereo rca|stereo-rca|ster/g, "rca")
       .replaceAll(",", " ")
       .replaceAll("  ", " ");
-    const portsRegex =
-      /[([][dvi|parallel|ps2|rj|serial|rca|empty|none| ,-]+[)\]]/g;
+    const portsRegex = /[([][dvi|parallel|ps2|rj|serial|rca|empty|none| ,-]+/g;
     const plates = replacedInput.match(portsRegex);
+    console.log(plates);
     if (!plates) return [];
     plates.forEach((plate, i) => {
       plates[i] = plates[i].replaceAll(/\(|\)|\[|\]/g, "");
@@ -227,6 +287,10 @@ class EdgeworkPopup {
   resetForm() {
     const edgeworkForm = this.domElements.edgeworkForm;
     edgeworkForm.reset();
+    this.domElements.serialPreview.replaceChildren();
+    this.domElements.batteriesPreview.replaceChildren();
+    this.domElements.portsPreview.replaceChildren();
+    this.domElements.indicatorsPreview.replaceChildren();
     return this;
   }
 
