@@ -56,7 +56,7 @@ class Sidebar {
 
   getSidebarItem(mName) {
     return this.sidebarItems.find((item) => {
-      if (item.moduleName === mName) return item;
+      if (item.moduleName.toLowerCase() === mName.toLowerCase()) return item;
     });
   }
 
@@ -65,7 +65,7 @@ class Sidebar {
       this.domElements.sidebarListElement.children
     );
     const matchingItem = sidebarItems.find(
-      (child) => child.textContent === mName
+      (child) => child.textContent.toLowerCase() === mName.toLowerCase()
     );
     return matchingItem;
   }
@@ -85,32 +85,21 @@ class Sidebar {
         );
       }
     }
-    const moduleNameCleaned = sidebarItem.moduleName
-      .trim()
-      .toLowerCase()
-      .split(" ")
-      .map((word) => {
-        const firstNonNumber = word.search(/[A-Za-z]/);
-        return (
-          word.substring(0, firstNonNumber) +
-          word.charAt(firstNonNumber).toUpperCase() +
-          word.slice(firstNonNumber + 1)
-        );
-      })
-      .join(" ");
-    sidebarItem.moduleName = moduleNameCleaned;
 
-    const existingSidebarItem = this.getSidebarItemElement(moduleNameCleaned);
+    const trimmedModName = sidebarItem.moduleName.trim();
+
+    const existingSidebarItem = this.getSidebarItem(trimmedModName);
     if (existingSidebarItem) {
       if (skipDuplicates) {
-        return moduleNameCleaned; // Skipped
+        return trimmedModName; // Skipped
       }
       new TempPopup(
-        `${moduleNameCleaned} already exists. Would you like to overwrite?`,
+        `${trimmedModName} already exists. Would you like to overwrite?`,
         null,
         "Yes",
         () => {
-          this.removeSidebarItemElement(existingSidebarItem);
+          const removeItem = this.getSidebarItemElement(trimmedModName);
+          this.removeSidebarItemElement(removeItem);
           this.sidebarItems.push(sidebarItem);
           this.localStorageAdd(sidebarItem);
           if (reRender) this.render();
