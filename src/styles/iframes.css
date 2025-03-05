@@ -7,24 +7,6 @@
   background-color: white;
 }
 
-.collapse-sidebar-btn,
-.add-one-btn {
-  border-radius: 0;
-  margin: 4px;
-  position: absolute;
-  cursor: pointer;
-}
-
-.collapse-sidebar-btn[rotate180] {
-  transform: rotate(180deg);
-}
-
-.collapse-sidebar-btn:hover,
-.add-one-btn:hover {
-  stroke: var(--color-blue);
-  fill: var(--color-blue);
-}
-
 .add-one-btn {
   top: 24px;
 }
@@ -47,10 +29,33 @@
     / 1fr 1fr;
 }
 
-.split-button {
+.svg-btn-group {
+  display: flex;
   position: absolute;
-  left: 30px;
-  top: 4px;
+  justify-content: center;
+  align-items: center;
+}
+
+.collapse-sidebar-btn,
+.add-one-btn {
+  border-radius: 0;
+  margin: 4px;
+  cursor: pointer;
+}
+
+.collapse-sidebar-btn[rotate180] {
+  transform: rotate(180deg);
+}
+
+.collapse-sidebar-btn:hover,
+.add-one-btn:hover {
+  stroke: var(--color-blue);
+  fill: var(--color-blue);
+}
+
+.split-button {
+  width: 1.75em;
+  height: 1.75em;
   cursor: pointer;
   stroke: none;
 }
