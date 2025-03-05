@@ -21,17 +21,16 @@ class Sidebar {
   domElements = {
     sidebar: document.querySelector(".sidebar"),
     sidebarListElement: document.querySelector(".sidebar .module-list"),
-    newRepoTabBtn: document.querySelector("#new-repo-tab-btn"),
-    filter: document.querySelector("#filter"),
-    filterClear: document.querySelector("#filter-clear"),
+    newRepoTabBtn: document.querySelector(".new-repo-tab-btn"),
+    filter: document.querySelector("#sidebar-filter-input"),
+    filterClear: document.querySelector(".sidebar-filter-clear"),
     sidebarSettings: document.querySelector(".cog-svg"),
-    editModeBtn: document.querySelector("#edit-mode-btn"),
+    editModeBtn: document.querySelector(".edit-mode-btn"),
     moduleListTitle: document.querySelector(".module-list-title"),
-    nukeModulesBtn: document.querySelector("#nuke-module-list-btn"),
-    collapseSidebarBtn: document.querySelector("#collapse-sidebar-btn"),
-    sidebarMenuSidebarBtn: document.querySelector("#options-btn"),
-    sidebarMenu: document.querySelector("#sidebar-options-menu"),
-    addOneBtn: document.querySelector("#add-one-btn"),
+    collapseSidebarBtn: document.querySelector(".collapse-sidebar-btn"),
+    sidebarMenuSidebarBtn: document.querySelector(".options-btn"),
+    sidebarMenu: document.querySelector(".sidebar-options-menu"),
+    addOneBtn: document.querySelector(".add-one-btn"),
   };
 
   init() {
@@ -91,7 +90,7 @@ class Sidebar {
     const existingSidebarItem = this.getSidebarItem(trimmedModName);
     if (existingSidebarItem) {
       if (skipDuplicates) {
-        return trimmedModName; // Skipped
+        return "skipped";
       }
       new TempPopup(
         `${trimmedModName} already exists. Would you like to overwrite?`,
@@ -115,21 +114,35 @@ class Sidebar {
 
   addSidebarItems(sidebarItemsList) {
     const skippedItems = [];
+    const addedItems = [];
     sidebarItemsList.forEach((sidebarItem) => {
       const newSidebarItemFormatted = {
         moduleName: sidebarItem.name,
         manualUrl: sidebarItem.url,
       };
       const skipped = this.addSidebarItem(newSidebarItemFormatted, false, true);
-      if (skipped) skippedItems.push(skipped);
+      if (skipped === "skipped") {
+        skippedItems.push(sidebarItem.name);
+      } else {
+        addedItems.push(sidebarItem.name);
+      }
     });
     this.render();
     if (skippedItems.length > 0) {
-      new TempPopup(
-        `The following items were duplicates and were skipped
-        
-        ${skippedItems.join(", ")}`
-      );
+      if (skippedItems.length === sidebarItemsList.length) {
+        new TempPopup("All of those modules are already known.");
+      } else if (
+        skippedItems.length <
+        sidebarItemsList.length - skippedItems.length
+      ) {
+        new TempPopup(
+          `The following items were duplicates and were skipped\n\n${skippedItems.join(", ")}`
+        );
+      } else {
+        new TempPopup(
+          `Those were mostly duplicates, But the follow were added:\n\n${addedItems.join(", ")}`
+        );
+      }
     }
   }
 

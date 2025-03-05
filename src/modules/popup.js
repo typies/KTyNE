@@ -9,17 +9,17 @@ class EdgeworkPopup {
     edgework: document.querySelector(".edgework"),
     edgeworkForm: document.querySelector(".edgework-form"),
     newEdgeworkBtn: document.querySelector(".edgework-btn"),
-    serialInput: document.querySelector("#serial"),
-    batteriesInput: document.querySelector("#batteries"),
-    holdersInput: document.querySelector("#holders"),
+    serialInput: document.querySelector("#serial-input"),
+    batteriesInput: document.querySelector("#batteries-input"),
+    holdersInput: document.querySelector("#holders-input"),
     portsInput: document.querySelector("#ports"),
-    closeFormBtn: document.querySelector("#edgework-form-close-btn"),
-    resetFormBtn: document.querySelector("#edgework-form-reset-btn"),
-    edgeworkPreview: document.querySelector("#edgework-preview"),
-    serialPreview: document.querySelector("#serial-preview"),
-    batteriesPreview: document.querySelector("#batteries-preview"),
-    portsPreview: document.querySelector("#ports-preview"),
-    indicatorsPreview: document.querySelector("#indicators-preview"),
+    closeFormBtn: document.querySelector(".edgework-form-close-btn"),
+    resetFormBtn: document.querySelector(".edgework-form-reset-btn"),
+    edgeworkPreview: document.querySelector(".edgework-preview"),
+    serialPreview: document.querySelector(".serial-preview"),
+    batteriesPreview: document.querySelector(".batteries-preview"),
+    portsPreview: document.querySelector(".ports-preview"),
+    indicatorsPreview: document.querySelector(".indicators-preview"),
   };
 
   init() {
@@ -78,7 +78,7 @@ class EdgeworkPopup {
     newEdgeworkBtn.addEventListener("click", () => {
       popupOverlay.classList.remove("hidden");
       edgeworkForm.classList.remove("hidden");
-      document.querySelector("#serial").focus();
+      document.querySelector("#serial-input").focus();
     });
 
     closeFormBtn.addEventListener("click", () => {
@@ -89,7 +89,7 @@ class EdgeworkPopup {
     resetFormBtn.addEventListener("click", () => {
       this.resetForm();
       this.resetEdgework();
-      document.querySelector("#serial").focus();
+      document.querySelector("#serial-input").focus();
     });
 
     edgeworkForm.addEventListener("submit", (event) => {
@@ -369,10 +369,10 @@ class AddModuleListItemPopup {
   }
   domElements = {
     popupOverlay: document.querySelector(".popup-overlay"),
-    newModuleForm: document.querySelector("#add-new-module-form"),
-    sidebarMenu: document.querySelector("#sidebar-options-menu"),
-    addModuleBtn: document.querySelector("#add-new-module-btn"),
-    closeFormBtn: document.querySelector("#close-new-module-form-btn"),
+    newModuleForm: document.querySelector(".add-new-module-form"),
+    sidebarMenu: document.querySelector(".sidebar-options-menu"),
+    addModuleBtn: document.querySelector(".add-new-module-btn"),
+    closeFormBtn: document.querySelector(".close-new-module-form-btn"),
   };
 
   configureFormButtons() {
@@ -386,7 +386,7 @@ class AddModuleListItemPopup {
       popupOverlay.classList.remove("hidden");
       newModuleForm.classList.remove("hidden");
       sidebarMenu.classList.add("hidden");
-      document.querySelector("#add-new-module-url").focus();
+      document.querySelector("#add-new-module-form-url-input").focus();
     });
 
     closeFormBtn.addEventListener("click", () => {
@@ -426,13 +426,13 @@ class EditModuleListItemPopup {
   }
   domElements = {
     popupOverlay: document.querySelector(".popup-overlay"),
-    sidebarMenu: document.querySelector("#sidebar-options-menu"),
-    editModuleForm: document.querySelector("#edit-module-form"),
+    sidebarMenu: document.querySelector(".sidebar-options-menu"),
+    editModuleForm: document.querySelector(".edit-module-form"),
     manualUrlInput: document.querySelector("#edit-module-url"),
     moduleNameInput: document.querySelector("#edit-module-name"),
-    closeFormBtn: document.querySelector("#close-edit-module-form-btn"),
-    deleteModuleBtn: document.querySelector("#delete-edit-module-form-btn"),
-    editModuleBtn: document.querySelector("#edit-edit-module-form-btn"),
+    closeFormBtn: document.querySelector(".close-edit-module-form-btn"),
+    deleteModuleBtn: document.querySelector(".delete-edit-module-form-btn"),
+    editModuleBtn: document.querySelector(".submit-edit-module-form-btn"),
   };
 
   configureFormButtons() {
@@ -500,14 +500,14 @@ class ImportModulesPopup {
   }
   domElements = {
     popupOverlay: document.querySelector(".popup-overlay"),
-    importModuleBtn: document.querySelector("#import-modules-btn"),
-    importModuleForm: document.querySelector("#import-modules-form"),
-    closeFormBtn: document.querySelector("#close-import-form-btn"),
-    resetFormBtn: document.querySelector("#reset-import-form-btn"),
-    textAreaInput: document.querySelector("#import-modules-text"),
-    fileUploadInput: document.querySelector("#import-modules-file"),
-    addExampleBtn: document.querySelector("#import-modules-example"),
-    sidebarMenu: document.querySelector("#sidebar-options-menu"),
+    importModuleBtn: document.querySelector(".import-modules-btn"),
+    importModuleForm: document.querySelector(".import-modules-form"),
+    closeFormBtn: document.querySelector(".close-import-form-btn"),
+    resetFormBtn: document.querySelector(".reset-import-form-btn"),
+    textAreaInput: document.querySelector(".import-modules-text"),
+    fileUploadInput: document.querySelector("#import-modules-form-file-input"),
+    addExampleBtn: document.querySelector(".import-modules-example"),
+    sidebarMenu: document.querySelector(".sidebar-options-menu"),
   };
 
   configureFormButtons() {
@@ -628,12 +628,12 @@ class ExportModulesPopup {
   }
   domElements = {
     popupOverlay: document.querySelector(".popup-overlay"),
-    exportModuleBtn: document.querySelector("#export-modules-btn"),
-    exportModuleForm: document.querySelector("#export-modules-form"),
-    closeFormBtn: document.querySelector("#close-export-form-btn"),
-    copyBtn: document.querySelector("#copy-export-form-btn"),
-    textAreaOutput: document.querySelector("#export-modules-text"),
-    sidebarMenu: document.querySelector("#sidebar-options-menu"),
+    exportModuleBtn: document.querySelector(".export-modules-btn"),
+    exportModuleForm: document.querySelector(".export-modules-form"),
+    closeFormBtn: document.querySelector(".close-export-form-btn"),
+    copyBtn: document.querySelector(".copy-export-form-btn"),
+    textAreaOutput: document.querySelector(".export-modules-text"),
+    sidebarMenu: document.querySelector(".sidebar-options-menu"),
   };
 
   configureFormButtons() {
@@ -710,7 +710,7 @@ class TempPopup {
     return this;
   }
 
-  superOverlay = document.querySelector("#super-overlay");
+  superOverlay = document.querySelector(".super-overlay");
 
   populatePopup() {
     const title = this.form.querySelector(".title");
@@ -774,7 +774,7 @@ class TempPopup {
   doPopup() {
     this.createPopupSkeleton();
     this.populatePopup();
-    document.querySelector("#super-overlay").append(this.form);
+    document.querySelector(".super-overlay").append(this.form);
     this.superOverlay.classList.remove("hidden");
     if (this.inputLabel) {
       this.form.querySelector("input").focus();
@@ -788,10 +788,10 @@ class NukeWarningPopup {
   }
   domElements = {
     popupOverlay: document.querySelector(".popup-overlay"),
-    closeFormBtn: document.querySelector("#close-nuke-warning-btn"),
-    startNukeBtn: document.querySelector("#nuke-module-list-btn"),
-    nukePopup: document.querySelector("#nuke-warning"),
-    sidebarMenu: document.querySelector("#sidebar-options-menu"),
+    closeFormBtn: document.querySelector(".close-nuke-warning-btn"),
+    startNukeBtn: document.querySelector(".nuke-module-list-btn"),
+    nukePopup: document.querySelector(".nuke-warning"),
+    sidebarMenu: document.querySelector(".sidebar-options-menu"),
   };
 
   configureFormButtons() {

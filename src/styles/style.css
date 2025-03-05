@@ -185,7 +185,11 @@ svg {
   flex-direction: row-reverse;
 }
 
-#edgework-preview.edgework {
+.edgework-first-form-row {
+  text-align: center;
+}
+
+.edgework-preview.edgework {
   margin-top: 20px;
   padding: 10px;
   background-color: var(--color-jet);
@@ -194,20 +198,16 @@ svg {
   align-self: center;
 }
 
-#serial-preview .serial {
+.serial-preview .serial {
   margin-right: 5px;
 }
 
-#indicators-preview {
+.indicators-preview {
   display: flex;
   flex-direction: row-reverse;
 }
 
-#edgework-first {
-  text-align: center;
-}
-
-#serial {
+#serial-input {
   padding: 8px;
   width: 8ch;
   text-align: center;
@@ -221,8 +221,8 @@ label[for="serial"]:after {
   right: 0;
 }
 
-#holders,
-#batteries {
+#holders-input,
+#batteries-input {
   width: 4ch;
   padding: 4px;
 }
@@ -237,7 +237,7 @@ label[for="serial"]:after {
   position: relative;
 }
 
-#ind-table {
+.ind-table {
   display: grid;
   grid-template-columns: 5ch repeat(11, 4ch);
   text-align: center;
@@ -400,11 +400,6 @@ label[for="serial"]:after {
   position: relative;
 }
 
-#title-btn-list {
-  position: absolute;
-  right: 0;
-}
-
 .module-list-title {
   display: inline-block;
   font-size: 24px;
@@ -420,11 +415,7 @@ label[for="serial"]:after {
     1px 1px 0 #000;
 }
 
-#sidebar-menu-wrapper {
-  position: relative;
-}
-
-#sidebar-options-menu {
+.sidebar-options-menu {
   position: absolute;
   background-color: var(--color-gray);
   right: 0;
@@ -454,17 +445,17 @@ label[for="serial"]:after {
   margin-bottom: 12px;
 }
 
-#filter {
+#sidebar-filter-input {
   height: 2em;
   padding-left: 4px;
   border-radius: 6px;
 }
 
-svg#options-btn:hover {
+svg.options-btn:hover {
   fill: var(--color-blue);
 }
 
-svg#filter-clear {
+svg.sidebar-filter-clear {
   width: 1em;
   height: 1em;
   position: absolute;
@@ -473,15 +464,15 @@ svg#filter-clear {
   cursor: pointer;
 }
 
-#filter-clear:hover {
+.sidebar-filter-clear:hover {
   fill: var(--color-red);
 }
 
-#add-new-module-form {
+.add-new-module-form {
   position: relative;
 }
 
-#add-new-module-url {
+#add-new-module-form-url-input {
   width: auto;
   min-width: 40ch;
 }
@@ -491,21 +482,21 @@ svg#filter-clear {
   max-width: 90vw;
 }
 
-#import-modules-form {
+.import-modules-form {
   display: flex;
   flex-direction: column;
 }
 
-#file-wrapper {
+.file-wrapper {
   display: flex;
   justify-content: space-between;
 }
 
-#import-modules-file {
+#import-modules-form-file-input {
   font-size: 10px;
 }
 
-#import-modules-example {
+.import-modules-example {
   font-size: 0.5em;
 }
 
@@ -529,7 +520,7 @@ svg#filter-clear {
 }
 
 .sidebar-item,
-#new-repo-tab-btn {
+.new-repo-tab-btn {
   width: 100%;
   margin: 2px 0;
   font-size: 1.2rem;
@@ -544,7 +535,7 @@ svg#filter-clear {
 }
 
 .sidebar-item:hover,
-#new-repo-tab-btn:hover {
+.new-repo-tab-btn:hover {
   color: white;
 }
 
@@ -557,25 +548,25 @@ svg#filter-clear {
   background-color: white;
 }
 
-#collapse-sidebar-btn,
-#add-one-btn {
+.collapse-sidebar-btn,
+.add-one-btn {
   border-radius: 0;
   margin: 4px;
   position: absolute;
   cursor: pointer;
 }
 
-#collapse-sidebar-btn[rotate180] {
+.collapse-sidebar-btn[rotate180] {
   transform: rotate(180deg);
 }
 
-#collapse-sidebar-btn:hover,
-#add-one-btn:hover {
+.collapse-sidebar-btn:hover,
+.add-one-btn:hover {
   stroke: var(--color-blue);
   fill: var(--color-blue);
 }
 
-#add-one-btn {
+.add-one-btn {
   top: 24px;
 }
 
@@ -686,7 +677,7 @@ form div.title {
 }
 
 .popup-overlay,
-#super-overlay {
+.super-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -696,6 +687,10 @@ form div.title {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.super-overlay {
+  z-index: 100;
 }
 
 .form {
@@ -748,7 +743,7 @@ label[for="url"]:after {
   margin-top: 8px;
 }
 
-#nuke-btn:hover {
+.nuke-btn:hover {
   color: var(--color-red);
 }
 
@@ -760,8 +755,4 @@ label[for="url"]:after {
 .form.temp .title {
   overflow-x: auto;
   white-space: pre-wrap;
-}
-
-#super-overlay {
-  z-index: 100;
 }

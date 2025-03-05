@@ -13,7 +13,7 @@ class IframeManager {
   domElements = {
     manualsDiv: document.querySelector(".manuals"),
     pageIframe: document.createElement("iframe"),
-    splitBtn: document.querySelector("#split-button"),
+    splitBtn: document.querySelector(".split-button"),
   };
 
   init() {
@@ -25,7 +25,7 @@ class IframeManager {
     splitBtn.addEventListener("click", () => {
       this.toggleSplitFrame();
       document
-        .querySelector("#sidebar-options-menu")
+        .querySelector(".sidebar-options-menu")
         .classList.toggle("hidden");
       splitBtn.classList.toggle("green");
       if (splitBtn.textContent === "Enable Split Mode") {
@@ -130,8 +130,16 @@ class IframeManager {
     if (!this.alternateIframe) return;
     if (this.splitEnabled) {
       this.alternateIframe.classList.remove("hidden-iframe");
+      mainPubSub.publish("addHeaderItemClass", {
+        headerListItemId: this.getIdByIframe(this.alternateIframe),
+        headerClass: "alternate-header-item",
+      });
     } else {
       this.alternateIframe.classList.add("hidden-iframe");
+      mainPubSub.publish("removeHeaderItemClass", {
+        headerListItemId: this.getIdByIframe(this.alternateIframe),
+        headerClass: "alternate-header-item",
+      });
     }
   }
 }
