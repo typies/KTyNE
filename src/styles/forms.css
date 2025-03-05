@@ -1,0 +1,156 @@
+/* Edgwork Form */
+
+.edgework-first-form-row {
+  text-align: center;
+}
+
+#serial-input {
+  padding: 8px;
+  width: 8ch;
+  text-align: center;
+}
+
+label[for="serial"]:after {
+  content: "required";
+  color: var(--color-red);
+  font-size: 0.5em;
+  position: absolute;
+  right: 0;
+}
+
+#holders-input,
+#batteries-input {
+  width: 4ch;
+  padding: 4px;
+}
+
+.ind-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+input.ind-checkbox {
+  width: auto;
+}
+
+.ind-table {
+  display: grid;
+  grid-template-columns: 5ch repeat(11, 4ch);
+  text-align: center;
+  gap: 2px;
+  margin-top: 10px;
+}
+
+.ind-group,
+.row-labels {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.row-labels {
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  align-items: end;
+  gap: 0;
+}
+
+.ind-group input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.none-text,
+.ind-group:has(input[value="none"]:checked) {
+  color: #2b2926;
+}
+
+.lit-text,
+.ind-group:has(input[value="lit"]:checked) {
+  color: white;
+}
+
+.unlit-text,
+.ind-group:has(input[value="unlit"]:checked) {
+  color: rgba(0, 0, 0, 0.15);
+}
+
+.edgework-preview.edgework {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: var(--color-jet);
+  min-height: 150px;
+  width: 35vw;
+  align-self: center;
+}
+
+.serial-preview .serial {
+  margin-right: 5px;
+}
+
+.indicators-preview {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+/* Add Module Form */
+
+.add-new-module-form {
+  position: relative;
+}
+
+#add-new-module-form-url-input {
+  width: auto;
+  min-width: 40ch;
+}
+
+/* Edit Module Form */
+
+/* Import/Export Form */
+
+.file-wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.popup-text-area {
+  overflow-y: auto;
+  white-space: pre-wrap;
+  margin-top: 10px;
+  padding: 8px;
+  min-height: 2em;
+  height: 20em;
+  min-width: 20ch;
+  width: 60ch;
+  max-width: 80vw;
+  text-wrap: nowrap;
+  background-color: white;
+  font-size: 0.8em;
+}
+
+.popup-text-area:not([contenteditable]) {
+  background-color: var(--color-silver);
+}
+
+.import-modules-form {
+  display: flex;
+  flex-direction: column;
+}
+
+#import-modules-form-file-input {
+  font-size: 10px;
+}
+
+.import-modules-example {
+  font-size: 0.5em;
+}
+
+/* Nuke Form */
+
+.nuke-btn {
+  color: var(--color-red);
+}

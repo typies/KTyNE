@@ -1,6 +1,7 @@
 import HeaderList from "./modules/HeaderList.js";
 import IframeManager from "./modules/IframeManager.js";
 import Sidebar from "./modules/Sidebar.js";
+import "./styles/main.css";
 import {
   EdgeworkPopup,
   NumberedAlphabetPopup,
@@ -10,7 +11,6 @@ import {
   ExportModulesPopup,
   NukeWarningPopup,
 } from "./modules/popup.js";
-import "./styles/style.css";
 
 new HeaderList();
 new IframeManager().init();

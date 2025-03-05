@@ -1,0 +1,107 @@
+/* Sidebar */
+
+.sidebar {
+  padding: 10px;
+  position: relative;
+  width: 25ch;
+}
+
+.module-list-title-wrapper {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+}
+
+.module-list-title.red {
+  letter-spacing: 2px;
+  text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
+}
+
+.module-list-title {
+  display: inline-block;
+  font-size: 24px;
+  padding-bottom: 8px;
+}
+
+svg.options-btn:hover {
+  fill: var(--color-blue);
+}
+
+.sidebar-options-menu {
+  position: absolute;
+  background-color: var(--color-gray);
+  right: 0;
+  z-index: 1;
+  border: 1px solid var(--color-jet);
+  border-radius: 5px;
+}
+
+.options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px;
+  text-wrap: nowrap;
+}
+
+.options-list > li {
+  color: var(--color-blue);
+  background-color: var(--color-jet);
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.sidebar-filter-wrapper {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+#sidebar-filter-input {
+  height: 2em;
+  padding-left: 4px;
+  border-radius: 6px;
+}
+
+svg.sidebar-filter-clear {
+  width: 1em;
+  height: 1em;
+  position: absolute;
+  right: 0.5em;
+  top: 0.4em;
+  cursor: pointer;
+}
+
+.sidebar-filter-clear:hover {
+  fill: var(--color-red);
+}
+
+.module-list {
+  overflow: scroll;
+  scrollbar-width: none;
+  height: 100%;
+}
+
+.sidebar-item,
+.new-repo-tab-btn {
+  width: 100%;
+  margin: 2px 0;
+  font-size: 1.2rem;
+  border: none;
+  background-color: var(--color-jet, black);
+  color: var(--color-blue);
+  padding: 6px 12px;
+  border-radius: 6px;
+  word-break: break-word;
+  text-align: start;
+  cursor: pointer;
+}
+
+.sidebar-item:hover,
+.new-repo-tab-btn:hover {
+  color: white;
+}

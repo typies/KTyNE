@@ -1,0 +1,46 @@
+/* Footer css */
+
+.footer {
+  grid-area: footer;
+  background-color: var(--color-jet);
+
+  display: flex;
+  justify-content: end;
+  padding: 10px;
+  position: relative;
+}
+
+.selected {
+  color: white;
+}
+
+.alphabet-popup {
+  position: absolute;
+  background-color: var(--color-gray);
+  margin: 4px;
+  right: 0;
+  bottom: calc(100%);
+  border: 1px solid var(--color-jet);
+  padding: 8px;
+  border-radius: 8px;
+  display: grid;
+  grid-template-columns: repeat(10, 4ch);
+  color: var(--color-jet);
+  gap: 2px;
+}
+
+.single-digit {
+  padding-left: 1ch;
+}
+
+.mini-btn-wrapper {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin: 4px;
+}
+
+.mini-btn {
+  font-size: 12px;
+  padding: 3px 6px;
+}

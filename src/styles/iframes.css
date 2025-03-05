@@ -1,0 +1,76 @@
+/* Main frame css */
+.manuals {
+  flex-grow: 1;
+  border-left: 1px solid var(--color-jet);
+  border-right: 1px solid var(--color-jet);
+  position: relative;
+  background-color: white;
+}
+
+.collapse-sidebar-btn,
+.add-one-btn {
+  border-radius: 0;
+  margin: 4px;
+  position: absolute;
+  cursor: pointer;
+}
+
+.collapse-sidebar-btn[rotate180] {
+  transform: rotate(180deg);
+}
+
+.collapse-sidebar-btn:hover,
+.add-one-btn:hover {
+  stroke: var(--color-blue);
+  fill: var(--color-blue);
+}
+
+.add-one-btn {
+  top: 24px;
+}
+
+.hidden-iframe {
+  display: none;
+}
+
+.alternate-iframe,
+.current-iframe {
+  visibility: visible;
+  height: 100%;
+  width: 100%;
+}
+
+.split {
+  display: grid;
+  grid:
+    "left right" 1fr
+    / 1fr 1fr;
+}
+
+.split-button {
+  position: absolute;
+  left: 30px;
+  top: 4px;
+  cursor: pointer;
+  stroke: none;
+}
+
+.split-button:hover {
+  stroke: var(--color-green);
+}
+
+.split-button.selected {
+  stroke: var(--color-green);
+}
+
+.split-button.selected:hover {
+  stroke: none;
+}
+
+.alternate-iframe {
+  grid-area: left;
+}
+
+.current-iframe {
+  grid-area: right;
+}

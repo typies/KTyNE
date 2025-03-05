@@ -1,0 +1,132 @@
+@import "forms.css";
+@import "header.css";
+@import "sidebar.css";
+@import "iframes.css";
+@import "notes.css";
+@import "footer.css";
+@import "popups.css";
+
+:root {
+  --color-jet: #353535;
+  --color-gray: #d2d7df;
+  --color-dark-gray: hsl(217, 17%, 70%);
+  --color-silver: #bdbbb0;
+  --color-light-jet: hsl(0, 0%, 40%);
+  --color-green: #cefb89;
+  --color-red: #ed9190;
+  --color-blue: skyblue;
+  --color-orange: #edc090;
+  --page-bg-color: var(--color-gray, white);
+
+  --notes-line-color: #85c1e9;
+}
+
+@font-face {
+  font-family: "special-elite";
+  src: url("/src/fonts/SpecialElite-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "anonymous pro";
+  src: url("/src/fonts/AnonymousPro-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "NotoSansMono";
+  src: url("/src/fonts/NotoSansMono.ttf") format("truetype");
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "special-elite";
+}
+
+input {
+  width: 100%;
+  font-family: "anonymous pro", "sans-serif";
+}
+
+.hidden {
+  display: none !important;
+}
+
+button {
+  font-size: 1.2rem;
+  color: #87ceeb;
+  background-color: var(--color-jet);
+  border-radius: 10px;
+  border: 1px solid var(--color-gray);
+  padding: 6px 12px;
+}
+
+button:hover {
+  cursor: pointer;
+  color: white;
+}
+
+ul,
+li {
+  list-style: none;
+}
+
+.red {
+  color: var(--color-red) !important;
+}
+
+.green {
+  color: var(--color-green) !important;
+}
+
+.orange {
+  color: var(--color-orange) !important;
+}
+
+svg {
+  width: 1.5em;
+  height: 1.5em;
+  cursor: pointer;
+  border-radius: 50%;
+  stroke: var(--color-jet);
+}
+
+.main-container {
+  display: grid;
+  background: var(--page-bg-color);
+  grid:
+    "header header" minmax(50px, auto)
+    "main notes" 1fr
+    "footer footer" minmax(30px, auto)
+    / 1fr minmax(20ch, 25%);
+  height: 100dvh;
+  height: 100vh;
+  gap: 1px;
+}
+
+.main {
+  grid-area: main;
+  display: flex;
+  overflow: hidden;
+}
+
+/* Required Text */
+label[for="serial"],
+label[for="url"] {
+  position: relative;
+}
+label[for="url"]:after {
+  content: "required";
+  color: var(--color-red);
+  font-size: 0.5em;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+
+.form-btn-group {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 8px;
+}
