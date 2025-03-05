@@ -747,7 +747,7 @@ class TempPopup {
 
   createPopupSkeleton() {
     const form = document.createElement("form");
-    form.classList.add("form", "temp");
+    form.classList.add("form");
     const title = document.createElement("div");
     title.classList.add("title");
     const label = document.createElement("label");
