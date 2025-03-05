@@ -62,6 +62,10 @@ li {
   color: var(--color-red) !important;
 }
 
+.green {
+  color: var(--color-green) !important;
+}
+
 .orange {
   color: var(--color-orange) !important;
 }
@@ -136,6 +140,13 @@ svg {
   border-top-color: white;
   border-left-color: white;
   border-right-color: white;
+}
+
+.open-module-list-item.alternate-header-item {
+  color: var(--color-green);
+  border-top-color: var(--color-green);
+  border-left-color: var(--color-green);
+  border-right-color: var(--color-green);
 }
 
 .close-btn:hover {
@@ -462,9 +473,6 @@ svg#filter-clear {
   flex-direction: column;
 }
 
-#import-modules-text {
-}
-
 #file-wrapper {
   display: flex;
   justify-content: space-between;
@@ -548,14 +556,29 @@ svg#filter-clear {
 }
 
 .hidden-iframe {
-  visibility: hidden;
-  position: absolute;
+  display: none;
 }
 
+.alternate-iframe,
 .current-iframe {
   visibility: visible;
   height: 100%;
   width: 100%;
+}
+
+.alternate-iframe {
+  grid-area: left;
+}
+
+.current-iframe {
+  grid-area: right;
+}
+
+.split {
+  display: grid;
+  grid:
+    "left right" 1fr
+    / 1fr 1fr;
 }
 
 /* Notes css */
@@ -608,11 +631,6 @@ svg#filter-clear {
   padding: 8px;
   border-radius: 8px;
   display: grid;
-  /* grid:
-    "first second" 1fr
-    "third forth" 1fr
-    "fifth sixth" 1fr
-    / 1fr 1fr; */
   grid-template-columns: repeat(10, 4ch);
   color: var(--color-jet);
   gap: 2px;

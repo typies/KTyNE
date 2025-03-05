@@ -13,7 +13,7 @@ import {
 import "./styles/style.css";
 
 new HeaderList();
-new IframeManager();
+new IframeManager().init();
 new Sidebar();
 new EdgeworkPopup().init();
 new NumberedAlphabetPopup().init();

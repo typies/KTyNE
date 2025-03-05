@@ -8,13 +8,19 @@ class HeaderList {
       "addHeaderListItem",
       this.addHeaderListItem.bind(this)
     );
-    mainPubSub.subscribe("tabChange", this.reactToTabChange.bind(this));
+    mainPubSub.subscribe(
+      "addHeaderItemClass",
+      this.addHeaderItemClass.bind(this)
+    );
+    mainPubSub.subscribe(
+      "removeHeaderItemClass",
+      this.removeHeaderItemClass.bind(this)
+    );
     return this;
   }
 
   domElements = {
     headerList: document.querySelector(".open-modules-list"),
-    currentlyHighlightedHeaderItem: null,
   };
 
   addHeaderListItem(pubsubData) {
@@ -32,7 +38,7 @@ class HeaderList {
     newHeaderListItem.append(tabClose);
 
     // Left click
-    headerText.addEventListener("click", () => {
+    newHeaderListItem.addEventListener("click", () => {
       mainPubSub.publish("tabChange", {
         iframeId: newHeaderListItemId,
       });
@@ -43,7 +49,8 @@ class HeaderList {
         this.closeHeaderListItem(newHeaderListItemId);
       }
     });
-    tabClose.addEventListener("click", () => {
+    tabClose.addEventListener("click", (event) => {
+      event.stopPropagation();
       new TempPopup(
         `Close ${headerText.textContent} Tab?`,
         null,
@@ -81,10 +88,10 @@ class HeaderList {
   }
 
   closeHeaderListItem(headerListItemId) {
-    const highlightedItem = this.domElements.currentlyHighlightedHeaderItem;
+    const highlightedItems = document.querySelectorAll("current-header-item");
     const itemToRemove = this.getHeaderListItem(headerListItemId);
-    if (itemToRemove === highlightedItem) {
-      mainPubSub.publish("tabChange", {});
+    if (Array.from(highlightedItems).includes(itemToRemove)) {
+      this.removeHeaderItemClass({ headerListItemId });
     }
     itemToRemove.remove();
     mainPubSub.publish("removeIframe", { iframeId: headerListItemId });
@@ -95,25 +102,17 @@ class HeaderList {
     return headerList.querySelector(`[data-module-id="${headerListItemId}"]`);
   }
 
-  reactToTabChange(pubsubData) {
-    if (Number.isInteger(pubsubData.iframeId))
-      this.changeHighlightedHeaderItem(pubsubData.iframeId);
+  addHeaderItemClass(pubsubData) {
+    const itemToHighlight = this.getHeaderListItem(pubsubData.headerListItemId);
+    if (itemToHighlight) itemToHighlight.classList.add(pubsubData.headerClass);
   }
 
-  changeHighlightedHeaderItem(headerListItemId) {
-    const itemToHighlight = this.getHeaderListItem(headerListItemId);
-    const itemHighlighted = this.domElements.currentlyHighlightedHeaderItem;
-    if (itemHighlighted) {
-      itemHighlighted.classList.remove("current-header-item");
-    }
-
-    if (itemToHighlight === itemHighlighted) {
-      // Unselect, selected tab - No highlight
-      this.domElements.currentlyHighlightedHeaderItem = null;
-    } else {
-      itemToHighlight.classList.add("current-header-item");
-      this.domElements.currentlyHighlightedHeaderItem = itemToHighlight;
-    }
+  removeHeaderItemClass(pubsubData) {
+    const itemToDehighlight = this.getHeaderListItem(
+      pubsubData.headerListItemId
+    );
+    if (itemToDehighlight)
+      itemToDehighlight.classList.remove(pubsubData.headerClass);
   }
 }
 

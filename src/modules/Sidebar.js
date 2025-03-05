@@ -298,7 +298,6 @@ class Sidebar {
     mainPubSub.publish("addIframe", { manualUrl: url });
     mainPubSub.publish("addHeaderListItem", { moduleName: modName });
     mainPubSub.publish("tabChange", {
-      moduleName: modName,
       iframeId: sharedIdCounter.getId(),
     });
     sharedIdCounter.incrementId();
