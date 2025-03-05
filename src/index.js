@@ -16,7 +16,7 @@ new HeaderList();
 new IframeManager().init();
 new Sidebar();
 new EdgeworkPopup();
-new NumberedAlphabetPopup().init();
+new NumberedAlphabetPopup();
 new AddModuleListItemPopup().init();
 new EditModuleListItemPopup().init();
 new ImportModulesPopup().init();

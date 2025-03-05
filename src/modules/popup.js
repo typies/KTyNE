@@ -357,7 +357,10 @@ class EdgeworkPopup {
 }
 
 class NumberedAlphabetPopup {
-  constructor() {}
+  constructor() {
+    this.init();
+    this.fillAlphaPopup();
+  }
 
   domElements = {
     alphaBtn: document.querySelector(".alphabet-btn"),
@@ -382,6 +385,19 @@ class NumberedAlphabetPopup {
     oneBtn.addEventListener("click", () => {
       this.changeLabelsOne();
     });
+  }
+
+  fillAlphaPopup() {
+    const alphaPopup = document.querySelector(".alphabet-popup");
+    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    for (let i = 1; i <= 26; i++) {
+      const newSpan = document.createElement("span");
+      newSpan.textContent = `${i}:${alphabet[i - 1]}`;
+      if (i < 10) {
+        newSpan.classList.add("single-digit");
+      }
+      alphaPopup.appendChild(newSpan);
+    }
   }
 
   changeLabelsZero() {
