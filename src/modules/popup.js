@@ -520,7 +520,7 @@ class ImportModulesPopup {
       mainPubSub.publish("addNewModules", newModules);
       return true;
     } catch (error) {
-      new BasicPopup("Adding JSON From text failed.\nError: " + error);
+      new TempPopup("Adding JSON From text failed.\nError: " + error);
       return false;
     }
   }
@@ -535,7 +535,7 @@ class ImportModulesPopup {
       textAreaInput.textContent = fr.result;
     };
     fr.onerror = () => {
-      new BasicPopup(
+      new TempPopup(
         "Unable to read file. Please use a properly formatted .json or .txt"
       );
     };
@@ -592,7 +592,7 @@ class ExportModulesPopup {
     });
     copyBtn.addEventListener("click", () => {
       navigator.clipboard.writeText(textAreaOutput.textContent);
-      new BasicPopup("Copied");
+      new TempPopup("Copied");
     });
 
     exportModuleForm.addEventListener("submit", (event) => {
@@ -629,7 +629,7 @@ class ExportModulesPopup {
   }
 }
 
-class BasicPopup {
+class TempPopup {
   constructor(
     message,
     inputLabel,
@@ -642,64 +642,78 @@ class BasicPopup {
     this.submitBtnText = submitBtnText;
     this.submitCallback = submitCallback;
     this.closeBtnText = closeBtnText;
-    this.init();
+    this.doPopup();
     return this;
   }
-  domElements = {
-    superOverlay: document.querySelector("#super-overlay"),
-    generalForm: document.querySelector("#general-popup"),
-    generalPopupTitle: document.querySelector("#general-popup-title"),
-    closePopup: document.querySelector("#general-close-btn"),
-    submitPopup: document.querySelector("#general-submit-btn"),
-    generalPopupLabel: document.querySelector("#general-popup-label"),
-    generalPopupInput: document.querySelector("#general-input"),
-  };
 
-  init() {
-    const superOverlay = this.domElements.superOverlay;
-    const generalForm = this.domElements.generalForm;
-    const generalPopupTitle = this.domElements.generalPopupTitle;
-    const closePopup = this.domElements.closePopup;
-    const submitPopup = this.domElements.submitPopup;
-    const generalPopupLabel = this.domElements.generalPopupLabel;
-    const generalPopupInput = this.domElements.generalPopupInput;
+  superOverlay = document.querySelector("#super-overlay");
 
-    const doCallback = () => {
-      this.submitCallback(generalPopupInput.value);
-      close();
-    };
-
-    const close = () => {
-      superOverlay.classList.add("hidden");
-      generalForm.classList.add("hidden");
-      generalPopupLabel.classList.add("hidden");
-      generalPopupInput.classList.add("hidden");
-      closePopup.classList.remove("hidden");
-      submitPopup.classList.add("hidden");
-      closePopup.removeEventListener("click", close);
-      submitPopup.removeEventListener("click", doCallback);
-    };
-
-    superOverlay.classList.remove("hidden");
-    generalForm.classList.remove("hidden");
-
-    generalPopupTitle.textContent = `${this.message}`;
-    generalPopupInput.value = "";
-    closePopup.textContent = this.closeBtnText;
-
-    closePopup.addEventListener("click", close);
-
-    if (this.inputLabel) {
-      generalPopupLabel.textContent = this.inputLabel;
-      generalPopupLabel.classList.remove("hidden");
-      generalPopupInput.classList.remove("hidden");
-      generalPopupInput.focus();
+  populatePopup() {
+    const title = this.form.querySelector(".title");
+    const label = this.form.querySelector("label");
+    const input = this.form.querySelector("input");
+    const submitBtn = this.form.querySelector(".submit-btn");
+    const closeBtn = this.form.querySelector(".close-btn");
+    if (this.message) {
+      title.textContent = this.message;
     }
-
+    if (this.inputLabel) {
+      label.textContent = this.inputLabel;
+      label.classList.remove("hidden");
+      input.classList.remove("hidden");
+    }
     if (this.submitBtnText) {
-      submitPopup.textContent = this.submitBtnText;
-      submitPopup.classList.remove("hidden");
-      submitPopup.addEventListener("click", doCallback);
+      submitBtn.classList.remove("hidden");
+      submitBtn.textContent = this.submitBtnText;
+    }
+    if (this.submitCallback) {
+      this.form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        this.submitCallback(input.value);
+        closeBtn.click();
+      });
+    }
+    closeBtn.textContent = this.closeBtnText;
+    closeBtn.addEventListener("click", (event) => {
+      event.preventDefault();
+      this.form.remove();
+      this.superOverlay.classList.add("hidden");
+    });
+  }
+
+  createPopupSkeleton() {
+    const form = document.createElement("form");
+    form.classList.add("form", "temp");
+    const title = document.createElement("div");
+    title.classList.add("title");
+    const label = document.createElement("label");
+    label.classList.add("hidden");
+    const input = document.createElement("input");
+    input.classList.add("hidden");
+    input.setAttribute("type", "text");
+    input.setAttribute("autocomplete", "off");
+    const btnGroup = document.createElement("div");
+    btnGroup.classList.add("form-btn-group");
+    const close = document.createElement("button");
+    close.classList.add("close-btn");
+    close.setAttribute("type", "button");
+    const submit = document.createElement("button");
+    submit.classList.add("hidden");
+    submit.classList.add("submit-btn");
+    submit.setAttribute("type", "submit");
+    btnGroup.replaceChildren(close, submit);
+    form.replaceChildren(title, label, input, btnGroup);
+    this.form = form;
+    return form;
+  }
+
+  doPopup() {
+    this.createPopupSkeleton();
+    this.populatePopup();
+    document.querySelector("#super-overlay").append(this.form);
+    this.superOverlay.classList.remove("hidden");
+    if (this.inputLabel) {
+      this.form.querySelector("input").focus();
     }
   }
 }
@@ -754,6 +768,6 @@ export {
   ImportModulesPopup,
   ExportModulesPopup,
   NukeWarningPopup,
-  BasicPopup,
+  TempPopup,
   EditModuleListItemPopup,
 };

@@ -1,4 +1,4 @@
-import { BasicPopup } from "./popup.js";
+import { TempPopup } from "./popup.js";
 import mainPubSub from "./PubSub.js";
 import sharedIdCounter from "./sharedIdCounter.js";
 
@@ -44,7 +44,7 @@ class HeaderList {
       }
     });
     tabClose.addEventListener("click", () => {
-      new BasicPopup(
+      new TempPopup(
         `Close ${headerText.textContent} Tab?`,
         null,
         "Yes",
@@ -57,18 +57,13 @@ class HeaderList {
     // Right Click( Rename header items instead of opening context menu)
     newHeaderListItem.addEventListener("contextmenu", (event) => {
       event.preventDefault();
-      new BasicPopup(
-        `Renaming ${pubsubData.moduleName}`,
-        "New name",
-        "Submit",
-        (popupInput) => {
-          if (popupInput) {
-            headerText.textContent = popupInput;
-            navigator.clipboard.writeText(popupInput);
-            this.sortHeaderList();
-          }
+      new TempPopup(`Renaming Tab`, "New name", "Submit", (popupInput) => {
+        if (popupInput) {
+          headerText.textContent = popupInput;
+          navigator.clipboard.writeText(popupInput);
+          this.sortHeaderList();
         }
-      );
+      });
     });
 
     headerList.appendChild(newHeaderListItem);

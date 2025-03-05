@@ -449,6 +449,7 @@ svg#filter-clear {
 
 #add-new-module-url {
   width: auto;
+  min-width: 40ch;
 }
 
 .form {
@@ -459,6 +460,9 @@ svg#filter-clear {
 #import-modules-form {
   display: flex;
   flex-direction: column;
+}
+
+#import-modules-text {
 }
 
 #file-wrapper {
@@ -475,7 +479,7 @@ svg#filter-clear {
 }
 
 .popup-text-area {
-  overflow: scroll;
+  overflow-y: scroll;
   white-space: pre-wrap;
   margin-top: 10px;
   padding: 8px;
@@ -705,13 +709,12 @@ label[for="url"]:after {
   color: var(--color-red);
 }
 
-#general-popup {
+.form.temp {
   display: flex;
   flex-direction: column;
-  z-index: 100;
 }
 
-#general-popup-title {
+.form.temp .title {
   overflow-x: auto;
   white-space: pre-wrap;
 }

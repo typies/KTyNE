@@ -1,4 +1,4 @@
-import { BasicPopup } from "./popup.js";
+import { TempPopup } from "./popup.js";
 import mainPubSub from "./PubSub.js";
 import sharedIdCounter from "./sharedIdCounter.js";
 import defaultModules from "./vanillaModules.json";
@@ -80,7 +80,7 @@ class Sidebar {
         const regexName = regexResult[1].split("%20").join(" ");
         sidebarItem.moduleName = regexName;
       } catch {
-        new BasicPopup(
+        new TempPopup(
           `Error processing the following URL: ${sidebarItem.manualUrl}`
         );
       }
@@ -105,7 +105,7 @@ class Sidebar {
       if (skipDuplicates) {
         return moduleNameCleaned; // Skipped
       }
-      new BasicPopup(
+      new TempPopup(
         `${moduleNameCleaned} already exists. Would you like to overwrite?`,
         null,
         "Yes",
@@ -114,7 +114,8 @@ class Sidebar {
           this.sidebarItems.push(sidebarItem);
           this.localStorageAdd(sidebarItem);
           if (reRender) this.render();
-        }
+        },
+        "No"
       );
     } else {
       this.sidebarItems.push(sidebarItem);
@@ -135,7 +136,7 @@ class Sidebar {
     });
     this.render();
     if (skippedItems.length > 0) {
-      new BasicPopup(
+      new TempPopup(
         `The following items were duplicates and were skipped
         
         ${skippedItems.join(", ")}`
@@ -243,7 +244,7 @@ class Sidebar {
       sidebarMenu.classList.toggle("hidden");
     });
     newRepoTabBtn.addEventListener("click", () => {
-      new BasicPopup(
+      new TempPopup(
         "Opening New KTANE.TIMEWI.DE Tab",
         "New Tab Name",
         "Open",
