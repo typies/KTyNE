@@ -448,6 +448,26 @@ svg.sidebar-filter-clear {
     / 1fr 1fr;
 }
 
+.split-button {
+  position: absolute;
+  left: 30px;
+  top: 4px;
+  cursor: pointer;
+  stroke: none;
+}
+
+.split-button:hover {
+  stroke: var(--color-green);
+}
+
+.split-button.selected {
+  stroke: var(--color-green);
+}
+
+.split-button.selected:hover {
+  stroke: none;
+}
+
 .alternate-iframe {
   grid-area: left;
 }

@@ -24,15 +24,7 @@ class IframeManager {
     const splitBtn = this.domElements.splitBtn;
     splitBtn.addEventListener("click", () => {
       this.toggleSplitFrame();
-      document
-        .querySelector(".sidebar-options-menu")
-        .classList.toggle("hidden");
-      splitBtn.classList.toggle("green");
-      if (splitBtn.textContent === "Enable Split Mode") {
-        splitBtn.textContent = "Disable Split Mode";
-      } else {
-        splitBtn.textContent = "Enable Split Mode";
-      }
+      splitBtn.classList.toggle("selected");
     });
   }
 
