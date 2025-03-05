@@ -15,7 +15,7 @@ import "./styles/style.css";
 new HeaderList();
 new IframeManager().init();
 new Sidebar();
-new EdgeworkPopup().init();
+new EdgeworkPopup();
 new NumberedAlphabetPopup().init();
 new AddModuleListItemPopup().init();
 new EditModuleListItemPopup().init();

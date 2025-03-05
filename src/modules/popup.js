@@ -2,6 +2,8 @@ import mainPubSub from "./PubSub";
 
 class EdgeworkPopup {
   constructor() {
+    this.fillIndTable();
+    this.init();
     return this;
   }
   domElements = {
@@ -67,6 +69,58 @@ class EdgeworkPopup {
       });
     });
     return this;
+  }
+
+  fillIndTable() {
+    const indTable = document.querySelector(".ind-table");
+    const possibleIndicators = [
+      "bob",
+      "car",
+      "clr",
+      "frk",
+      "frq",
+      "ind",
+      "msa",
+      "nsa",
+      "sig",
+      "trn",
+    ];
+    possibleIndicators.forEach((indName) => {
+      const indGroup = document.createElement("div");
+      indGroup.classList.add("ind-group");
+      const label = document.createElement("label");
+      label.textContent = indName.toUpperCase();
+      const noneRadio = this.createRadio(
+        `${indName}-ind`,
+        indName,
+        "none",
+        true
+      );
+      const litRadio = this.createRadio(
+        `${indName}-ind`,
+        `lit-${indName}`,
+        "lit",
+        false
+      );
+      const unlitRadio = this.createRadio(
+        `${indName}-ind`,
+        `unlit-${indName}`,
+        "unlit",
+        false
+      );
+      indGroup.replaceChildren(label, noneRadio, litRadio, unlitRadio);
+      indTable.appendChild(indGroup);
+    });
+  }
+
+  createRadio(name, id, value, checked = false) {
+    const newRadio = document.createElement("input");
+    newRadio.setAttribute("type", "radio");
+    newRadio.setAttribute("name", name);
+    newRadio.setAttribute("id", id);
+    newRadio.setAttribute("value", value);
+    if (checked) newRadio.setAttribute("checked", "");
+    return newRadio;
   }
 
   configureFormButtons() {
@@ -168,6 +222,7 @@ class EdgeworkPopup {
   }
 
   populateBatteries(batteries, holders) {
+    if (!batteries || !holders) return;
     const edgework = this.domElements.edgework;
     const batteryDiv = this.createBatteriesEle(batteries, holders);
     edgework.appendChild(batteryDiv);
@@ -233,10 +288,10 @@ class EdgeworkPopup {
   }
 
   populatePortPlates(portList) {
+    if (portList.length === 0) return;
     const edgework = this.domElements.edgework;
     const plateDiv = this.createPortPlatesEle(portList);
     edgework.appendChild(plateDiv);
-    return;
   }
 
   createPortPlatesEle(portList) {
