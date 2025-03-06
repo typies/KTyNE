@@ -41,6 +41,7 @@
 }
 
 .mini-btn {
+  border-radius: 6px;
   font-size: 12px;
   padding: 3px 6px;
 }

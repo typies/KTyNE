@@ -6,10 +6,33 @@
   width: 25ch;
 }
 
+.sidebar-top-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 10px;
+  width: 25ch;
+}
+
+.module-list {
+  margin-top: 110px;
+  overflow: scroll;
+  scrollbar-width: none;
+  height: calc(100% - 110px);
+}
+
 .module-list-title-wrapper {
   display: flex;
-  justify-content: space-between;
   position: relative;
+  gap: 4px;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 8px;
+}
+
+.module-list-title-wrapper .options-btn {
+  margin-left: auto;
+  margin-right: 2px;
 }
 
 .module-list-title.red {
@@ -24,7 +47,6 @@
 .module-list-title {
   display: inline-block;
   font-size: 24px;
-  padding-bottom: 8px;
 }
 
 svg.options-btn:hover {
@@ -78,12 +100,6 @@ svg.sidebar-filter-clear {
 
 .sidebar-filter-clear:hover {
   fill: var(--color-red);
-}
-
-.module-list {
-  overflow: scroll;
-  scrollbar-width: none;
-  height: 100%;
 }
 
 .sidebar-item,

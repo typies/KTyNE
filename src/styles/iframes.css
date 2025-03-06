@@ -9,6 +9,7 @@
 
 .add-one-btn {
   top: 24px;
+  position: absolute;
 }
 
 .hidden-iframe {
@@ -29,17 +30,9 @@
     / 1fr 1fr;
 }
 
-.svg-btn-group {
-  display: flex;
-  position: absolute;
-  justify-content: center;
-  align-items: center;
-}
-
 .collapse-sidebar-btn,
 .add-one-btn {
   border-radius: 0;
-  margin: 4px;
   cursor: pointer;
 }
 

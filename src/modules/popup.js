@@ -1,4 +1,206 @@
 import mainPubSub from "./PubSub";
+/*
+{
+  title: string,               - Required
+  classList: List<string>
+  buttonWrapperClassList: List<string>
+  bigInputWrapperClassList: List<string>
+  submitCallback: fn
+  buttons: [{
+    type: string,              - Default = "button"
+    classList: List<string>,
+    textContent: string,       - Required, if button is present
+    event: { trigger: string, callback: fn}
+  }],
+  textInputs: [{
+      inputLabelText: string,
+      inputType: string,
+      inputName: string,       - Required
+      inputId: string,
+      inputClassList: List<string>
+      inputPlaceholder: string,
+      inputAutocomplete: string,  - ("off" to turn off)
+      littleInputWrapperClassList: string
+      required: bool
+    },
+  ]
+}
+*/
+class DefaultPopup {
+  constructor(constructorData) {
+    this.title = constructorData.title; // String, form title
+    this.classList = constructorData.classList; // List of classes to apply to form
+    this.buttonWrapperClassList = constructorData.buttonWrapperClassList;
+    this.bigInputWrapperClassList = constructorData.bigInputWrapperClassList;
+    this.buttons = constructorData.buttons || [{ textContent: "Close" }]; // List of Button objects
+    this.inputGroupClass = constructorData.inputGroupClass;
+    this.textInputs = constructorData.textInputs;
+    this.submitCallback = constructorData.submitCallback;
+
+    if (!this.verifyRequiredData()) throw Error("Invalid DefaultPopup Data");
+    return this;
+  }
+
+  verifyRequiredData() {
+    if (!this.title) return false;
+    if (this.buttons) {
+      this.buttons.forEach((btn) => {
+        if (!btn.textContent) return false;
+      });
+    }
+    if (this.textInputs) {
+      this.textInputs.forEach((input) => {
+        if (!input.inputName) return false;
+      });
+    }
+    return true;
+  }
+
+  createPopup() {
+    this.overlay = document.createElement("div");
+    this.overlay.classList.add("popup-overlay");
+    this.overlay.addEventListener("click", this.defaultClose.bind(this));
+
+    this.form = this.createForm();
+    this.overlay.replaceChildren(this.form);
+    return this.overlay;
+  }
+
+  createForm() {
+    const form = document.createElement("form");
+    form.addEventListener("click", (event) => {
+      event.stopPropagation();
+    });
+    form.addEventListener("submit", (event) => {
+      event.stopPropagation();
+      event.preventDefault();
+      if (this.submitCallback) this.submitCallback(this.form);
+      this.defaultClose();
+    });
+    const title = document.createElement("div");
+    title.classList.add("title");
+    if (this.title) title.textContent = this.title;
+
+    form.classList.add("form");
+    if (this.classList) form.classList.add(...this.classList);
+
+    const inputWrapper = this.createInputWrapper();
+    const btnGroup = this.createBtnGroup(this.buttons);
+
+    form.replaceChildren(title, inputWrapper, btnGroup);
+    return form;
+  }
+
+  createInputWrapper() {
+    const inputWrapper = document.createElement("div");
+    if (this.bigInputWrapperClassList)
+      inputWrapper.classList.add(...this.bigInputWrapperClassList);
+    if (!this.textInputs) return inputWrapper;
+
+    this.textInputs.forEach((input) => {
+      const newTextEleWrapper = this.createTextEle(input);
+      inputWrapper.appendChild(newTextEleWrapper);
+    });
+
+    this.focusEle = inputWrapper.children[0].querySelector("input");
+
+    return inputWrapper;
+  }
+
+  createTextEle(textEleData) {
+    const label = document.createElement("label");
+    if (textEleData.inputId) label.setAttribute("for", textEleData.inputId);
+    if (textEleData.inputLabelText)
+      label.textContent = textEleData.inputLabelText;
+    const input = document.createElement("input");
+    input.type = textEleData.inputType || "text";
+    if (textEleData.inputName) input.name = textEleData.inputName;
+    if (textEleData.inputId) input.id = textEleData.inputId;
+    if (textEleData.inputPlaceholder)
+      input.placeholder = textEleData.inputPlaceholder;
+    if (textEleData.inputClassList)
+      input.classList.add(...textEleData.inputClassList);
+    if (textEleData.inputAutocomplete)
+      input.autocomplete = textEleData.inputAutocomplete;
+    if (textEleData.required) input.required = true;
+    const inputWrapper = document.createElement("div");
+    if (textEleData.littleInputWrapperClassList)
+      inputWrapper.classList.add(...textEleData.littleInputWrapperClassList);
+    inputWrapper.replaceChildren(label, input);
+    return inputWrapper;
+  }
+
+  createBtnGroup(buttonsData) {
+    const formBtnGroup = document.createElement("div");
+    if (buttonsData.classList)
+      formBtnGroup.classList.add(...this.buttonWrapperClassList);
+    formBtnGroup.classList.add("form-btn-group");
+
+    if (!buttonsData) return formBtnGroup;
+
+    buttonsData.forEach((button) => {
+      const newButton = document.createElement("button");
+      newButton.type = button.type || "button";
+      if (button.classList) newButton.classList.add(...button.classList);
+      newButton.textContent = button.textContent;
+      if (button.event && button.event.trigger && button.event.callback)
+        newButton.addEventListener(button.event.trigger, (event) => {
+          event.stopPropagation();
+          event.preventDefault();
+          button.event.callback(this.form);
+          if (button.type === "submit") this.defaultClose();
+        });
+      else if (newButton.type === "submit") {
+        newButton.addEventListener("click", (event) => {
+          event.stopPropagation();
+          event.preventDefault();
+          this.defaultSubmit();
+        });
+      } else {
+        this.configureDefaultButton(newButton);
+      }
+      formBtnGroup.append(newButton);
+    });
+    return formBtnGroup;
+  }
+
+  configureDefaultButton(btn) {
+    switch (btn.textContent.toLowerCase()) {
+      case "reset":
+        btn.addEventListener("click", (event) => {
+          event.stopPropagation();
+          this.defaultReset();
+        });
+        break;
+      default:
+        btn.addEventListener("click", (event) => {
+          event.stopPropagation();
+          this.defaultClose();
+        });
+        break;
+    }
+  }
+
+  doPopup() {
+    const newPopup = this.createPopup();
+    document.body.appendChild(newPopup);
+    if (this.focusEle) this.focusEle.focus();
+  }
+
+  defaultClose() {
+    this.form.remove();
+    this.overlay.remove();
+  }
+
+  defaultReset() {
+    if (this.form) this.form.reset();
+  }
+
+  defaultSubmit() {
+    this.formData = new FormData(this.form);
+    this.form.requestSubmit();
+  }
+}
 
 class EdgeworkPopup {
   constructor() {
@@ -434,137 +636,6 @@ class NumberedAlphabetPopup {
   }
 }
 
-class AddModuleListItemPopup {
-  constructor() {
-    return this;
-  }
-  domElements = {
-    popupOverlay: document.querySelector(".popup-overlay"),
-    newModuleForm: document.querySelector(".add-new-module-form"),
-    sidebarMenu: document.querySelector(".sidebar-options-menu"),
-    addModuleBtn: document.querySelector(".add-new-module-btn"),
-    closeFormBtn: document.querySelector(".close-new-module-form-btn"),
-  };
-
-  configureFormButtons() {
-    const newModuleBtn = this.domElements.addModuleBtn;
-    const popupOverlay = this.domElements.popupOverlay;
-    const closeFormBtn = this.domElements.closeFormBtn;
-    const newModuleForm = this.domElements.newModuleForm;
-    const sidebarMenu = this.domElements.sidebarMenu;
-    newModuleBtn.addEventListener("click", () => {
-      newModuleForm.reset();
-      popupOverlay.classList.remove("hidden");
-      newModuleForm.classList.remove("hidden");
-      sidebarMenu.classList.add("hidden");
-      document.querySelector("#add-new-module-form-url-input").focus();
-    });
-
-    closeFormBtn.addEventListener("click", () => {
-      popupOverlay.classList.add("hidden");
-      newModuleForm.classList.add("hidden");
-      sidebarMenu.classList.add("hidden");
-    });
-
-    newModuleForm.addEventListener("submit", (event) => {
-      event.preventDefault();
-      const formData = new FormData(newModuleForm);
-      mainPubSub.publish("addNewModule", {
-        moduleName: formData.get("name"),
-        manualUrl: formData.get("url"),
-      });
-      popupOverlay.classList.add("hidden");
-      newModuleForm.classList.add("hidden");
-    });
-  }
-
-  resetForm() {
-    const newModuleForm = this.domElements.newModuleForm;
-    newModuleForm.reset();
-    return this;
-  }
-
-  init() {
-    this.configureFormButtons();
-    return this;
-  }
-}
-
-class EditModuleListItemPopup {
-  constructor() {
-    mainPubSub.subscribe("editModule", this.handleEditModule.bind(this));
-    return this;
-  }
-  domElements = {
-    popupOverlay: document.querySelector(".popup-overlay"),
-    sidebarMenu: document.querySelector(".sidebar-options-menu"),
-    editModuleForm: document.querySelector(".edit-module-form"),
-    manualUrlInput: document.querySelector("#edit-module-url"),
-    moduleNameInput: document.querySelector("#edit-module-name"),
-    closeFormBtn: document.querySelector(".close-edit-module-form-btn"),
-    deleteModuleBtn: document.querySelector(".delete-edit-module-form-btn"),
-    editModuleBtn: document.querySelector(".submit-edit-module-form-btn"),
-  };
-
-  configureFormButtons() {
-    const editModuleBtn = this.domElements.editModuleBtn;
-    const closeFormBtn = this.domElements.closeFormBtn;
-    const editModuleForm = this.domElements.editModuleForm;
-    const deleteModuleBtn = this.domElements.deleteModuleBtn;
-    closeFormBtn.addEventListener("click", () => {
-      this.toggleHidden();
-    });
-
-    deleteModuleBtn.addEventListener("click", () => {
-      mainPubSub.publish("deleteModule", {
-        moduleName: this.pubsubData.moduleName,
-        manualUrl: this.pubsubData.manualUrl,
-      });
-      this.toggleHidden();
-    });
-
-    editModuleBtn.addEventListener("click", () => {
-      const formData = new FormData(editModuleForm);
-      deleteModuleBtn.click();
-      mainPubSub.publish("addNewModule", {
-        moduleName: formData.get("name"),
-        manualUrl: formData.get("url"),
-      });
-    });
-
-    editModuleForm.addEventListener("submit", (event) => {
-      event.preventDefault();
-      editModuleBtn.click();
-    });
-  }
-
-  handleEditModule(pubsubData) {
-    const manualUrlInput = this.domElements.manualUrlInput;
-    const moduleNameInput = this.domElements.moduleNameInput;
-    manualUrlInput.value = pubsubData.manualUrl;
-    moduleNameInput.value = pubsubData.moduleName;
-    manualUrlInput.size = pubsubData.manualUrl.length + 1;
-    this.toggleHidden();
-
-    this.pubsubData = pubsubData;
-  }
-
-  toggleHidden() {
-    this.domElements.popupOverlay.classList.toggle("hidden");
-    this.domElements.editModuleForm.classList.toggle("hidden");
-  }
-
-  resetForm() {
-    this.domElements.editModuleForm.reset();
-    return this;
-  }
-
-  init() {
-    this.configureFormButtons();
-    return this;
-  }
-}
-
 class ImportModulesPopup {
   constructor() {
     return this;
@@ -582,7 +653,6 @@ class ImportModulesPopup {
   };
 
   configureFormButtons() {
-    const importModuleBtn = this.domElements.importModuleBtn;
     const popupOverlay = this.domElements.popupOverlay;
     const resetFormBtn = this.domElements.resetFormBtn;
     const closeFormBtn = this.domElements.closeFormBtn;
@@ -590,13 +660,6 @@ class ImportModulesPopup {
     const textAreaInput = this.domElements.textAreaInput;
     const fileUploadInput = this.domElements.fileUploadInput;
     const addExampleBtn = this.domElements.addExampleBtn;
-    const sidebarMenu = this.domElements.sidebarMenu;
-    importModuleBtn.addEventListener("click", () => {
-      importModuleForm.reset();
-      popupOverlay.classList.remove("hidden");
-      importModuleForm.classList.remove("hidden");
-      sidebarMenu.classList.add("hidden");
-    });
 
     resetFormBtn.addEventListener("click", () => {
       this.resetForm();
@@ -655,7 +718,9 @@ class ImportModulesPopup {
       mainPubSub.publish("addNewModules", newModules);
       return true;
     } catch (error) {
-      new TempPopup("Adding JSON From text failed.\nError: " + error);
+      new DefaultPopup({
+        title: "Adding JSON From text failed.\nError: " + error,
+      }).doPopup();
       return false;
     }
   }
@@ -670,9 +735,10 @@ class ImportModulesPopup {
       textAreaInput.textContent = fr.result;
     };
     fr.onerror = () => {
-      new TempPopup(
-        "Unable to read file. Please use a properly formatted .json or .txt"
-      );
+      new DefaultPopup({
+        title:
+          "Unable to read file. Please use a properly formatted .json or .txt",
+      });
     };
     fr.readAsText(file);
   }
@@ -699,7 +765,6 @@ class ExportModulesPopup {
   }
   domElements = {
     popupOverlay: document.querySelector(".popup-overlay"),
-    exportModuleBtn: document.querySelector(".export-modules-btn"),
     exportModuleForm: document.querySelector(".export-modules-form"),
     closeFormBtn: document.querySelector(".close-export-form-btn"),
     copyBtn: document.querySelector(".copy-export-form-btn"),
@@ -708,26 +773,19 @@ class ExportModulesPopup {
   };
 
   configureFormButtons() {
-    const exportModuleBtn = this.domElements.exportModuleBtn;
     const popupOverlay = this.domElements.popupOverlay;
     const closeFormBtn = this.domElements.closeFormBtn;
     const copyBtn = this.domElements.copyBtn;
     const exportModuleForm = this.domElements.exportModuleForm;
     const textAreaOutput = this.domElements.textAreaOutput;
-    const sidebarMenu = this.domElements.sidebarMenu;
-    exportModuleBtn.addEventListener("click", () => {
-      exportModuleForm.reset();
-      popupOverlay.classList.remove("hidden");
-      exportModuleForm.classList.remove("hidden");
-      sidebarMenu.classList.add("hidden");
-    });
     closeFormBtn.addEventListener("click", () => {
       popupOverlay.classList.add("hidden");
       exportModuleForm.classList.add("hidden");
     });
+    const popup = new DefaultPopup({ title: "Copied" });
     copyBtn.addEventListener("click", () => {
       navigator.clipboard.writeText(textAreaOutput.textContent);
-      new TempPopup("Copied");
+      popup.doPopup();
     });
 
     exportModuleForm.addEventListener("submit", (event) => {
@@ -764,145 +822,10 @@ class ExportModulesPopup {
   }
 }
 
-class TempPopup {
-  constructor(
-    message,
-    inputLabel,
-    submitBtnText,
-    submitCallback,
-    closeBtnText = "Close"
-  ) {
-    this.message = message;
-    this.inputLabel = inputLabel;
-    this.submitBtnText = submitBtnText;
-    this.submitCallback = submitCallback;
-    this.closeBtnText = closeBtnText;
-    this.doPopup();
-    return this;
-  }
-
-  superOverlay = document.querySelector(".super-overlay");
-
-  populatePopup() {
-    const title = this.form.querySelector(".title");
-    const label = this.form.querySelector("label");
-    const input = this.form.querySelector("input");
-    const submitBtn = this.form.querySelector(".submit-btn");
-    const closeBtn = this.form.querySelector(".close-btn");
-    if (this.message) {
-      title.textContent = this.message;
-    }
-    if (this.inputLabel) {
-      label.textContent = this.inputLabel;
-      label.classList.remove("hidden");
-      input.classList.remove("hidden");
-    }
-    if (this.submitBtnText) {
-      submitBtn.classList.remove("hidden");
-      submitBtn.textContent = this.submitBtnText;
-    }
-    if (this.submitCallback) {
-      this.form.addEventListener("submit", (event) => {
-        event.preventDefault();
-        this.submitCallback(input.value);
-        closeBtn.click();
-      });
-    }
-    closeBtn.textContent = this.closeBtnText;
-    closeBtn.addEventListener("click", (event) => {
-      event.preventDefault();
-      this.form.remove();
-      this.superOverlay.classList.add("hidden");
-    });
-  }
-
-  createPopupSkeleton() {
-    const form = document.createElement("form");
-    form.classList.add("form");
-    const title = document.createElement("div");
-    title.classList.add("title");
-    const label = document.createElement("label");
-    label.classList.add("hidden");
-    const input = document.createElement("input");
-    input.classList.add("hidden");
-    input.setAttribute("type", "text");
-    input.setAttribute("autocomplete", "off");
-    const btnGroup = document.createElement("div");
-    btnGroup.classList.add("form-btn-group");
-    const close = document.createElement("button");
-    close.classList.add("close-btn");
-    close.setAttribute("type", "button");
-    const submit = document.createElement("button");
-    submit.classList.add("hidden");
-    submit.classList.add("submit-btn");
-    submit.setAttribute("type", "submit");
-    btnGroup.replaceChildren(close, submit);
-    form.replaceChildren(title, label, input, btnGroup);
-    this.form = form;
-    return form;
-  }
-
-  doPopup() {
-    this.createPopupSkeleton();
-    this.populatePopup();
-    document.querySelector(".super-overlay").append(this.form);
-    this.superOverlay.classList.remove("hidden");
-    if (this.inputLabel) {
-      this.form.querySelector("input").focus();
-    }
-  }
-}
-
-class NukeWarningPopup {
-  constructor() {
-    return this;
-  }
-  domElements = {
-    popupOverlay: document.querySelector(".popup-overlay"),
-    closeFormBtn: document.querySelector(".close-nuke-warning-btn"),
-    startNukeBtn: document.querySelector(".nuke-module-list-btn"),
-    nukePopup: document.querySelector(".nuke-warning"),
-    sidebarMenu: document.querySelector(".sidebar-options-menu"),
-  };
-
-  configureFormButtons() {
-    const startNukeBtn = this.domElements.startNukeBtn;
-    const nukePopup = this.domElements.nukePopup;
-    const popupOverlay = this.domElements.popupOverlay;
-    const closeFormBtn = this.domElements.closeFormBtn;
-    const sidebarMenu = this.domElements.sidebarMenu;
-    startNukeBtn.addEventListener("click", () => {
-      popupOverlay.classList.remove("hidden");
-      nukePopup.classList.remove("hidden");
-      sidebarMenu.classList.add("hidden");
-    });
-
-    closeFormBtn.addEventListener("click", () => {
-      popupOverlay.classList.add("hidden");
-      nukePopup.classList.add("hidden");
-    });
-
-    nukePopup.addEventListener("submit", (event) => {
-      event.preventDefault();
-      mainPubSub.publish("nukeModuleList");
-      popupOverlay.classList.add("hidden");
-      nukePopup.classList.add("hidden");
-    });
-  }
-
-  init() {
-    this.configureFormButtons();
-    return this;
-  }
-}
-
 export {
   EdgeworkPopup,
   NumberedAlphabetPopup,
-  AddModuleListItemPopup,
   ImportModulesPopup,
   ExportModulesPopup,
-  NukeWarningPopup,
-  TempPopup,
-  EditModuleListItemPopup,
+  DefaultPopup,
 };

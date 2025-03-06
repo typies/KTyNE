@@ -1,7 +1,6 @@
 /* pop ups */
 
-.popup-overlay,
-.super-overlay {
+.popup-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -11,10 +10,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.super-overlay {
-  z-index: 100;
 }
 
 .form {

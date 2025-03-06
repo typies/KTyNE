@@ -99,15 +99,6 @@ input.ind-checkbox {
 
 /* Add Module Form */
 
-.add-new-module-form {
-  position: relative;
-}
-
-#add-new-module-form-url-input {
-  width: auto;
-  min-width: 40ch;
-}
-
 /* Edit Module Form */
 
 /* Import/Export Form */
