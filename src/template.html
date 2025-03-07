@@ -130,6 +130,27 @@
       ></div>
 
       <footer class="footer">
+        <button class="grid-btn">Grid</button>
+        <div class="grid-popup hidden">
+          <div class="grid-container"></div>
+          <div class="inputs">
+            <input type="number" id="rows" name="rows" value="10" />
+            <label for="rows">Rows</label>
+            <input type="number" id="cols" name="cols" value="10" />
+            <label for="cols">Columns</label>
+            <input type="number" id="cell-size" name="cell-size" value="4" />
+            <label for="cell-size">Cell Size</label>
+          </div>
+          <div class="inputs">
+            <input type="color" id="color" name="color" value="#ffffff" />
+            <label for="color">Color</label>
+            <input type="checkbox" id="color-click" name="color-onclick" />
+            <label for="color-click">Color Click</label>
+          </div>
+          <div class="inputs">
+            <button class="reset-btn">Reset Grid</button>
+          </div>
+        </div>
         <button class="alphabet-btn">Numbered Alphabet</button>
         <div class="alphabet-popup hidden">
           <div class="mini-btn-wrapper">

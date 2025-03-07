@@ -19,12 +19,12 @@ class HeaderList {
     return this;
   }
 
-  domElements = {
+  dom = {
     headerList: document.querySelector(".open-modules-list"),
   };
 
   addHeaderListItem(pubsubData) {
-    const headerList = this.domElements.headerList;
+    const headerList = this.dom.headerList;
 
     const newHeaderListItemId = sharedIdCounter.getId();
     const newHeaderListItem = document.createElement("li");
@@ -88,7 +88,7 @@ class HeaderList {
   }
 
   sortHeaderList() {
-    const headerList = this.domElements.headerList;
+    const headerList = this.dom.headerList;
     const headerListChildren = Array.from(headerList.children);
     headerListChildren.sort((a, b) => {
       if (a.textContent.toLowerCase() < b.textContent.toLowerCase()) return -1;
@@ -108,7 +108,7 @@ class HeaderList {
   }
 
   getHeaderListItem(headerListItemId) {
-    const headerList = this.domElements.headerList;
+    const headerList = this.dom.headerList;
     return headerList.querySelector(`[data-module-id="${headerListItemId}"]`);
   }
 

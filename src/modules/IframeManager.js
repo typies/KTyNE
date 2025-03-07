@@ -11,14 +11,14 @@ class IframeManager {
     return this;
   }
 
-  domElements = {
+  dom = {
     manualsDiv: document.querySelector(".manuals"),
     pageIframe: document.createElement("iframe"),
     splitBtn: document.querySelector(".split-button"),
   };
 
   configureStaticButtons() {
-    const splitBtn = this.domElements.splitBtn;
+    const splitBtn = this.dom.splitBtn;
     splitBtn.addEventListener("click", () => {
       this.toggleSplitFrame();
       splitBtn.classList.toggle("selected");
@@ -45,7 +45,7 @@ class IframeManager {
   }
 
   createNewIframe(pubsubData) {
-    const manualsDiv = this.domElements.manualsDiv;
+    const manualsDiv = this.dom.manualsDiv;
     const newIframeId = sharedIdCounter.getId();
     let newIframe = document.createElement("iframe");
     newIframe.setAttribute("src", pubsubData.manualUrl);
@@ -105,7 +105,7 @@ class IframeManager {
   }
 
   getIframeById(iframeId) {
-    const manualsDiv = this.domElements.manualsDiv;
+    const manualsDiv = this.dom.manualsDiv;
     return manualsDiv.querySelector(`[data-iframe-id="${iframeId}"]`);
   }
 
@@ -115,7 +115,7 @@ class IframeManager {
 
   toggleSplitFrame() {
     this.splitEnabled = !this.splitEnabled;
-    this.domElements.manualsDiv.classList.toggle("split");
+    this.dom.manualsDiv.classList.toggle("split");
     if (!this.alternateIframe) return;
     if (this.splitEnabled) {
       this.alternateIframe.classList.remove("hidden-iframe");

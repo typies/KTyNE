@@ -6,6 +6,7 @@
 
   display: flex;
   justify-content: end;
+  gap: 8px;
   padding: 10px;
   position: relative;
 }
@@ -14,7 +15,8 @@
   color: white;
 }
 
-.alphabet-popup {
+.alphabet-popup,
+.grid-popup {
   position: absolute;
   background-color: var(--color-gray);
   margin: 4px;
@@ -23,10 +25,74 @@
   border: 1px solid var(--color-jet);
   padding: 8px;
   border-radius: 8px;
-  display: grid;
-  grid-template-columns: repeat(10, 4ch);
   color: var(--color-jet);
   gap: 2px;
+}
+
+.alphabet-popup {
+  display: grid;
+  grid-template-columns: repeat(10, 4ch);
+}
+
+.grid-popup .grid-container {
+  margin-bottom: 12px;
+}
+
+.grid-popup .grid-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  justify-self: center;
+  padding: 1px;
+  gap: 2px;
+  background-color: var(--color-gray);
+}
+
+.grid-popup .grid-cell {
+  width: 40px;
+  height: 40px;
+  background-color: white;
+  border: 1px solid black;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  overflow: scroll;
+  scrollbar-width: none;
+  word-break: break-all;
+  font-family: "NotoSansMono", "sans-serif";
+  line-height: 1em;
+  caret-color: transparent;
+  cursor: pointer;
+}
+
+.grid-cell.index {
+  background-color: var(--color-gray);
+}
+
+.grid-popup .inputs {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: 6px;
+  font-size: 1.5em;
+}
+
+.grid-popup .inputs label {
+  width: 8ch;
+  text-align: end;
+}
+
+.grid-popup .inputs label:nth-child(2) {
+  width: 5ch;
+}
+
+.grid-popup .inputs input {
+  max-width: 5ch;
+  padding: 4px;
+  font-size: inherit;
+}
+.grid-popup .inputs input[type="checkbox"] {
+  transform: scale(1.5);
 }
 
 .single-digit {

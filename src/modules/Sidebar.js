@@ -59,7 +59,7 @@ class Sidebar {
     return this;
   }
 
-  domElements = {
+  dom = {
     sidebar: document.querySelector(".sidebar"),
     sidebarListElement: document.querySelector(".sidebar .module-list"),
     newRepoTabBtn: document.querySelector(".new-repo-tab-btn"),
@@ -83,7 +83,7 @@ class Sidebar {
   }
 
   render() {
-    const sidebarListElement = this.domElements.sidebarListElement;
+    const sidebarListElement = this.dom.sidebarListElement;
     sidebarListElement.replaceChildren();
     if (this.sidebarItems instanceof Array) {
       this.sidebarItems.forEach((sidebarItem) =>
@@ -101,7 +101,7 @@ class Sidebar {
 
   getSidebarItemElement(mName) {
     const sidebarItems = Array.from(
-      this.domElements.sidebarListElement.children
+      this.dom.sidebarListElement.children
     );
     const matchingItem = sidebarItems.find(
       (child) => child.textContent.toLowerCase() === mName.toLowerCase()
@@ -274,7 +274,7 @@ class Sidebar {
   }
 
   createSidebarLi(sidebarItem) {
-    const sidebarListElement = this.domElements.sidebarListElement;
+    const sidebarListElement = this.dom.sidebarListElement;
     const newSidebarListItem = document.createElement("li");
     newSidebarListItem.classList.add("sidebar-item");
     if (this.editMode) {
@@ -297,13 +297,13 @@ class Sidebar {
   }
 
   configureStaticSidebarBtns() {
-    const filter = this.domElements.filter;
-    const filterClear = this.domElements.filterClear;
-    const newRepoTabBtn = this.domElements.newRepoTabBtn;
-    const collapseSidebarBtn = this.domElements.collapseSidebarBtn;
-    const showSidebarBtn = this.domElements.showSidebarBtn;
-    const addOneBtn = this.domElements.addOneBtn;
-    const sidebarMenuSidebarBtn = this.domElements.sidebarMenuSidebarBtn;
+    const filter = this.dom.filter;
+    const filterClear = this.dom.filterClear;
+    const newRepoTabBtn = this.dom.newRepoTabBtn;
+    const collapseSidebarBtn = this.dom.collapseSidebarBtn;
+    const showSidebarBtn = this.dom.showSidebarBtn;
+    const addOneBtn = this.dom.addOneBtn;
+    const sidebarMenuSidebarBtn = this.dom.sidebarMenuSidebarBtn;
     filter.addEventListener("keydown", () => {
       this.filterSidebar(filter.value);
     });
@@ -357,10 +357,10 @@ class Sidebar {
   }
 
   collapseToggle() {
-    const sidebar = this.domElements.sidebar;
-    const collapseSidebarBtn = this.domElements.collapseSidebarBtn;
-    const showSidebarBtn = this.domElements.showSidebarBtn;
-    const addOneBtn = this.domElements.addOneBtn;
+    const sidebar = this.dom.sidebar;
+    const collapseSidebarBtn = this.dom.collapseSidebarBtn;
+    const showSidebarBtn = this.dom.showSidebarBtn;
+    const addOneBtn = this.dom.addOneBtn;
     sidebar.classList.toggle("hidden");
     collapseSidebarBtn.classList.toggle("hidden");
     showSidebarBtn.classList.toggle("hidden");
@@ -369,9 +369,9 @@ class Sidebar {
 
   toggleAddOneMode() {
     this.addOneMode = !this.addOneMode;
-    const filter = this.domElements.filter;
-    const title = this.domElements.moduleListTitle;
-    const collapseSidebarBtn = this.domElements.collapseSidebarBtn;
+    const filter = this.dom.filter;
+    const title = this.dom.moduleListTitle;
+    const collapseSidebarBtn = this.dom.collapseSidebarBtn;
     collapseSidebarBtn.classList.toggle("hidden");
     this.collapseToggle();
     filter.focus();
@@ -383,8 +383,8 @@ class Sidebar {
   }
 
   toggleEditMode() {
-    const title = this.domElements.moduleListTitle;
-    const addNewRepoTabBtn = this.domElements.newRepoTabBtn;
+    const title = this.dom.moduleListTitle;
+    const addNewRepoTabBtn = this.dom.newRepoTabBtn;
     const moduleList = document.querySelectorAll(".sidebar-item");
     this.editMode = !this.editMode;
     moduleList.forEach((item) => {
@@ -408,7 +408,7 @@ class Sidebar {
   }
 
   sortSidebar() {
-    const sidebarListElement = this.domElements.sidebarListElement;
+    const sidebarListElement = this.dom.sidebarListElement;
     const sidebarList = Array.from(sidebarListElement.children);
     sidebarList.sort((a, b) => {
       a = a.textContent.toLowerCase();
@@ -426,7 +426,7 @@ class Sidebar {
   }
 
   filterSidebar(filterTerm) {
-    const sidebarListElement = this.domElements.sidebarListElement;
+    const sidebarListElement = this.dom.sidebarListElement;
     const filterTermCleaned = filterTerm.toLowerCase().trim();
     const sidebarListChildren = Array.from(sidebarListElement.children);
     if (filterTermCleaned === "") {

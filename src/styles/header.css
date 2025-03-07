@@ -86,6 +86,7 @@
   display: flex;
   flex-wrap: wrap;
   flex-direction: row-reverse;
+  max-width: 40vw;
 }
 
 .widget {
