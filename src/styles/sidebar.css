@@ -90,8 +90,10 @@ svg.options-btn:hover {
 }
 
 svg.sidebar-filter-clear {
-  width: 1em;
-  height: 1em;
+  min-width: 1em;
+  min-height: 1em;
+  max-width: 1em;
+  max-height: 1em;
   position: absolute;
   right: 0.5em;
   top: 0.4em;

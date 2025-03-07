@@ -5,7 +5,6 @@ import "./styles/main.css";
 import {
   EdgeworkPopup,
   NumberedAlphabetPopup,
-  ImportModulesPopup,
   ExportModulesPopup,
 } from "./modules/popup.js";
 
@@ -14,5 +13,4 @@ new IframeManager().init();
 new Sidebar();
 new EdgeworkPopup();
 new NumberedAlphabetPopup();
-new ImportModulesPopup().init();
 new ExportModulesPopup().init();

@@ -1,4 +1,4 @@
-import { NewDefaultPopup } from "./popup.js";
+import PopupGenerator from "./PopupGenerator.js";
 import mainPubSub from "./PubSub.js";
 import sharedIdCounter from "./sharedIdCounter.js";
 
@@ -55,7 +55,7 @@ class HeaderList {
       this.closeHeaderListItem(newHeaderListItemId);
     });
     // Right Click( Rename header items instead of opening context menu)
-    const renamePopup = new NewDefaultPopup(
+    const renamePopup = new PopupGenerator(
       `Renaming ${headerText.textContent}`,
       [
         {
@@ -78,7 +78,6 @@ class HeaderList {
         this.sortHeaderList();
       }
     );
-    36;
     newHeaderListItem.addEventListener("contextmenu", (event) => {
       event.preventDefault();
       renamePopup.doPopup();

@@ -1,436 +1,81 @@
 import mainPubSub from "./PubSub";
+import PopupGenerator from "./PopupGenerator.js";
 
-function asArray(arrOrSingle) {
-  const arr = Array.isArray(arrOrSingle) ? arrOrSingle : [arrOrSingle];
-  return arr;
-}
-
-class HtmlElement {
-  constructor(htmlTag = "div", children = [], textContent, classList = []) {
-    Object.assign(this, {
-      htmlTag,
-      children,
-      textContent,
-      classList,
-    });
-    this.classList = asArray(this.classList);
-    this.children = asArray(this.children);
-    this.createHtmlElement();
-    return this;
+class NumberedAlphabetPopup {
+  constructor() {
+    this.init();
+    this.fillAlphaPopup();
   }
 
-  createHtmlElement() {
-    try {
-      this.element = document.createElement(this.htmlTag);
-      this.element.textContent = this.textContent;
-      if (this.children)
-        this.children.forEach((child) => this.element.appendChild(child));
-      this.element.classList.add(...this.classList);
-      return this.element;
-    } catch (e) {
-      console.error(e);
-      console.warn(
-        "Check HtmlFormElement/Children. New ones may need .element before element is used."
-      );
+  domElements = {
+    alphaBtn: document.querySelector(".alphabet-btn"),
+    zeroBtn: document.querySelector(".zero-btn"),
+    oneBtn: document.querySelector(".one-btn"),
+    alphaPopup: document.querySelector(".alphabet-popup"),
+  };
+  configureFormButtons() {
+    const alphaBtn = this.domElements.alphaBtn;
+    const alphaPopup = this.domElements.alphaPopup;
+    const zeroBtn = this.domElements.zeroBtn;
+    const oneBtn = this.domElements.oneBtn;
+    alphaBtn.addEventListener("click", () => {
+      alphaPopup.classList.toggle("hidden");
+      alphaPopup.classList.toggle("selected");
+    });
+
+    zeroBtn.addEventListener("click", () => {
+      this.changeLabelsZero();
+    });
+
+    oneBtn.addEventListener("click", () => {
+      this.changeLabelsOne();
+    });
+  }
+
+  fillAlphaPopup() {
+    const alphaPopup = document.querySelector(".alphabet-popup");
+    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    for (let i = 1; i <= 26; i++) {
+      const newSpan = document.createElement("span");
+      newSpan.textContent = `${i}:${alphabet[i - 1]}`;
+      if (i < 10) {
+        newSpan.classList.add("single-digit");
+      }
+      alphaPopup.appendChild(newSpan);
     }
   }
 
-  addChild(newChild, insertIndex = this.element.children.length) {
-    if (insertIndex != 0) {
-      this.element.children[insertIndex - 1].after(newChild);
-    } else {
-      this.element.replaceChildren(newChild, ...this.children);
-    }
-    this.children.splice(insertIndex, 0, newChild);
-    return this.divWrapper;
-  }
-}
-
-class DivWrapperEle extends HtmlElement {
-  constructor(children, classList = ["column-group"]) {
-    super("div", children, null, classList);
-    return this;
-  }
-}
-
-class OverlayElement extends DivWrapperEle {
-  constructor(form, classList, stopClickClose) {
-    super(form, classList);
-    const hide = () => document.body.removeChild(this.element);
-    if (!stopClickClose) this.element.addEventListener("click", hide);
-    this.element.addEventListener("submit", (event) => {
-      event.preventDefault();
-      hide();
+  changeLabelsZero() {
+    const zeroBtn = this.domElements.zeroBtn;
+    const oneBtn = this.domElements.oneBtn;
+    const spans = this.domElements.alphaPopup.querySelectorAll("div span");
+    spans.forEach((span, index) => {
+      const spanParts = span.textContent.split(":");
+      spanParts[0] = index;
+      span.textContent = spanParts.join(":");
     });
-    return this;
+    spans[9].classList.add("single-digit");
+    zeroBtn.classList.add("selected");
+    oneBtn.classList.remove("selected");
   }
-}
 
-class FormElement extends HtmlElement {
-  constructor(
-    title,
-    children = [],
-    submitCallback,
-    classList = [],
-    action,
-    novalidate,
-    stopClickPropagation = true,
-    preventDefault = true
-  ) {
-    super("form", children, null, classList);
-    Object.assign(this, {
-      title,
-      children,
-      submitCallback,
-      classList,
-      action,
-      novalidate,
-      stopClickPropagation,
-      preventDefault,
+  changeLabelsOne() {
+    const zeroBtn = this.domElements.zeroBtn;
+    const oneBtn = this.domElements.oneBtn;
+    const spans = this.domElements.alphaPopup.querySelectorAll("div span");
+    spans.forEach((span, index) => {
+      const spanParts = span.textContent.split(":");
+      spanParts[0] = index + 1;
+      span.textContent = spanParts.join(":");
     });
-    this.createFormElement();
+    spans[9].classList.remove("single-digit");
+    zeroBtn.classList.remove("selected");
+    oneBtn.classList.add("selected");
+  }
+
+  init() {
+    this.configureFormButtons();
     return this;
-  }
-
-  createFormElement() {
-    this.addChild(this.title, 0);
-    this.element.action = this.action;
-    this.element.novalidate = this.novalidate;
-    if (this.stopClickPropagation)
-      this.element.addEventListener("click", (event) =>
-        event.stopPropagation()
-      );
-    if (this.submitCallback) {
-      this.element.addEventListener("submit", (event) => {
-        if (this.preventDefault) event.preventDefault();
-        this.submitCallback(this.element);
-      });
-    }
-    return this.element;
-  }
-}
-
-class LabelElement extends HtmlElement {
-  constructor(textContent, forField, classList = ["label"]) {
-    super("label", [], textContent, classList);
-    Object.assign(this, {
-      textContent,
-      forField,
-      classList,
-    });
-    this.createLabelElement();
-    return this;
-  }
-
-  createLabelElement() {
-    this.element.setAttribute("for", this.forField);
-    return this.element;
-  }
-}
-
-class TextInputElement extends HtmlElement {
-  constructor(
-    name,
-    id,
-    classList = [],
-    value,
-    placeholder,
-    autocomplete,
-    required,
-    oninputCallback = null
-  ) {
-    super("input", [], null, classList);
-    Object.assign(this, {
-      name,
-      id,
-      classList,
-      value,
-      placeholder,
-      autocomplete,
-      required,
-      oninputCallback,
-    });
-    this.createTextInputElement();
-    return this;
-  }
-
-  createTextInputElement() {
-    this.element.name = this.name;
-    if (this.value) this.element.value = this.value;
-    this.element.id = this.id || `${this.name}-id`;
-    this.element.autocomplete = this.autocomplete;
-    if (this.placeholder) this.element.placeholder = this.placeholder;
-    this.element.required = this.required;
-    this.element.addEventListener("input", this.oninputCallback);
-    return this.element;
-  }
-}
-
-class ButtonElement extends HtmlElement {
-  constructor(
-    textContent, // Default = "Close" or "Submit" if type = "submit"
-    listenerEvent, // Default click & close closest form/overlay, unless submit btn
-    type, // Default = "close" or "submit" if textContent = "submit"
-    classList = []
-  ) {
-    super("button", [], textContent, classList);
-    Object.assign(this, {
-      textContent,
-      listenerEvent,
-      type,
-      classList,
-    });
-    if (!this.type || this.type === "") this.setDefaultType();
-    if (!this.textContent || this.textContent === "")
-      this.setDefaultTextContent();
-    if (!this.listenerEvent) this.setDefaultListenerEvent();
-    this.createButtonElement();
-    return this;
-  }
-
-  setDefaultType() {
-    this.type = this.textContent === "sumbit" ? "submit" : "button";
-  }
-
-  setDefaultTextContent() {
-    this.textContent = this.type === "submit" ? "Submit" : "Close";
-  }
-
-  setDefaultListenerEvent() {
-    this.listenerEvent = {
-      trigger: "click",
-      callback: (event) => {
-        const parentForm = this.element.closest("form");
-        const parentOverlay = this.element.closest(".popup-overlay");
-        if (this.type === "button") {
-          document.body.removeChild(parentOverlay);
-        } else if (this.type === "submit") {
-          event.preventDefault();
-          parentForm.requestSubmit();
-        }
-      },
-    };
-  }
-
-  createButtonElement() {
-    this.element.textContent = this.textContent; // Super will not call default functions
-    this.element.type = this.type;
-    this.element.addEventListener(
-      this.listenerEvent.trigger,
-      this.listenerEvent.callback
-    );
-    return this.element;
-  }
-}
-
-class NewDefaultPopup {
-  constructor(
-    title,
-    schema = [
-      {
-        type: "group",
-        schema: [{ type: "button" }],
-        classList: "form-btn-group",
-      },
-    ],
-    formSubmit,
-    dontReset = false
-  ) {
-    Object.assign(this, {
-      title,
-      formSubmit,
-      dontReset,
-    });
-
-    this.form = new FormElement(
-      new HtmlElement("div", [], this.title, "title").element,
-      this.parseSchema(schema),
-      (form) => {
-        if (this.formSubmit) this.formSubmit(form);
-        form.reset();
-      },
-      "form"
-    ).element;
-
-    this.popup = new OverlayElement(this.form, "popup-overlay");
-  }
-
-  parseSchema(schema) {
-    if (!schema || schema.length === 0) return [];
-    return schema.map((si) => {
-      if (si.type === "group") {
-        const groupChildren = this.parseSchema(si.schema);
-        return new DivWrapperEle(groupChildren, si.classList).element;
-      }
-      if (si.type === "button") {
-        return new ButtonElement(
-          si.textContent,
-          si.listenerEvent,
-          si.btnType,
-          si.classList
-        ).element;
-      }
-      if (si.type === "textInput") {
-        return new TextInputElement(
-          si.name,
-          si.id,
-          si.classList,
-          si.value,
-          si.placeholder,
-          si.autocomplete,
-          si.required,
-          si.oninputCallback
-        ).element;
-      }
-      if (si.type === "label") {
-        return new LabelElement(si.textContent, si.forField, si.classList)
-          .element;
-      }
-      if (si.type === "no-yes-btn-group") {
-        const groupChildren = this.parseSchema([
-          {
-            type: "group",
-            schema: [
-              {
-                type: "button",
-                textContent: si.no || "No",
-              },
-              {
-                type: "button",
-                btnType: "submit",
-                textContent: si.yes || "Yes",
-              },
-            ],
-            classList: "form-btn-group",
-          },
-        ]);
-        return new DivWrapperEle(groupChildren, si.classList).element;
-      }
-      if (si.type === "no--reset-yes-btn-group") {
-        const groupChildren = this.parseSchema([
-          {
-            type: "group",
-            schema: [
-              {
-                type: "button",
-                textContent: si.no || "No",
-              },
-              {
-                type: "button",
-                textContent: si.reset || "Reset",
-              },
-              {
-                type: "button",
-                btnType: "submit",
-                textContent: si.yes || "Yes",
-              },
-            ],
-            classList: "form-btn-group",
-          },
-        ]);
-        return new DivWrapperEle(groupChildren, si.classList).element;
-      }
-
-      throw Error(
-        "Bad form schema, could not be parsed. Missed si.type: " + si.type
-      );
-    });
-  }
-
-  doPopup() {
-    document.body.appendChild(this.popup.element);
-    if (!this.dontReset) this.form.reset();
-    const anyInput = this.popup.element.querySelector("input");
-    if (anyInput) anyInput.focus();
-  }
-}
-
-class DefaultPopup {
-  constructor(constructorData) {
-    this.title = constructorData.title; // String, form title
-    this.classList = constructorData.classList; // List of classes to apply to form
-    this.buttonWrapperClassList = constructorData.buttonWrapperClassList;
-    this.bigInputWrapperClassList = constructorData.bigInputWrapperClassList;
-    this.buttons = [{ textContent: "Close" }]; // List of Button objects
-    this.inputGroupClass = constructorData.inputGroupClass;
-    this.textInputs = constructorData.textInputs || [];
-    this.submitCallback = constructorData.submitCallback;
-    this.stopEscClose = constructorData.stopEscClose || false;
-    this.stopClickClose = constructorData.stopClickClose || false;
-
-    if (constructorData.buttons) this.buttons.push(...constructorData.buttons);
-    if (!this.verifyRequiredData()) throw Error("Invalid DefaultPopup Data");
-    this.popup = new OverlayElement(
-      new FormElement(
-        new HtmlElement("div", [], this.title, "title").element,
-        [
-          ...this.textInputs.map((input) => this.createLabelInput(input)),
-          new DivWrapperEle(
-            this.buttons.map(
-              (button) =>
-                new ButtonElement(
-                  button.textContent,
-                  button.event,
-                  button.type,
-                  button.classList
-                ).element
-            ),
-            "form-btn-group"
-          ).element,
-        ],
-        (form) => {
-          if (this.submitCallback) this.submitCallback(form);
-          form.reset();
-        },
-        "form"
-      ).element,
-      "popup-overlay"
-    );
-    return this;
-  }
-
-  doPopup() {
-    document.body.appendChild(this.popup.element);
-    const anyInput = this.popup.element.querySelector("input");
-    if (anyInput) anyInput.focus();
-  }
-
-  verifyRequiredData() {
-    if (!this.title) return false;
-    if (this.buttons) {
-      this.buttons.forEach((btn) => {
-        if (!btn.textContent) return false;
-      });
-    }
-    if (this.textInputs) {
-      this.textInputs.forEach((input) => {
-        if (!input.name) return false;
-      });
-    }
-    return true;
-  }
-
-  createLabelInput(textEleData) {
-    const label = new LabelElement(
-      textEleData.inputLabelText,
-      textEleData.id,
-      textEleData.classList
-    ).element;
-    const input = new TextInputElement(
-      textEleData.name,
-      textEleData.id,
-      textEleData.classList,
-      textEleData.value,
-      textEleData.placeholder,
-      textEleData.autocomplete,
-      textEleData.required,
-      textEleData.oninputEvent
-    ).element;
-    const inputWrapper = new DivWrapperEle(
-      [label, input],
-      textEleData.littleInputWrapperClassList
-    ).element;
-    return inputWrapper;
   }
 }
 
@@ -787,207 +432,6 @@ class EdgeworkPopup {
   }
 }
 
-class NumberedAlphabetPopup {
-  constructor() {
-    this.init();
-    this.fillAlphaPopup();
-  }
-
-  domElements = {
-    alphaBtn: document.querySelector(".alphabet-btn"),
-    zeroBtn: document.querySelector(".zero-btn"),
-    oneBtn: document.querySelector(".one-btn"),
-    alphaPopup: document.querySelector(".alphabet-popup"),
-  };
-  configureFormButtons() {
-    const alphaBtn = this.domElements.alphaBtn;
-    const alphaPopup = this.domElements.alphaPopup;
-    const zeroBtn = this.domElements.zeroBtn;
-    const oneBtn = this.domElements.oneBtn;
-    alphaBtn.addEventListener("click", () => {
-      alphaPopup.classList.toggle("hidden");
-      alphaPopup.classList.toggle("selected");
-    });
-
-    zeroBtn.addEventListener("click", () => {
-      this.changeLabelsZero();
-    });
-
-    oneBtn.addEventListener("click", () => {
-      this.changeLabelsOne();
-    });
-  }
-
-  fillAlphaPopup() {
-    const alphaPopup = document.querySelector(".alphabet-popup");
-    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    for (let i = 1; i <= 26; i++) {
-      const newSpan = document.createElement("span");
-      newSpan.textContent = `${i}:${alphabet[i - 1]}`;
-      if (i < 10) {
-        newSpan.classList.add("single-digit");
-      }
-      alphaPopup.appendChild(newSpan);
-    }
-  }
-
-  changeLabelsZero() {
-    const zeroBtn = this.domElements.zeroBtn;
-    const oneBtn = this.domElements.oneBtn;
-    const spans = this.domElements.alphaPopup.querySelectorAll("div span");
-    spans.forEach((span, index) => {
-      const spanParts = span.textContent.split(":");
-      spanParts[0] = index;
-      span.textContent = spanParts.join(":");
-    });
-    spans[9].classList.add("single-digit");
-    zeroBtn.classList.add("selected");
-    oneBtn.classList.remove("selected");
-  }
-
-  changeLabelsOne() {
-    const zeroBtn = this.domElements.zeroBtn;
-    const oneBtn = this.domElements.oneBtn;
-    const spans = this.domElements.alphaPopup.querySelectorAll("div span");
-    spans.forEach((span, index) => {
-      const spanParts = span.textContent.split(":");
-      spanParts[0] = index + 1;
-      span.textContent = spanParts.join(":");
-    });
-    spans[9].classList.remove("single-digit");
-    zeroBtn.classList.remove("selected");
-    oneBtn.classList.add("selected");
-  }
-
-  init() {
-    this.configureFormButtons();
-    return this;
-  }
-}
-
-class ImportModulesPopup {
-  constructor() {
-    return this;
-  }
-  domElements = {
-    popupOverlay: document.querySelector(".popup-overlay"),
-    importModuleBtn: document.querySelector(".import-modules-btn"),
-    importModuleForm: document.querySelector(".import-modules-form"),
-    closeFormBtn: document.querySelector(".close-import-form-btn"),
-    resetFormBtn: document.querySelector(".reset-import-form-btn"),
-    textAreaInput: document.querySelector(".import-modules-text"),
-    fileUploadInput: document.querySelector("#import-modules-form-file-input"),
-    addExampleBtn: document.querySelector(".import-modules-example"),
-    sidebarMenu: document.querySelector(".sidebar-options-menu"),
-  };
-
-  configureFormButtons() {
-    const popupOverlay = this.domElements.popupOverlay;
-    const resetFormBtn = this.domElements.resetFormBtn;
-    const closeFormBtn = this.domElements.closeFormBtn;
-    const importModuleForm = this.domElements.importModuleForm;
-    const textAreaInput = this.domElements.textAreaInput;
-    const fileUploadInput = this.domElements.fileUploadInput;
-    const addExampleBtn = this.domElements.addExampleBtn;
-
-    resetFormBtn.addEventListener("click", () => {
-      this.resetForm();
-      textAreaInput.focus();
-    });
-
-    closeFormBtn.addEventListener("click", () => {
-      popupOverlay.classList.add("hidden");
-      importModuleForm.classList.add("hidden");
-    });
-
-    addExampleBtn.addEventListener("click", (event) =>
-      this.handleExample(event)
-    );
-
-    fileUploadInput.addEventListener(
-      "change",
-      this.handleFileUpload.bind(this)
-    );
-
-    importModuleForm.addEventListener("submit", (event) => {
-      event.preventDefault();
-      const formText = textAreaInput.textContent;
-      if (formText && formText !== "") {
-        if (!this.processTextarea(formText)) return;
-      }
-
-      popupOverlay.classList.add("hidden");
-      importModuleForm.classList.add("hidden");
-      this.resetForm();
-    });
-  }
-
-  handleExample(event) {
-    const textAreaInput = this.domElements.textAreaInput;
-    const example = `[\n  {\n    "name": "Logic",\n    "url": "https://ktane.timwi.de/HTML/Logic.html"\n  },\n  {\n    "name": "Silly Slots",\n    "url": "https://ktane.timwi.de/HTML/Silly%20Slots.html"\n  },\n  {\n    "url": "https://ktane.timwi.de/HTML/Yippee.html"\n  }\n]`;
-
-    if (textAreaInput.hasAttribute("contenteditable")) {
-      this.currentTextInputValue = textAreaInput.textContent;
-
-      event.target.textContent = "Hide Example";
-      textAreaInput.textContent = example;
-      textAreaInput.removeAttribute("contenteditable");
-      return;
-    }
-
-    event.target.textContent = "Show me an example";
-    textAreaInput.textContent = this.currentTextInputValue;
-    textAreaInput.setAttribute("contenteditable", "");
-  }
-
-  processTextarea(formText) {
-    try {
-      const formTextCleaned = formText.replace(/(|\t|\n|\r)/gm, "");
-      const newModules = JSON.parse(formTextCleaned);
-      mainPubSub.publish("addNewModules", newModules);
-      return true;
-    } catch (error) {
-      new NewDefaultPopup(
-        "Adding JSON From text failed.\nError: " + error
-      ).doPopup();
-
-      return false;
-    }
-  }
-
-  handleFileUpload(event) {
-    const file = event.target.files[0];
-    const textAreaInput = this.domElements.textAreaInput;
-    if (!file) return;
-
-    const fr = new FileReader();
-    fr.onload = () => {
-      textAreaInput.textContent = fr.result;
-    };
-    fr.onerror = () => {
-      new NewDefaultPopup(
-        "Unable to read file. Please use a properly formatted .json or .txt"
-      ).doPopup();
-    };
-    fr.readAsText(file);
-  }
-
-  resetForm() {
-    const importModuleForm = this.domElements.importModuleForm;
-    const textAreaInput = this.domElements.textAreaInput;
-    const addExampleBtn = this.domElements.addExampleBtn;
-    importModuleForm.reset();
-    textAreaInput.textContent = "";
-    if (textAreaInput.hasAttribute("readonly")) addExampleBtn.click();
-    return this;
-  }
-
-  init() {
-    this.configureFormButtons();
-    return this;
-  }
-}
-
 class ExportModulesPopup {
   constructor() {
     return this;
@@ -1011,7 +455,7 @@ class ExportModulesPopup {
       popupOverlay.classList.add("hidden");
       exportModuleForm.classList.add("hidden");
     });
-    const popup = new NewDefaultPopup("Copied");
+    const popup = new PopupGenerator("Copied");
     copyBtn.addEventListener("click", () => {
       navigator.clipboard.writeText(textAreaOutput.textContent);
       popup.doPopup();
@@ -1051,11 +495,374 @@ class ExportModulesPopup {
   }
 }
 
+class SidebarPopup {
+  constructor(addNewModulePopup, importModulePopup, nukeSidebarPopup) {
+    this.addNewModulePopup = addNewModulePopup;
+    this.importModulePopup = importModulePopup;
+    this.nukeSidebarPopup = nukeSidebarPopup;
+    this.popup = new PopupGenerator("Options", [
+      {
+        type: "group",
+        schema: [
+          {
+            type: "button",
+            btnType: "button",
+            textContent: "Add new Module",
+            listenerEvent: {
+              trigger: "click",
+              callback: () => this.addNewModulePopup.doPopup(),
+            },
+            classList: "add-new-module-btn",
+          },
+          {
+            type: "button",
+            btnType: "submit",
+            textContent: this.editMode ? "Exit Edit Mode" : "Enter Edit Mode",
+            listenerEvent: {
+              trigger: "click",
+              callback: () => mainPubSub.publish("toggleEditMode"),
+            },
+            classList: ["edit-mode-btn", this.editMode ? "orange" : null],
+          },
+          {
+            type: "button",
+            btnType: "submit",
+            textContent: "Import Module List",
+            listenerEvent: {
+              trigger: "click",
+              callback: () => this.importModulePopup.doPopup(),
+            },
+            classList: "import-modules-btn",
+          },
+          {
+            type: "button",
+            btnType: "submit",
+            textContent: "Export Module List",
+            listenerEvent: {
+              trigger: "click",
+              callback: () => {
+                document
+                  .querySelector(".popup-overlay")
+                  .classList.remove("hidden");
+                document
+                  .querySelector(".export-modules-form")
+                  .classList.remove("hidden");
+              },
+            },
+            classList: ["export-modules-btn"],
+          },
+          {
+            type: "button",
+            btnType: "submit",
+            textContent: "Delete All Modules",
+            listenerEvent: {
+              trigger: "click",
+              callback: () => this.nukeSidebarPopup.doPopup(),
+            },
+            classList: "nuke-module-list-btn",
+          },
+        ],
+        classList: "column-group",
+      },
+    ]);
+  }
+
+  doPopup() {
+    this.popup.doPopup();
+  }
+}
+
+class AddModulePopup {
+  constructor() {
+    this.popup = new PopupGenerator(
+      "Add New Module",
+      [
+        {
+          type: "group",
+          schema: [
+            {
+              type: "label",
+              forField: "url",
+              textContent: "Module URL",
+            },
+            {
+              type: "textInput",
+              name: "url",
+              id: "url",
+              placeholder: "https://ktane.timwi.de/HTML/Logic.html",
+              autocomplete: "off",
+              required: true,
+            },
+            {
+              type: "label",
+              forField: "name",
+              textContent: "Module Name",
+            },
+            {
+              type: "textInput",
+              name: "name",
+              id: "name",
+              placeholder: "Logic",
+              autocomplete: "off",
+            },
+          ],
+        },
+        {
+          type: "group",
+          classList: "form-btn-group",
+          schema: [
+            {
+              type: "button",
+            },
+            {
+              type: "button",
+              btnType: "submit",
+            },
+          ],
+        },
+      ],
+      (form) => {
+        const formData = new FormData(form);
+        mainPubSub.publish("addNewModule", {
+          moduleName: formData.get("name"),
+          manualUrl: formData.get("url"),
+        });
+      }
+    );
+  }
+
+  doPopup() {
+    this.popup.doPopup();
+  }
+}
+
+class EditModulePopup {
+  constructor(existingSidebaritem) {
+    this.existingSidebaritem = existingSidebaritem;
+    this.popup = this.generate({});
+    return this;
+  }
+
+  generate(existingSidebaritem) {
+    return new PopupGenerator(
+      "Edit Module",
+      [
+        {
+          type: "group",
+          schema: [
+            {
+              type: "label",
+              forField: "url",
+              textContent: "Module URL",
+            },
+            {
+              type: "textInput",
+              name: "url",
+              id: "url",
+              value: existingSidebaritem.manualUrl,
+              autocomplete: "off",
+              required: true,
+            },
+            {
+              type: "label",
+              forField: "name",
+              textContent: "Module Name",
+            },
+            {
+              type: "textInput",
+              name: "name",
+              id: "name",
+              value: existingSidebaritem.moduleName,
+              autocomplete: "off",
+            },
+          ],
+        },
+        {
+          type: "group",
+          schema: [
+            {
+              type: "button",
+              textContent: "Cancel",
+            },
+            {
+              type: "button",
+              btnType: "submit",
+              textContent: "Delete",
+              listenerEvent: {
+                trigger: "click",
+                callback: () =>
+                  this.removeSidebarItemElement(existingSidebaritem),
+              },
+            },
+            {
+              type: "button",
+              btnType: "submit",
+              textContent: "Edit",
+            },
+          ],
+          classList: "form-btn-group",
+        },
+      ],
+      (form) => {
+        const formData = new FormData(form.element);
+        mainPubSub.publish("replaceModule", {
+          old: existingSidebaritem,
+          new: {
+            moduleName: formData.get("name"),
+            manualUrl: formData.get("url"),
+          },
+        });
+      },
+      true
+    );
+  }
+}
+
+class ImportModulesPopup {
+  constructor() {
+    this.popup = new PopupGenerator(
+      "Import Modules",
+      [
+        {
+          type: "label",
+          forField: "file-upload",
+          textContent: "Enter/Upload JSON",
+        },
+        {
+          type: "group",
+          schema: [
+            {
+              type: "fileInput",
+              accept: ".json,.txt",
+              name: "import-modules-file",
+              id: "import-modules-form-file-input",
+              autocomplete: "off",
+              listenerEvent: {
+                trigger: "change",
+                callback: (data) => {
+                  console.log("test");
+                  this.handleFileUpload(data);
+                },
+              },
+            },
+            {
+              type: "button",
+              textContent: "Show me an example",
+              classList: "import-modules-example",
+              listenerEvent: {
+                trigger: "click",
+                callback: (data) => this.handleExample(data),
+              },
+            },
+          ],
+          classList: "file-wrapper",
+        },
+        {
+          type: "contenteditableDiv",
+          name: "import-module-text",
+          classList: ["import-modules-text", "popup-text-area"],
+        },
+        {
+          type: "group",
+          schema: [
+            {
+              type: "button",
+            },
+            {
+              type: "button",
+              textContent: "Reset",
+              listenerEvent: {
+                trigger: "click",
+                callback: (data) => {
+                  const form = data.element.closest("form");
+                  form.reset();
+                  form.querySelector("div.popup-text-area").textContent = "";
+                },
+              },
+            },
+            {
+              type: "button",
+              btnType: "submit",
+              textContent: "Add all",
+            },
+          ],
+          classList: "form-btn-group",
+        },
+      ],
+      (data) => {
+        const form = data.element.closest("form");
+        const textAreaInput = form.querySelector(".popup-text-area");
+        const formText = textAreaInput.textContent;
+        if (formText && formText !== "") {
+          if (!this.processTextarea(formText)) return;
+        }
+      }
+    );
+  }
+
+  doPopup() {
+    this.popup.doPopup();
+  }
+
+  processTextarea(formText) {
+    try {
+      const formTextCleaned = formText.replace(/(|\t|\n|\r)/gm, "");
+      const newModules = JSON.parse(formTextCleaned);
+      mainPubSub.publish("addNewModules", newModules);
+      return true;
+    } catch (error) {
+      new PopupGenerator(
+        "Adding JSON From text failed.\nError: " + error
+      ).doPopup();
+
+      return false;
+    }
+  }
+
+  handleFileUpload(data) {
+    const file = data.element.files[0];
+    const form = data.element.closest("form");
+    const textAreaInput = form.querySelector(".popup-text-area");
+    if (!file) return;
+
+    const fr = new FileReader();
+    fr.onload = () => {
+      textAreaInput.textContent = fr.result;
+    };
+    fr.onerror = () => {
+      new PopupGenerator(
+        "Unable to read file. Please use a properly formatted .json or .txt"
+      ).doPopup();
+    };
+    fr.readAsText(file);
+  }
+
+  handleExample(data) {
+    const form = data.element.closest("form");
+    const textAreaInput = form.querySelector(".popup-text-area");
+    const example = `[\n  {\n    "name": "Logic",\n    "url": "https://ktane.timwi.de/HTML/Logic.html"\n  },\n  {\n    "name": "Silly Slots",\n    "url": "https://ktane.timwi.de/HTML/Silly%20Slots.html"\n  },\n  {\n    "url": "https://ktane.timwi.de/HTML/Yippee.html"\n  }\n]`;
+
+    if (textAreaInput.hasAttribute("contenteditable")) {
+      this.currentTextInputValue = textAreaInput.textContent;
+
+      data.element.textContent = "Hide Example";
+      textAreaInput.textContent = example;
+      textAreaInput.removeAttribute("contenteditable");
+      return;
+    }
+
+    data.element.textContent = "Show me an example";
+    textAreaInput.textContent = this.currentTextInputValue;
+    textAreaInput.setAttribute("contenteditable", "");
+  }
+}
+
 export {
   EdgeworkPopup,
   NumberedAlphabetPopup,
+  SidebarPopup,
+  AddModulePopup,
+  EditModulePopup,
   ImportModulesPopup,
   ExportModulesPopup,
-  DefaultPopup,
-  NewDefaultPopup,
 };

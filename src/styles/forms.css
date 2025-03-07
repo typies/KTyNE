@@ -88,7 +88,7 @@ input.ind-checkbox {
   align-self: center;
 }
 
-.serial-preview .serial {
+.serial-preview div.widget.serial {
   margin-right: 5px;
 }
 
