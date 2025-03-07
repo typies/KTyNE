@@ -1,44 +1,398 @@
 import mainPubSub from "./PubSub";
-/*
-{
-  title: string,               - Required
-  classList: List<string>
-  buttonWrapperClassList: List<string>
-  bigInputWrapperClassList: List<string>
-  submitCallback: fn
-  buttons: [{
-    type: string,              - Default = "button"
-    classList: List<string>,
-    textContent: string,       - Required, if button is present
-    event: { trigger: string, callback: fn}
-  }],
-  textInputs: [{
-      inputLabelText: string,
-      inputType: string,
-      inputName: string,       - Required
-      inputId: string,
-      inputClassList: List<string>
-      inputPlaceholder: string,
-      inputAutocomplete: string,  - ("off" to turn off)
-      littleInputWrapperClassList: string
-      required: bool
-    },
-  ]
+
+function asArray(arrOrSingle) {
+  const arr = Array.isArray(arrOrSingle) ? arrOrSingle : [arrOrSingle];
+  return arr;
 }
-*/
+
+class HtmlElement {
+  constructor(htmlTag = "div", children = [], textContent, classList = []) {
+    Object.assign(this, {
+      htmlTag,
+      children,
+      textContent,
+      classList,
+    });
+    this.classList = asArray(this.classList);
+    this.children = asArray(this.children);
+    this.createHtmlElement();
+    return this;
+  }
+
+  createHtmlElement() {
+    try {
+      this.element = document.createElement(this.htmlTag);
+      this.element.textContent = this.textContent;
+      if (this.children)
+        this.children.forEach((child) => this.element.appendChild(child));
+      this.element.classList.add(...this.classList);
+      return this.element;
+    } catch (e) {
+      console.error(e);
+      console.warn(
+        "Check HtmlFormElement/Children. New ones may need .element before element is used."
+      );
+    }
+  }
+
+  addChild(newChild, insertIndex = this.element.children.length) {
+    if (insertIndex != 0) {
+      this.element.children[insertIndex - 1].after(newChild);
+    } else {
+      this.element.replaceChildren(newChild, ...this.children);
+    }
+    this.children.splice(insertIndex, 0, newChild);
+    return this.divWrapper;
+  }
+}
+
+class DivWrapperEle extends HtmlElement {
+  constructor(children, classList = ["column-group"]) {
+    super("div", children, null, classList);
+    return this;
+  }
+}
+
+class OverlayElement extends DivWrapperEle {
+  constructor(form, classList, stopClickClose) {
+    super(form, classList);
+    const hide = () => document.body.removeChild(this.element);
+    if (!stopClickClose) this.element.addEventListener("click", hide);
+    this.element.addEventListener("submit", (event) => {
+      event.preventDefault();
+      hide();
+    });
+    return this;
+  }
+}
+
+class FormElement extends HtmlElement {
+  constructor(
+    title,
+    children = [],
+    submitCallback,
+    classList = [],
+    action,
+    novalidate,
+    stopClickPropagation = true,
+    preventDefault = true
+  ) {
+    super("form", children, null, classList);
+    Object.assign(this, {
+      title,
+      children,
+      submitCallback,
+      classList,
+      action,
+      novalidate,
+      stopClickPropagation,
+      preventDefault,
+    });
+    this.createFormElement();
+    return this;
+  }
+
+  createFormElement() {
+    this.addChild(this.title, 0);
+    this.element.action = this.action;
+    this.element.novalidate = this.novalidate;
+    if (this.stopClickPropagation)
+      this.element.addEventListener("click", (event) =>
+        event.stopPropagation()
+      );
+    if (this.submitCallback) {
+      this.element.addEventListener("submit", (event) => {
+        if (this.preventDefault) event.preventDefault();
+        this.submitCallback(this.element);
+      });
+    }
+    return this.element;
+  }
+}
+
+class LabelElement extends HtmlElement {
+  constructor(textContent, forField, classList = ["label"]) {
+    super("label", [], textContent, classList);
+    Object.assign(this, {
+      textContent,
+      forField,
+      classList,
+    });
+    this.createLabelElement();
+    return this;
+  }
+
+  createLabelElement() {
+    this.element.setAttribute("for", this.forField);
+    return this.element;
+  }
+}
+
+class TextInputElement extends HtmlElement {
+  constructor(
+    name,
+    id,
+    classList = [],
+    value,
+    placeholder,
+    autocomplete,
+    required,
+    oninputCallback = null
+  ) {
+    super("input", [], null, classList);
+    Object.assign(this, {
+      name,
+      id,
+      classList,
+      value,
+      placeholder,
+      autocomplete,
+      required,
+      oninputCallback,
+    });
+    this.createTextInputElement();
+    return this;
+  }
+
+  createTextInputElement() {
+    this.element.name = this.name;
+    if (this.value) this.element.value = this.value;
+    this.element.id = this.id || `${this.name}-id`;
+    this.element.autocomplete = this.autocomplete;
+    if (this.placeholder) this.element.placeholder = this.placeholder;
+    this.element.required = this.required;
+    this.element.addEventListener("input", this.oninputCallback);
+    return this.element;
+  }
+}
+
+class ButtonElement extends HtmlElement {
+  constructor(
+    textContent, // Default = "Close" or "Submit" if type = "submit"
+    listenerEvent, // Default click & close closest form/overlay, unless submit btn
+    type, // Default = "close" or "submit" if textContent = "submit"
+    classList = []
+  ) {
+    super("button", [], textContent, classList);
+    Object.assign(this, {
+      textContent,
+      listenerEvent,
+      type,
+      classList,
+    });
+    if (!this.type || this.type === "") this.setDefaultType();
+    if (!this.textContent || this.textContent === "")
+      this.setDefaultTextContent();
+    if (!this.listenerEvent) this.setDefaultListenerEvent();
+    this.createButtonElement();
+    return this;
+  }
+
+  setDefaultType() {
+    this.type = this.textContent === "sumbit" ? "submit" : "button";
+  }
+
+  setDefaultTextContent() {
+    this.textContent = this.type === "submit" ? "Submit" : "Close";
+  }
+
+  setDefaultListenerEvent() {
+    this.listenerEvent = {
+      trigger: "click",
+      callback: (event) => {
+        const parentForm = this.element.closest("form");
+        const parentOverlay = this.element.closest(".popup-overlay");
+        if (this.type === "button") {
+          document.body.removeChild(parentOverlay);
+        } else if (this.type === "submit") {
+          event.preventDefault();
+          parentForm.requestSubmit();
+        }
+      },
+    };
+  }
+
+  createButtonElement() {
+    this.element.textContent = this.textContent; // Super will not call default functions
+    this.element.type = this.type;
+    this.element.addEventListener(
+      this.listenerEvent.trigger,
+      this.listenerEvent.callback
+    );
+    return this.element;
+  }
+}
+
+class NewDefaultPopup {
+  constructor(
+    title,
+    schema = [
+      {
+        type: "group",
+        schema: [{ type: "button" }],
+        classList: "form-btn-group",
+      },
+    ],
+    formSubmit,
+    dontReset = false
+  ) {
+    Object.assign(this, {
+      title,
+      formSubmit,
+      dontReset,
+    });
+
+    this.form = new FormElement(
+      new HtmlElement("div", [], this.title, "title").element,
+      this.parseSchema(schema),
+      (form) => {
+        if (this.formSubmit) this.formSubmit(form);
+        form.reset();
+      },
+      "form"
+    ).element;
+
+    this.popup = new OverlayElement(this.form, "popup-overlay");
+  }
+
+  parseSchema(schema) {
+    if (!schema || schema.length === 0) return [];
+    return schema.map((si) => {
+      if (si.type === "group") {
+        const groupChildren = this.parseSchema(si.schema);
+        return new DivWrapperEle(groupChildren, si.classList).element;
+      }
+      if (si.type === "button") {
+        return new ButtonElement(
+          si.textContent,
+          si.listenerEvent,
+          si.btnType,
+          si.classList
+        ).element;
+      }
+      if (si.type === "textInput") {
+        return new TextInputElement(
+          si.name,
+          si.id,
+          si.classList,
+          si.value,
+          si.placeholder,
+          si.autocomplete,
+          si.required,
+          si.oninputCallback
+        ).element;
+      }
+      if (si.type === "label") {
+        return new LabelElement(si.textContent, si.forField, si.classList)
+          .element;
+      }
+      if (si.type === "no-yes-btn-group") {
+        const groupChildren = this.parseSchema([
+          {
+            type: "group",
+            schema: [
+              {
+                type: "button",
+                textContent: si.no || "No",
+              },
+              {
+                type: "button",
+                btnType: "submit",
+                textContent: si.yes || "Yes",
+              },
+            ],
+            classList: "form-btn-group",
+          },
+        ]);
+        return new DivWrapperEle(groupChildren, si.classList).element;
+      }
+      if (si.type === "no--reset-yes-btn-group") {
+        const groupChildren = this.parseSchema([
+          {
+            type: "group",
+            schema: [
+              {
+                type: "button",
+                textContent: si.no || "No",
+              },
+              {
+                type: "button",
+                textContent: si.reset || "Reset",
+              },
+              {
+                type: "button",
+                btnType: "submit",
+                textContent: si.yes || "Yes",
+              },
+            ],
+            classList: "form-btn-group",
+          },
+        ]);
+        return new DivWrapperEle(groupChildren, si.classList).element;
+      }
+
+      throw Error(
+        "Bad form schema, could not be parsed. Missed si.type: " + si.type
+      );
+    });
+  }
+
+  doPopup() {
+    document.body.appendChild(this.popup.element);
+    if (!this.dontReset) this.form.reset();
+    const anyInput = this.popup.element.querySelector("input");
+    if (anyInput) anyInput.focus();
+  }
+}
+
 class DefaultPopup {
   constructor(constructorData) {
     this.title = constructorData.title; // String, form title
     this.classList = constructorData.classList; // List of classes to apply to form
     this.buttonWrapperClassList = constructorData.buttonWrapperClassList;
     this.bigInputWrapperClassList = constructorData.bigInputWrapperClassList;
-    this.buttons = constructorData.buttons || [{ textContent: "Close" }]; // List of Button objects
+    this.buttons = [{ textContent: "Close" }]; // List of Button objects
     this.inputGroupClass = constructorData.inputGroupClass;
-    this.textInputs = constructorData.textInputs;
+    this.textInputs = constructorData.textInputs || [];
     this.submitCallback = constructorData.submitCallback;
+    this.stopEscClose = constructorData.stopEscClose || false;
+    this.stopClickClose = constructorData.stopClickClose || false;
 
+    if (constructorData.buttons) this.buttons.push(...constructorData.buttons);
     if (!this.verifyRequiredData()) throw Error("Invalid DefaultPopup Data");
+    this.popup = new OverlayElement(
+      new FormElement(
+        new HtmlElement("div", [], this.title, "title").element,
+        [
+          ...this.textInputs.map((input) => this.createLabelInput(input)),
+          new DivWrapperEle(
+            this.buttons.map(
+              (button) =>
+                new ButtonElement(
+                  button.textContent,
+                  button.event,
+                  button.type,
+                  button.classList
+                ).element
+            ),
+            "form-btn-group"
+          ).element,
+        ],
+        (form) => {
+          if (this.submitCallback) this.submitCallback(form);
+          form.reset();
+        },
+        "form"
+      ).element,
+      "popup-overlay"
+    );
     return this;
+  }
+
+  doPopup() {
+    document.body.appendChild(this.popup.element);
+    const anyInput = this.popup.element.querySelector("input");
+    if (anyInput) anyInput.focus();
   }
 
   verifyRequiredData() {
@@ -50,155 +404,33 @@ class DefaultPopup {
     }
     if (this.textInputs) {
       this.textInputs.forEach((input) => {
-        if (!input.inputName) return false;
+        if (!input.name) return false;
       });
     }
     return true;
   }
 
-  createPopup() {
-    this.overlay = document.createElement("div");
-    this.overlay.classList.add("popup-overlay");
-    this.overlay.addEventListener("click", this.defaultClose.bind(this));
-
-    this.form = this.createForm();
-    this.overlay.replaceChildren(this.form);
-    return this.overlay;
-  }
-
-  createForm() {
-    const form = document.createElement("form");
-    form.addEventListener("click", (event) => {
-      event.stopPropagation();
-    });
-    form.addEventListener("submit", (event) => {
-      event.stopPropagation();
-      event.preventDefault();
-      if (this.submitCallback) this.submitCallback(this.form);
-      this.defaultClose();
-    });
-    const title = document.createElement("div");
-    title.classList.add("title");
-    if (this.title) title.textContent = this.title;
-
-    form.classList.add("form");
-    if (this.classList) form.classList.add(...this.classList);
-
-    const inputWrapper = this.createInputWrapper();
-    const btnGroup = this.createBtnGroup(this.buttons);
-
-    form.replaceChildren(title, inputWrapper, btnGroup);
-    return form;
-  }
-
-  createInputWrapper() {
-    const inputWrapper = document.createElement("div");
-    if (this.bigInputWrapperClassList)
-      inputWrapper.classList.add(...this.bigInputWrapperClassList);
-    if (!this.textInputs) return inputWrapper;
-
-    this.textInputs.forEach((input) => {
-      const newTextEleWrapper = this.createTextEle(input);
-      inputWrapper.appendChild(newTextEleWrapper);
-    });
-
-    this.focusEle = inputWrapper.children[0].querySelector("input");
-
+  createLabelInput(textEleData) {
+    const label = new LabelElement(
+      textEleData.inputLabelText,
+      textEleData.id,
+      textEleData.classList
+    ).element;
+    const input = new TextInputElement(
+      textEleData.name,
+      textEleData.id,
+      textEleData.classList,
+      textEleData.value,
+      textEleData.placeholder,
+      textEleData.autocomplete,
+      textEleData.required,
+      textEleData.oninputEvent
+    ).element;
+    const inputWrapper = new DivWrapperEle(
+      [label, input],
+      textEleData.littleInputWrapperClassList
+    ).element;
     return inputWrapper;
-  }
-
-  createTextEle(textEleData) {
-    const label = document.createElement("label");
-    if (textEleData.inputId) label.setAttribute("for", textEleData.inputId);
-    if (textEleData.inputLabelText)
-      label.textContent = textEleData.inputLabelText;
-    const input = document.createElement("input");
-    input.type = textEleData.inputType || "text";
-    if (textEleData.inputName) input.name = textEleData.inputName;
-    if (textEleData.inputId) input.id = textEleData.inputId;
-    if (textEleData.inputPlaceholder)
-      input.placeholder = textEleData.inputPlaceholder;
-    if (textEleData.inputClassList)
-      input.classList.add(...textEleData.inputClassList);
-    if (textEleData.inputAutocomplete)
-      input.autocomplete = textEleData.inputAutocomplete;
-    if (textEleData.required) input.required = true;
-    const inputWrapper = document.createElement("div");
-    if (textEleData.littleInputWrapperClassList)
-      inputWrapper.classList.add(...textEleData.littleInputWrapperClassList);
-    inputWrapper.replaceChildren(label, input);
-    return inputWrapper;
-  }
-
-  createBtnGroup(buttonsData) {
-    const formBtnGroup = document.createElement("div");
-    if (buttonsData.classList)
-      formBtnGroup.classList.add(...this.buttonWrapperClassList);
-    formBtnGroup.classList.add("form-btn-group");
-
-    if (!buttonsData) return formBtnGroup;
-
-    buttonsData.forEach((button) => {
-      const newButton = document.createElement("button");
-      newButton.type = button.type || "button";
-      if (button.classList) newButton.classList.add(...button.classList);
-      newButton.textContent = button.textContent;
-      if (button.event && button.event.trigger && button.event.callback)
-        newButton.addEventListener(button.event.trigger, (event) => {
-          event.stopPropagation();
-          event.preventDefault();
-          button.event.callback(this.form);
-          if (button.type === "submit") this.defaultClose();
-        });
-      else if (newButton.type === "submit") {
-        newButton.addEventListener("click", (event) => {
-          event.stopPropagation();
-          event.preventDefault();
-          this.defaultSubmit();
-        });
-      } else {
-        this.configureDefaultButton(newButton);
-      }
-      formBtnGroup.append(newButton);
-    });
-    return formBtnGroup;
-  }
-
-  configureDefaultButton(btn) {
-    switch (btn.textContent.toLowerCase()) {
-      case "reset":
-        btn.addEventListener("click", (event) => {
-          event.stopPropagation();
-          this.defaultReset();
-        });
-        break;
-      default:
-        btn.addEventListener("click", (event) => {
-          event.stopPropagation();
-          this.defaultClose();
-        });
-        break;
-    }
-  }
-
-  doPopup() {
-    const newPopup = this.createPopup();
-    document.body.appendChild(newPopup);
-    if (this.focusEle) this.focusEle.focus();
-  }
-
-  defaultClose() {
-    this.form.remove();
-    this.overlay.remove();
-  }
-
-  defaultReset() {
-    if (this.form) this.form.reset();
-  }
-
-  defaultSubmit() {
-    this.formData = new FormData(this.form);
-    this.form.requestSubmit();
   }
 }
 
@@ -252,7 +484,6 @@ class EdgeworkPopup {
     });
     this.domElements.portsInput.addEventListener("input", () => {
       this.validatePorts();
-      console.log(this.standardizePorts(this.domElements.portsInput.value));
       this.domElements.portsPreview.replaceChildren(
         this.createPortPlatesEle(
           this.standardizePorts(this.domElements.portsInput.value)
@@ -419,7 +650,6 @@ class EdgeworkPopup {
     const newSerialEle = document.createElement("div");
     newSerialEle.classList.add("widget", "serial");
     newSerialEle.textContent = serialValue.toUpperCase();
-    console.log(newSerialEle);
     return newSerialEle;
   }
 
@@ -533,7 +763,6 @@ class EdgeworkPopup {
       .replaceAll("  ", " ");
     const portsRegex = /[([][dvi|parallel|ps2|rj|serial|rca|empty|none| ,-]+/g;
     const plates = replacedInput.match(portsRegex);
-    console.log(plates);
     if (!plates) return [];
     plates.forEach((plate, i) => {
       plates[i] = plates[i].replaceAll(/\(|\)|\[|\]/g, "");
@@ -718,9 +947,10 @@ class ImportModulesPopup {
       mainPubSub.publish("addNewModules", newModules);
       return true;
     } catch (error) {
-      new DefaultPopup({
-        title: "Adding JSON From text failed.\nError: " + error,
-      }).doPopup();
+      new NewDefaultPopup(
+        "Adding JSON From text failed.\nError: " + error
+      ).doPopup();
+
       return false;
     }
   }
@@ -735,10 +965,9 @@ class ImportModulesPopup {
       textAreaInput.textContent = fr.result;
     };
     fr.onerror = () => {
-      new DefaultPopup({
-        title:
-          "Unable to read file. Please use a properly formatted .json or .txt",
-      });
+      new NewDefaultPopup(
+        "Unable to read file. Please use a properly formatted .json or .txt"
+      ).doPopup();
     };
     fr.readAsText(file);
   }
@@ -782,7 +1011,7 @@ class ExportModulesPopup {
       popupOverlay.classList.add("hidden");
       exportModuleForm.classList.add("hidden");
     });
-    const popup = new DefaultPopup({ title: "Copied" });
+    const popup = new NewDefaultPopup("Copied");
     copyBtn.addEventListener("click", () => {
       navigator.clipboard.writeText(textAreaOutput.textContent);
       popup.doPopup();
@@ -828,4 +1057,5 @@ export {
   ImportModulesPopup,
   ExportModulesPopup,
   DefaultPopup,
+  NewDefaultPopup,
 };

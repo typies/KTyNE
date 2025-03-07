@@ -38,3 +38,13 @@ form div.title {
   line-height: 1.4em;
   font-size: inherit;
 }
+
+.column-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+form input[name="url"] {
+  width: 40ch;
+}

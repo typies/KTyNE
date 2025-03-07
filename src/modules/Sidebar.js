@@ -1,4 +1,4 @@
-import { DefaultPopup } from "./popup.js";
+import { DefaultPopup, NewDefaultPopup } from "./popup.js";
 import mainPubSub from "./PubSub.js";
 import sharedIdCounter from "./sharedIdCounter.js";
 import defaultModules from "./vanillaModules.json";
@@ -11,10 +11,7 @@ class Sidebar {
     mainPubSub.subscribe("addNewModule", this.addSidebarItem.bind(this));
     mainPubSub.subscribe("addNewModules", this.addSidebarItems.bind(this));
     mainPubSub.subscribe("deleteModule", this.deleteModule.bind(this));
-    mainPubSub.subscribe(
-      "nukeModuleList",
-      this.removeAllSidebarItems.bind(this)
-    );
+
     return this;
   }
 
@@ -38,51 +35,6 @@ class Sidebar {
     }
     this.render();
     this.configureStaticSidebarBtns();
-
-    const addNewModulePopup = new DefaultPopup({
-      title: "Add New Module",
-      submitCallback: (form) => {
-        const formData = new FormData(form);
-        mainPubSub.publish("addNewModule", {
-          moduleName: formData.get("name"),
-          manualUrl: formData.get("url"),
-        });
-      },
-      buttons: [
-        {
-          textContent: "Close",
-        },
-        {
-          textContent: "Add",
-          type: "submit",
-        },
-      ],
-      textInputs: [
-        {
-          inputLabelText: "Module URL",
-          inputName: "url",
-          inputId: "url",
-          inputClassList: ["add-new-module-form-url-input"],
-          littleInputWrapperClassList: ["top-margin"],
-          inputPlaceholder: "https://ktane.timwi.de/HTML/Logic.html",
-          inputAutocomplete: "off",
-          required: true,
-        },
-        {
-          inputLabelText: "Module Name",
-          inputName: "name",
-          inputId: "name",
-          littleInputWrapperClassList: ["top-margin"],
-          inputPlaceholder: "Logic",
-          inputAutocomplete: "off",
-        },
-      ],
-    });
-    this.addNewModulePopup = addNewModulePopup;
-    // const addNewModuleBtn = document.querySelector(".add-new-module-btn");
-    // addNewModuleBtn.addEventListener("click", () => {
-    //   addNewModulePopup.doPopup();
-    // });
   }
 
   render() {
@@ -122,9 +74,9 @@ class Sidebar {
         const regexName = regexResult[1].split("%20").join(" ");
         sidebarItem.moduleName = regexName;
       } catch {
-        new DefaultPopup({
-          title: `Error processing the following URL: ${sidebarItem.manualUrl}`,
-        }).doPopup();
+        new NewDefaultPopup(
+          `Error processing the following URL: ${sidebarItem.manualUrl}`
+        ).doPopup();
       }
     }
 
@@ -135,30 +87,28 @@ class Sidebar {
       if (skipDuplicates) {
         return "skipped";
       }
-      new DefaultPopup({
-        title: `${trimmedModName} already exists. Would you like to overwrite?`,
-        submitCallback: () => {
-          const removeItem = this.getSidebarItemElement(trimmedModName);
-          this.removeSidebarItemElement(removeItem);
-          this.sidebarItems.push(sidebarItem);
-          this.localStorageAdd(sidebarItem);
-          if (reRender) this.render();
-        },
-        buttons: [
+      new NewDefaultPopup(
+        `${trimmedModName} already exists. Would you like to overwrite?`,
+        [
           {
-            textContent: "No",
-          },
-          {
-            textContent: "Yes",
-            type: "submit",
+            type: "no-yes-btn-group",
           },
         ],
-      }).doPopup();
+        () => {
+          this.replaceSidebarItem(existingSidebarItem, sidebarItem);
+          if (reRender) this.render();
+        }
+      ).doPopup();
     } else {
       this.sidebarItems.push(sidebarItem);
       this.localStorageAdd(sidebarItem);
       if (reRender) this.render();
     }
+  }
+
+  replaceSidebarItem(oldSidebarItem, newSidebarItem) {
+    this.removeSidebarItemElement(oldSidebarItem);
+    this.addSidebarItem(newSidebarItem, true, true);
   }
 
   addSidebarItems(sidebarItemsList) {
@@ -179,20 +129,20 @@ class Sidebar {
     this.render();
     if (skippedItems.length > 0) {
       if (skippedItems.length === sidebarItemsList.length) {
-        new DefaultPopup({
-          title: "All of those modules are already known.",
-        }).doPopup();
+        new NewDefaultPopup(
+          "All of those modules are already known."
+        ).doPopup();
       } else if (
         skippedItems.length <
         sidebarItemsList.length - skippedItems.length
       ) {
-        new DefaultPopup({
-          title: `The following items were duplicates and were skipped\n\n${skippedItems.join(", ")}`,
-        }).doPopup();
+        new NewDefaultPopup(
+          `The following items were duplicates and were skipped\n\n${skippedItems.join(", ")}`
+        ).doPopup();
       } else {
-        new DefaultPopup({
-          title: `Those were mostly duplicates, But the follow were added:\n\n${addedItems.join(", ")}`,
-        }).doPopup();
+        new NewDefaultPopup(
+          `Those were mostly duplicates, But the follow were added:\n\n${addedItems.join(", ")}`
+        ).doPopup();
       }
     }
   }
@@ -253,10 +203,54 @@ class Sidebar {
     }
     newSidebarListItem.addEventListener("click", () => {
       if (this.editMode) {
-        mainPubSub.publish("editModule", {
-          moduleName: sidebarItem.moduleName,
-          manualUrl: sidebarItem.manualUrl,
-        });
+        new NewDefaultPopup(
+          "Edit Module",
+          [
+            {
+              type: "group",
+              schema: [
+                {
+                  type: "label",
+                  forField: "url",
+                  textContent: "Module URL",
+                },
+                {
+                  type: "textInput",
+                  name: "url",
+                  id: "url",
+                  value: sidebarItem.manualUrl,
+                  autocomplete: "off",
+                  required: true,
+                },
+                {
+                  type: "label",
+                  forField: "name",
+                  textContent: "Module Name",
+                },
+                {
+                  type: "textInput",
+                  name: "name",
+                  id: "name",
+                  value: sidebarItem.moduleName,
+                  autocomplete: "off",
+                },
+              ],
+            },
+            {
+              type: "no-yes-btn-group",
+              no: "Cancel",
+              yes: "Edit",
+            },
+          ],
+          (form) => {
+            const formData = new FormData(form);
+            this.replaceSidebarItem(newSidebarListItem, {
+              moduleName: formData.get("name"),
+              manualUrl: formData.get("url"),
+            });
+          },
+          true
+        ).doPopup();
       } else {
         this.openNewModule(sidebarItem.moduleName, sidebarItem.manualUrl);
       }
@@ -292,119 +286,175 @@ class Sidebar {
       this.toggleAddOneMode();
     });
 
-    const nukePopup = new DefaultPopup({
-      title:
-        "Are you sure you want to DELETE ALL SAVED MODULE?\nThis is not reversable",
-      classList: ["text-wrap"],
-      buttons: [
+    this.addNewModulePopup = new NewDefaultPopup(
+      "Add New Module",
+      [
         {
-          textContent: "Close",
+          type: "group",
+          schema: [
+            {
+              type: "label",
+              forField: "url",
+              textContent: "Module URL",
+            },
+            {
+              type: "textInput",
+              name: "url",
+              id: "url",
+              placeholder: "https://ktane.timwi.de/HTML/Logic.html",
+              autocomplete: "off",
+              required: true,
+            },
+            {
+              type: "label",
+              forField: "name",
+              textContent: "Module Name",
+            },
+            {
+              type: "textInput",
+              name: "name",
+              id: "name",
+              placeholder: "Logic",
+              autocomplete: "off",
+            },
+          ],
         },
         {
-          textContent: "Yes, I know what I'm doing",
-          classList: ["red"],
-          type: "submit",
-          event: {
-            trigger: "click",
-            callback: () => mainPubSub.publish("nukeModuleList"),
-          },
+          type: "group",
+          classList: "form-btn-group",
+          schema: [
+            {
+              type: "button",
+            },
+            {
+              type: "button",
+              btnType: "submit",
+            },
+          ],
         },
       ],
-    });
-    this.nukePopup = nukePopup;
+      (form) => {
+        const formData = new FormData(form);
+        this.addSidebarItem({
+          moduleName: formData.get("name"),
+          manualUrl: formData.get("url"),
+        });
+      }
+    );
+
+    this.nukePopup = new NewDefaultPopup(
+      "Are you sure you want to DELETE ALL SAVED MODULE?\nThis is not reversable",
+      [
+        {
+          type: "no-yes-btn-group",
+          no: "Get me out of here",
+          yes: "Yes, I know what I'm doing",
+        },
+      ],
+      () => this.removeAllSidebarItems()
+    );
 
     sidebarMenuSidebarBtn.addEventListener("click", () => {
-      new DefaultPopup({
-        title: "Options",
-        buttons: [
-          {
-            textContent: "Add New Module",
-            classList: ["add-new-module-btn"],
-            event: {
-              trigger: "click",
-              callback: () => this.addNewModulePopup.doPopup(),
-            },
-          },
-          {
-            textContent: this.editMode ? "Exit Edit Mode" : "Enter Edit Mode",
-            classList: ["edit-mode-btn", this.editMode ? "orange" : null],
-            type: "submit",
-            event: {
-              trigger: "click",
-              callback: () => this.toggleEditMode(),
-            },
-          },
-          {
-            textContent: "Import Module List",
-            classList: ["import-modules-btn"],
-            type: "submit",
-            event: {
-              trigger: "click",
-              callback: () => {
-                document
-                  .querySelector(".popup-overlay")
-                  .classList.remove("hidden");
-                document
-                  .querySelector(".import-modules-form")
-                  .classList.remove("hidden");
+      new NewDefaultPopup("Options", [
+        {
+          type: "group",
+          schema: [
+            {
+              type: "button",
+              btnType: "button",
+              textContent: "Add new Module",
+              listenerEvent: {
+                trigger: "click",
+                callback: () => this.addNewModulePopup.doPopup(),
               },
+              classList: "add-new-module-btn",
             },
-          },
-          {
-            textContent: "Export Module List",
-            classList: ["export-modules-btn"],
-            type: "submit",
-            event: {
-              trigger: "click",
-              callback: () => {
-                document
-                  .querySelector(".popup-overlay")
-                  .classList.remove("hidden");
-                document
-                  .querySelector(".export-modules-form")
-                  .classList.remove("hidden");
+            {
+              type: "button",
+              btnType: "submit",
+              textContent: this.editMode ? "Exit Edit Mode" : "Enter Edit Mode",
+              listenerEvent: {
+                trigger: "click",
+                callback: () => this.toggleEditMode(),
               },
+              classList: ["edit-mode-btn", this.editMode ? "orange" : null],
             },
-          },
-          {
-            textContent: "Delete All Modules",
-            classList: ["nuke-module-list-btn"],
-            type: "submit",
-            event: {
-              trigger: "click",
-              callback: () => this.nukePopup.doPopup(),
+            {
+              type: "button",
+              btnType: "submit",
+              textContent: "Import Module List",
+              listenerEvent: {
+                trigger: "click",
+                callback: () => {
+                  document
+                    .querySelector(".popup-overlay")
+                    .classList.remove("hidden");
+                  document
+                    .querySelector(".import-modules-form")
+                    .classList.remove("hidden");
+                },
+              },
+              classList: "import-modules-btn",
             },
-          },
-        ],
-      }).doPopup();
+            {
+              type: "button",
+              btnType: "submit",
+              textContent: "Export Module List",
+              listenerEvent: {
+                trigger: "click",
+                callback: () => {
+                  document
+                    .querySelector(".popup-overlay")
+                    .classList.remove("hidden");
+                  document
+                    .querySelector(".export-modules-form")
+                    .classList.remove("hidden");
+                },
+              },
+              classList: ["export-modules-btn"],
+            },
+            {
+              type: "button",
+              btnType: "submit",
+              textContent: "Delete All Modules",
+              listenerEvent: {
+                trigger: "click",
+                callback: () => this.nukePopup.doPopup(),
+              },
+              classList: "nuke-module-list-btn",
+            },
+          ],
+          classList: "column-group",
+        },
+      ]).doPopup();
     });
 
-    const newRepoTabPopup = new DefaultPopup({
-      title: "Opening New KTANE.TIMEWI.DE Tab",
-      buttons: [
+    const newRepoTabPopup = new NewDefaultPopup(
+      "Opening New KTANE.TIMEWI.DE Tab",
+      [
         {
-          textContent: "Close",
+          type: "label",
+          textContent: "New Tab Name",
+          forField: "new-tab-input",
         },
         {
-          textContent: "Open",
-          type: "submit",
+          type: "textInput",
+          id: "new-tab-input",
+          name: "new-tab-input",
+        },
+        {
+          type: "no-yes-btn-group",
+          yes: "Open",
         },
       ],
-      textInputs: [
-        {
-          inputLabelText: "New Tab Name",
-          inputId: "new-tab-input",
-          inputName: "new-tab-input",
-        },
-      ],
-      submitCallback: (form) => {
+      (form) => {
         const formData = new FormData(form);
         const newTabName = formData.get("new-tab-input");
         if (!newTabName || newTabName === "") return;
         navigator.clipboard.writeText(newTabName);
         this.openNewModule(newTabName, KTANE_TIMWI_URL);
-      },
-    });
+      }
+    );
     newRepoTabBtn.addEventListener("click", () => {
       newRepoTabPopup.doPopup();
     });

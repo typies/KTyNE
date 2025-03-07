@@ -1,4 +1,4 @@
-import { DefaultPopup } from "./popup.js";
+import { NewDefaultPopup } from "./popup.js";
 import mainPubSub from "./PubSub.js";
 import sharedIdCounter from "./sharedIdCounter.js";
 
@@ -55,25 +55,32 @@ class HeaderList {
       this.closeHeaderListItem(newHeaderListItemId);
     });
     // Right Click( Rename header items instead of opening context menu)
+    const renamePopup = new NewDefaultPopup(
+      `Renaming ${headerText.textContent}`,
+      [
+        {
+          type: "textInput",
+          name: "rename",
+          placeholder: headerText.textContent,
+          autocomplete: "off",
+        },
+        {
+          type: "no-yes-btn-group",
+          no: "Cancel",
+          yes: "Rename",
+        },
+      ],
+      (form) => {
+        const formData = new FormData(form);
+        const newName = formData.get("rename");
+        headerText.textContent = newName;
+        navigator.clipboard.writeText(newName);
+        this.sortHeaderList();
+      }
+    );
+    36;
     newHeaderListItem.addEventListener("contextmenu", (event) => {
       event.preventDefault();
-      const renamePopup = new DefaultPopup({
-        title: `Renaming ${headerText.textContent}`,
-        submitCallback: (form) => {
-          const formData = new FormData(form);
-          const newName = formData.get("rename-input");
-          headerText.textContent = newName;
-          navigator.clipboard.writeText(newName);
-          this.sortHeaderList();
-        },
-        textInputs: [
-          {
-            inputName: "rename-input",
-            inputPlaceholder: headerText.textContent,
-            inputAutocomplete: "off",
-          },
-        ],
-      });
       renamePopup.doPopup();
     });
 
