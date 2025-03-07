@@ -36,11 +36,12 @@
   cursor: pointer;
 }
 
-.collapse-sidebar-btn[rotate180] {
+.show-sidebar-btn {
   transform: rotate(180deg);
 }
 
 .collapse-sidebar-btn:hover,
+.show-sidebar-btn:hover,
 .add-one-btn:hover {
   stroke: var(--color-blue);
   fill: var(--color-blue);

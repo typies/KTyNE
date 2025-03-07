@@ -51,6 +51,7 @@ class Sidebar {
     sidebarSettings: document.querySelector(".cog-svg"),
     moduleListTitle: document.querySelector(".module-list-title"),
     collapseSidebarBtn: document.querySelector(".collapse-sidebar-btn"),
+    showSidebarBtn: document.querySelector(".show-sidebar-btn"),
     sidebarMenuSidebarBtn: document.querySelector(".options-btn"),
     addOneBtn: document.querySelector(".add-one-btn"),
   };
@@ -265,6 +266,7 @@ class Sidebar {
     const filterClear = this.domElements.filterClear;
     const newRepoTabBtn = this.domElements.newRepoTabBtn;
     const collapseSidebarBtn = this.domElements.collapseSidebarBtn;
+    const showSidebarBtn = this.domElements.showSidebarBtn;
     const addOneBtn = this.domElements.addOneBtn;
     const sidebarMenuSidebarBtn = this.domElements.sidebarMenuSidebarBtn;
     filter.addEventListener("keydown", () => {
@@ -279,6 +281,7 @@ class Sidebar {
       this.filterSidebar("");
     });
     collapseSidebarBtn.addEventListener("click", () => this.collapseToggle());
+    showSidebarBtn.addEventListener("click", () => this.collapseToggle());
     addOneBtn.addEventListener("click", () => {
       this.toggleAddOneMode();
     });
@@ -321,9 +324,11 @@ class Sidebar {
   collapseToggle() {
     const sidebar = this.domElements.sidebar;
     const collapseSidebarBtn = this.domElements.collapseSidebarBtn;
+    const showSidebarBtn = this.domElements.showSidebarBtn;
     const addOneBtn = this.domElements.addOneBtn;
     sidebar.classList.toggle("hidden");
-    collapseSidebarBtn.toggleAttribute("rotate180");
+    collapseSidebarBtn.classList.toggle("hidden");
+    showSidebarBtn.classList.toggle("hidden");
     addOneBtn.classList.toggle("hidden");
   }
 

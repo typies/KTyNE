@@ -84,7 +84,7 @@ input.ind-checkbox {
   padding: 10px;
   background-color: var(--color-jet);
   min-height: 150px;
-  width: 35vw;
+  min-width: 35vw;
   align-self: center;
 }
 
