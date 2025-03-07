@@ -7,6 +7,7 @@ class IframeManager {
     mainPubSub.subscribe("removeIframe", this.removeIframeById.bind(this));
     mainPubSub.subscribe("tabChange", this.setIframeById.bind(this));
     this.splitEnabled = false;
+    this.configureStaticButtons();
     return this;
   }
 
@@ -15,10 +16,6 @@ class IframeManager {
     pageIframe: document.createElement("iframe"),
     splitBtn: document.querySelector(".split-button"),
   };
-
-  init() {
-    this.configureStaticButtons();
-  }
 
   configureStaticButtons() {
     const splitBtn = this.domElements.splitBtn;

@@ -98,12 +98,10 @@ class FormElement extends HtmlElement {
       this.element.addEventListener("click", (event) =>
         event.stopPropagation()
       );
-    if (this.submitCallback) {
-      this.element.addEventListener("submit", (event) => {
-        if (this.preventDefault) event.preventDefault();
-        this.submitCallback(this);
-      });
-    }
+    this.element.addEventListener("submit", (event) => {
+      if (this.preventDefault) event.preventDefault();
+      if (this.submitCallback) this.submitCallback(this);
+    });
     return this.element;
   }
 }
@@ -238,7 +236,7 @@ class ContenteditableDivElement extends HtmlElement {
     textContent,
     classList = [],
     spellcheck = "false",
-    autocomplete = "false"
+    autocomplete = "off"
   ) {
     super("div", [], textContent, classList);
     Object.assign(this, {
@@ -284,12 +282,15 @@ class PopupGenerator {
       this.parseSchema(schema),
       (data) => {
         if (this.formSubmit) this.formSubmit(data);
-        data.element.reset();
+        if (!this.dontReset) data.element.reset();
       },
       "form"
     ).element;
-
     this.popup = new OverlayElement(this.form, "popup-overlay");
+    this.popup.element.addEventListener("submit", (event) =>
+      event.preventDefault()
+    );
+    this.form.addEventListener("submit", (event) => event.preventDefault());
   }
 
   parseSchema(schema) {
@@ -298,6 +299,9 @@ class PopupGenerator {
       if (si.type === "group") {
         const groupChildren = this.parseSchema(si.schema);
         return new DivWrapperEle(groupChildren, si.classList).element;
+      }
+      if (si.type === "div") {
+        return new HtmlElement("div", [], si.textContent, si.classList).element;
       }
       if (si.type === "button") {
         return new ButtonElement(
@@ -326,6 +330,21 @@ class PopupGenerator {
         return new LabelElement(si.textContent, si.forField, si.classList)
           .element;
       }
+      if (si.type === "close-btn") {
+        const groupChildren = this.parseSchema([
+          {
+            type: "group",
+            schema: [
+              {
+                type: "button",
+                textContent: si.textContent,
+              },
+            ],
+            classList: "form-btn-group",
+          },
+        ]);
+        return new DivWrapperEle(groupChildren, si.classList).element;
+      }
       if (si.type === "no-yes-btn-group") {
         const groupChildren = this.parseSchema([
           {
@@ -334,11 +353,13 @@ class PopupGenerator {
               {
                 type: "button",
                 textContent: si.no || "No",
+                classList: si.noClassList,
               },
               {
                 type: "button",
                 btnType: "submit",
                 textContent: si.yes || "Yes",
+                classList: si.yesClassList,
               },
             ],
             classList: "form-btn-group",
@@ -354,6 +375,7 @@ class PopupGenerator {
               {
                 type: "button",
                 textContent: si.no || "No",
+                classList: si.noClassList,
               },
               {
                 type: "button",
@@ -362,11 +384,13 @@ class PopupGenerator {
                   trigger: "click",
                   callback: () => this.form.reset(),
                 },
+                classList: si.resetClassList,
               },
               {
                 type: "button",
                 btnType: "submit",
                 textContent: si.yes || "Yes",
+                classList: si.yesClassList,
               },
             ],
             classList: "form-btn-group",

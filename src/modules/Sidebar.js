@@ -1,6 +1,7 @@
 import {
   AddModulePopup,
   EditModulePopup,
+  ExportModulesPopup,
   ImportModulesPopup,
   SidebarPopup,
 } from "./popup.js";
@@ -22,6 +23,7 @@ class Sidebar {
 
     this.editModulePopup = new EditModulePopup();
     this.importModulePopup = new ImportModulesPopup();
+    this.exportModulePopup = new ExportModulesPopup();
     this.addNewModulePopup = new AddModulePopup();
     this.nukeSidebarPopup = new PopupGenerator(
       "Are you sure you want to DELETE ALL SAVED MODULE?\nThis is not reversable",
@@ -30,6 +32,7 @@ class Sidebar {
           type: "no-yes-btn-group",
           no: "Get me out of here",
           yes: "Yes, I know what I'm doing",
+          yesClassList: "nuke-btn",
         },
       ],
       () => this.removeAllSidebarItems()
@@ -37,6 +40,7 @@ class Sidebar {
     this.sidebarPopup = new SidebarPopup(
       this.addNewModulePopup,
       this.importModulePopup,
+      this.exportModulePopup,
       this.nukeSidebarPopup
     );
     return this;
@@ -164,7 +168,11 @@ class Sidebar {
     this.render();
     if (skippedItems.length > 0) {
       if (skippedItems.length === sidebarItemsList.length) {
-        new PopupGenerator("All of those modules are already known.").doPopup();
+        new PopupGenerator("All of those modules are already known.", [
+          {
+            type: "close-btn",
+          },
+        ]).doPopup();
       } else if (
         skippedItems.length <
         sidebarItemsList.length - skippedItems.length
@@ -176,15 +184,21 @@ class Sidebar {
               type: "label",
               textContent: `${addedItems.join(", ")}`,
             },
+            {
+              type: "close-btn",
+            },
           ]
         ).doPopup();
       } else {
         new PopupGenerator(
-          `Those were mostly duplicates, But the follow were added:`,
+          `Those were mostly duplicates, But the following were added:`,
           [
             {
               type: "label",
               textContent: `${addedItems.join(", ")}`,
+            },
+            {
+              type: "close-btn",
             },
           ]
         ).doPopup();

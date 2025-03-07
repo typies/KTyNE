@@ -2,15 +2,10 @@ import HeaderList from "./modules/HeaderList.js";
 import IframeManager from "./modules/IframeManager.js";
 import Sidebar from "./modules/Sidebar.js";
 import "./styles/main.css";
-import {
-  EdgeworkPopup,
-  NumberedAlphabetPopup,
-  ExportModulesPopup,
-} from "./modules/popup.js";
+import { EdgeworkPopup, NumberedAlphabetPopup } from "./modules/popup.js";
 
 new HeaderList();
-new IframeManager().init();
+new IframeManager();
 new Sidebar();
 new EdgeworkPopup();
 new NumberedAlphabetPopup();
-new ExportModulesPopup().init();

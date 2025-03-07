@@ -433,73 +433,16 @@ class EdgeworkPopup {
   }
 }
 
-class ExportModulesPopup {
-  constructor() {
-    return this;
-  }
-  domElements = {
-    popupOverlay: document.querySelector(".popup-overlay"),
-    exportModuleForm: document.querySelector(".export-modules-form"),
-    closeFormBtn: document.querySelector(".close-export-form-btn"),
-    copyBtn: document.querySelector(".copy-export-form-btn"),
-    textAreaOutput: document.querySelector(".export-modules-text"),
-    sidebarMenu: document.querySelector(".sidebar-options-menu"),
-  };
-
-  configureFormButtons() {
-    const popupOverlay = this.domElements.popupOverlay;
-    const closeFormBtn = this.domElements.closeFormBtn;
-    const copyBtn = this.domElements.copyBtn;
-    const exportModuleForm = this.domElements.exportModuleForm;
-    const textAreaOutput = this.domElements.textAreaOutput;
-    closeFormBtn.addEventListener("click", () => {
-      popupOverlay.classList.add("hidden");
-      exportModuleForm.classList.add("hidden");
-    });
-    const popup = new PopupGenerator("Copied");
-    copyBtn.addEventListener("click", () => {
-      navigator.clipboard.writeText(textAreaOutput.textContent);
-      popup.doPopup();
-    });
-
-    exportModuleForm.addEventListener("submit", (event) => {
-      event.preventDefault();
-      //export modules list and put it in textAreaOutput
-      const storageItems = [];
-      for (let i = 0; i < window.localStorage.length; i++) {
-        const moduleName = window.localStorage.key(i);
-        const manualUrl = window.localStorage.getItem(moduleName);
-        storageItems.push({ name: moduleName, url: manualUrl });
-      }
-      storageItems.sort((a, b) => {
-        if (a.name.toLowerCase().includes("appendix")) return 1;
-        if (b.name.toLowerCase().includes("appendix")) return -1;
-        if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
-        return 1;
-      });
-
-      textAreaOutput.textContent = JSON.stringify(storageItems, null, 2);
-    });
-  }
-
-  resetForm() {
-    const exportModuleForm = this.domElements.exportModuleForm;
-    const textAreaOutput = this.domElements.textAreaOutput;
-    exportModuleForm.reset();
-    textAreaOutput.textContent = "";
-    return this;
-  }
-
-  init() {
-    this.configureFormButtons();
-    return this;
-  }
-}
-
 class SidebarPopup {
-  constructor(addNewModulePopup, importModulePopup, nukeSidebarPopup) {
+  constructor(
+    addNewModulePopup,
+    importModulePopup,
+    exportModulesPopup,
+    nukeSidebarPopup
+  ) {
     this.addNewModulePopup = addNewModulePopup;
     this.importModulePopup = importModulePopup;
+    this.exportModulesPopup = exportModulesPopup;
     this.nukeSidebarPopup = nukeSidebarPopup;
     this.popup = new PopupGenerator("Options", [
       {
@@ -541,14 +484,7 @@ class SidebarPopup {
             textContent: "Export Module List",
             listenerEvent: {
               trigger: "click",
-              callback: () => {
-                document
-                  .querySelector(".popup-overlay")
-                  .classList.remove("hidden");
-                document
-                  .querySelector(".export-modules-form")
-                  .classList.remove("hidden");
-              },
+              callback: () => this.exportModulesPopup.doPopup(),
             },
             classList: ["export-modules-btn"],
           },
@@ -740,10 +676,7 @@ class ImportModulesPopup {
               autocomplete: "off",
               listenerEvent: {
                 trigger: "change",
-                callback: (data) => {
-                  console.log("test");
-                  this.handleFileUpload(data);
-                },
+                callback: (caller) => this.handleFileUpload(caller),
               },
             },
             {
@@ -752,7 +685,7 @@ class ImportModulesPopup {
               classList: "import-modules-example",
               listenerEvent: {
                 trigger: "click",
-                callback: (data) => this.handleExample(data),
+                callback: (caller) => this.handleExample(caller),
               },
             },
           ],
@@ -762,6 +695,8 @@ class ImportModulesPopup {
           type: "contenteditableDiv",
           name: "import-module-text",
           classList: ["import-modules-text", "popup-text-area"],
+          autocomplete: "off",
+          spellcheck: "false",
         },
         {
           type: "group",
@@ -774,10 +709,9 @@ class ImportModulesPopup {
               textContent: "Reset",
               listenerEvent: {
                 trigger: "click",
-                callback: (data) => {
-                  const form = data.element.closest("form");
-                  form.reset();
-                  form.querySelector("div.popup-text-area").textContent = "";
+                callback: () => {
+                  this.form.reset();
+                  this.textArea.textContent = "";
                 },
               },
             },
@@ -790,22 +724,19 @@ class ImportModulesPopup {
           classList: "form-btn-group",
         },
       ],
-      (data) => {
-        const form = data.element.closest("form");
-        const textAreaInput = form.querySelector(".popup-text-area");
-        const formText = textAreaInput.textContent;
-        if (formText && formText !== "") {
-          if (!this.processTextarea(formText)) return;
-        }
-      }
+      () => this.processTextarea()
     );
+    this.form = this.popup.form;
+    this.textArea = this.form.querySelector("div.popup-text-area");
   }
 
   doPopup() {
     this.popup.doPopup();
   }
 
-  processTextarea(formText) {
+  processTextarea() {
+    const formText = this.textArea.textContent;
+    if (!formText || formText === "") return;
     try {
       const formTextCleaned = formText.replace(/(|\t|\n|\r)/gm, "");
       const newModules = JSON.parse(formTextCleaned);
@@ -820,9 +751,9 @@ class ImportModulesPopup {
     }
   }
 
-  handleFileUpload(data) {
-    const file = data.element.files[0];
-    const form = data.element.closest("form");
+  handleFileUpload(caller) {
+    const file = caller.element.files[0];
+    const form = this.popup.form;
     const textAreaInput = form.querySelector(".popup-text-area");
     if (!file) return;
 
@@ -838,23 +769,93 @@ class ImportModulesPopup {
     fr.readAsText(file);
   }
 
-  handleExample(data) {
-    const form = data.element.closest("form");
+  handleExample(caller) {
+    const form = this.popup.form;
     const textAreaInput = form.querySelector(".popup-text-area");
     const example = `[\n  {\n    "name": "Logic",\n    "url": "https://ktane.timwi.de/HTML/Logic.html"\n  },\n  {\n    "name": "Silly Slots",\n    "url": "https://ktane.timwi.de/HTML/Silly%20Slots.html"\n  },\n  {\n    "url": "https://ktane.timwi.de/HTML/Yippee.html"\n  }\n]`;
 
     if (textAreaInput.hasAttribute("contenteditable")) {
       this.currentTextInputValue = textAreaInput.textContent;
 
-      data.element.textContent = "Hide Example";
+      caller.element.textContent = "Hide Example";
       textAreaInput.textContent = example;
       textAreaInput.removeAttribute("contenteditable");
       return;
     }
 
-    data.element.textContent = "Show me an example";
+    caller.element.textContent = "Show me an example";
     textAreaInput.textContent = this.currentTextInputValue;
     textAreaInput.setAttribute("contenteditable", "");
+  }
+}
+
+class ExportModulesPopup {
+  constructor() {
+    this.copiedPopup = new PopupGenerator("Copied");
+    this.popup = new PopupGenerator("Export Modules", [
+      {
+        type: "div",
+        classList: ["export-modules-text", "popup-text-area"],
+      },
+      {
+        type: "group",
+        schema: [
+          {
+            type: "button",
+          },
+          {
+            type: "button",
+            textContent: "Copy",
+            listenerEvent: {
+              trigger: "click",
+              callback: () => this.copyToClipboard(this.textArea.textContent),
+            },
+            classList: "copy-export-form-btn",
+          },
+          {
+            type: "button",
+            btnType: "button",
+            textContent: "Export",
+            listenerEvent: {
+              trigger: "click",
+              callback: () => this.processExport(),
+            },
+          },
+        ],
+        classList: "form-btn-group",
+      },
+    ]);
+    this.form = this.popup.form;
+    this.textArea = this.form.querySelector("div.popup-text-area");
+  }
+
+  processExport() {
+    //export modules list and put it in textAreaOutput
+    const storageItems = [];
+    for (let i = 0; i < window.localStorage.length; i++) {
+      const moduleName = window.localStorage.key(i);
+      const manualUrl = window.localStorage.getItem(moduleName);
+      storageItems.push({ name: moduleName, url: manualUrl });
+    }
+    storageItems.sort((a, b) => {
+      if (a.name.toLowerCase().includes("appendix")) return 1;
+      if (b.name.toLowerCase().includes("appendix")) return -1;
+      if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
+      return 1;
+    });
+
+    const output = JSON.stringify(storageItems, null, 2);
+    this.textArea.textContent = output;
+    this.copyToClipboard(output);
+  }
+
+  copyToClipboard(text) {
+    navigator.clipboard.writeText(text);
+    this.copiedPopup.doPopup();
+  }
+
+  doPopup() {
+    this.popup.doPopup();
   }
 }
 
