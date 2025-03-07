@@ -15,6 +15,7 @@ class GridPopup {
     colorInput: document.querySelector("input[name='color']"),
     cellSizeInput: document.querySelector("input[name='cell-size']"),
     resetBtn: document.querySelector("button.reset-btn"),
+    indexBtn: document.querySelector("button.swap-index-btn"),
     colorClickBtn: document.querySelector("input[name='color-onclick']"),
   };
   configureFormButtons() {
@@ -22,19 +23,27 @@ class GridPopup {
       this.dom.gridPopup.classList.toggle("hidden");
     });
 
-    this.dom.heightInput.addEventListener("input", () => {
-      // const newRows = parseInt(this.dom.heightInput.value);
-      // const existingRowChildren = Array.from(this.dom.gridContainer.children);
-      // if (newRows < existingRowChildren.length - 1) {
-      //   const keepChildren = existingRowChildren.slice(0, newRows + 1);
-      //   this.dom.gridContainer.replaceChildren(...keepChildren);
-      // } else {
-      //   this.createGrid();
-      // }
-      this.createGrid();
+    this.dom.heightInput.addEventListener("change", () => {
+      const newRows = parseInt(this.dom.heightInput.value);
+      if (newRows < 1) return;
+      const rowCount = Array.from(this.dom.gridContainer.children).length - 1;
+      if (newRows < rowCount) {
+        this.popRows(rowCount - newRows);
+      } else {
+        this.pushRows(newRows - rowCount);
+      }
     });
-    this.dom.widthInput.addEventListener("input", () => {
-      this.createGrid();
+    this.dom.widthInput.addEventListener("change", () => {
+      const newCols = parseInt(this.dom.widthInput.value);
+      if (newCols < 1) return;
+      const colCount =
+        Array.from(this.dom.gridContainer.children)[0].children.length - 1;
+      console.log(colCount);
+      if (newCols < colCount) {
+        this.popCols(colCount - newCols);
+      } else {
+        this.pushCols(newCols - colCount);
+      }
     });
     this.dom.colorInput.addEventListener("input", () => {
       this.bgColor = this.dom.colorInput.value;
@@ -45,48 +54,20 @@ class GridPopup {
       this.updateGridSize();
     });
     this.dom.resetBtn.addEventListener("click", () => this.createGrid());
+    this.dom.indexBtn.addEventListener("click", () =>
+      this.switchIndexing(this.indexStart ? 0 : 1)
+    );
   }
 
-  createCell(textContent = null, border = true, contenteditable = true) {
+  createCell(textContent = null) {
     const cell = document.createElement("div");
     cell.classList.add("grid-cell");
-    if (textContent !== null) cell.textContent = textContent;
-    if (!border) cell.style.border = "none";
-    if (contenteditable) cell.setAttribute("contenteditable", "");
-    else cell.classList.add("index");
     cell.style.fontSize = this.fontSize + "px" || "20px";
-    cell.setAttribute("spellcheck", "false");
-    return cell;
-  }
 
-  createGrid() {
-    this.dom.gridContainer.replaceChildren();
-    const topRowIndex = document.createElement("div");
-    topRowIndex.appendChild(this.createCell(null, false, false));
-    topRowIndex.classList.add("grid-row");
-    for (let col = 1; col <= this.dom.widthInput.value; col++) {
-      topRowIndex.appendChild(this.createCell(col, false, false));
-    }
-
-    this.dom.gridContainer.appendChild(topRowIndex);
-    for (let row = 1; row <= this.dom.heightInput.value; row++) {
-      this.dom.gridContainer.appendChild(this.createRow(row));
-    }
-    this.updateGridSize();
-  }
-
-  // addRows(numOfRows) {
-  //   const existingRowChildren = Array.from(this.dom.gridContainer.children);
-  //   const keepChildren = existingRowChildren.slice(0, numOfRows + 1);
-  //   this.dom.gridContainer.replaceChildren(...keepChildren);
-  // }
-
-  createRow(index) {
-    const cellRow = document.createElement("div");
-    cellRow.classList.add("grid-row");
-    cellRow.appendChild(this.createCell(index, false, false));
-    for (let col = 1; col <= this.dom.widthInput.value; col++) {
-      const cell = this.createCell();
+    if (!textContent) {
+      // Not header/row cell
+      cell.setAttribute("contenteditable", "");
+      cell.setAttribute("spellcheck", "false");
       cell.addEventListener("click", () => {
         if (this.dom.colorClickBtn.checked)
           cell.style.backgroundColor = this.bgColor;
@@ -99,17 +80,140 @@ class GridPopup {
           cell.style.color = "black";
       });
       cell.addEventListener("input", () => {
-        if (
-          (cell.textContent.length > 6 && this.cellSize < 5) ||
-          (cell.textContent.length > 8 && this.cellSize < 6)
-        ) {
+        if (cell.textContent.length > 6 && this.cellSize < 5) {
+          this.cellSize = 5;
+          this.updateGridSize();
+        } else if (cell.textContent.length > 8 && this.cellSize < 6) {
           this.cellSize++;
           this.updateGridSize();
         }
       });
+    } else {
+      cell.textContent = textContent;
+      cell.style.border = "none";
+      cell.classList.add("index");
+    }
+
+    return cell;
+  }
+
+  createGrid() {
+    this.dom.gridContainer.replaceChildren();
+    const topRowIndex = document.createElement("div");
+    topRowIndex.appendChild(this.createCell(" "));
+    topRowIndex.classList.add("grid-row");
+    for (let col = 0; col < this.dom.widthInput.value; col++) {
+      topRowIndex.appendChild(this.createCell(this.indexStart + col));
+    }
+
+    this.dom.gridContainer.appendChild(topRowIndex);
+    for (let row = 0; row < this.dom.heightInput.value; row++) {
+      this.dom.gridContainer.appendChild(this.createRow(row));
+    }
+    this.updateGridSize();
+  }
+
+  createColumn(index) {
+    const existingRows = this.dom.gridContainer.querySelectorAll(".grid-row");
+    existingRows[0].appendChild(this.createCell(this.indexStart + index));
+    existingRows.slice(1).forEach((row) => {
+      const cell = this.createCell(this.indexStart + index);
+
+      row.appendChild(cell);
+    });
+  }
+
+  createRow(index) {
+    const cellRow = document.createElement("div");
+    cellRow.classList.add("grid-row");
+    cellRow.appendChild(this.createCell(this.indexStart + index));
+    for (let col = 0; col < this.dom.widthInput.value; col++) {
+      const cell = this.createCell();
       cellRow.appendChild(cell);
     }
     return cellRow;
+  }
+
+  popRows(numberToPop = 1) {
+    const existingRows = Array.from(
+      this.dom.gridContainer.querySelectorAll(".grid-row")
+    );
+    const keepChildren = existingRows.slice(0, -1 * numberToPop);
+    this.dom.gridContainer.replaceChildren(...keepChildren);
+  }
+
+  pushRows(numberToPush = 1) {
+    const numOfExistingRows = Array.from(
+      this.dom.gridContainer.querySelectorAll(".grid-row")
+    ).length;
+    for (let i = 0; i < numberToPush; i++) {
+      this.dom.gridContainer.appendChild(
+        this.createRow(numOfExistingRows + i - 1)
+      );
+    }
+    this.updateGridSize();
+  }
+
+  popCols(numberToPop = 1) {
+    const existingRows = Array.from(
+      this.dom.gridContainer.querySelectorAll(".grid-row")
+    );
+    for (let i = 0; i < numberToPop; i++) {
+      existingRows.forEach((row) => {
+        const existingCells = Array.from(row.querySelectorAll(".grid-cell"));
+        const keepCells = existingCells.slice(0, -1);
+        row.replaceChildren(...keepCells);
+      });
+    }
+  }
+
+  pushCols(numberToPush = 1) {
+    const existingRows = Array.from(
+      this.dom.gridContainer.querySelectorAll(".grid-row")
+    );
+
+    for (let i = 0; i < numberToPush; i++) {
+      const numOfExistingCols = existingRows[0].children.length - 1;
+      existingRows[0].appendChild(
+        this.createCell(this.indexStart + numOfExistingCols)
+      );
+      existingRows.slice(1).forEach((row) => {
+        const cell = this.createCell();
+        cell.addEventListener("click", () => {
+          if (this.dom.colorClickBtn.checked)
+            cell.style.backgroundColor = this.bgColor;
+          if (
+            this.getLuminance(this.bgColor) !== 0 &&
+            this.getLuminance(this.bgColor) < 0.5
+          )
+            cell.style.color = "white";
+          else if (this.getLuminance(this.bgColor) >= 0.5)
+            cell.style.color = "black";
+        });
+        cell.addEventListener("input", () => {
+          if (
+            (cell.textContent.length > 6 && this.cellSize < 5) ||
+            (cell.textContent.length > 8 && this.cellSize < 6)
+          ) {
+            this.cellSize++;
+            this.updateGridSize();
+          }
+        });
+        row.appendChild(cell);
+      });
+    }
+    this.updateGridSize();
+  }
+
+  switchIndexing(newIndexStart = 0) {
+    const indexCells = Array.from(
+      this.dom.gridContainer.querySelectorAll(".grid-cell.index")
+    ).filter((cell) => cell.textContent != " ");
+    indexCells.forEach((cell) => {
+      cell.textContent = cell.textContent - this.indexStart + newIndexStart;
+    });
+
+    this.indexStart = newIndexStart;
   }
 
   getLuminance(bgColor) {
@@ -142,7 +246,7 @@ class GridPopup {
     this.configureFormButtons();
     this.cellSize = document.querySelector("input[name='cell-size']").value;
     this.bgColor = "#000000";
-
+    this.indexStart = 1;
     this.createGrid();
     return this;
   }

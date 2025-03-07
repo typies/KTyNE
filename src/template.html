@@ -134,9 +134,9 @@
         <div class="grid-popup hidden">
           <div class="grid-container"></div>
           <div class="inputs">
-            <input type="number" id="rows" name="rows" value="10" />
+            <input type="number" id="rows" name="rows" value="10" min="1" />
             <label for="rows">Rows</label>
-            <input type="number" id="cols" name="cols" value="10" />
+            <input type="number" id="cols" name="cols" value="10" min="1" />
             <label for="cols">Columns</label>
             <input type="number" id="cell-size" name="cell-size" value="4" />
             <label for="cell-size">Cell Size</label>
@@ -149,6 +149,7 @@
           </div>
           <div class="inputs">
             <button class="reset-btn">Reset Grid</button>
+            <button class="swap-index-btn">Swap Indexing</button>
           </div>
         </div>
         <button class="alphabet-btn">Numbered Alphabet</button>
