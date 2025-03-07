@@ -199,6 +199,25 @@
           <div class="indicators-preview"></div>
         </div>
       </form>
+      <form
+        action=""
+        class="export-modules-form form hidden"
+        onclick="event.stopPropagation()"
+      >
+        <div class="title">Export Modules</div>
+
+        <div
+          class="export-modules-text popup-text-area"
+          autocomplete="off"
+          spellcheck="false"
+        ></div>
+
+        <div class="form-btn-group">
+          <button type="button" class="close-export-form-btn">Close</button>
+          <button type="button" class="copy-export-form-btn">Copy</button>
+          <button type="submit">Export</button>
+        </div>
+      </form>
     </div>
   </body>
 </html>

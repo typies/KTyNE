@@ -433,68 +433,68 @@ class EdgeworkPopup {
   }
 }
 
-// class ExportModulesPopup {
-//   constructor() {
-//     return this;
-//   }
-//   domElements = {
-//     popupOverlay: document.querySelector(".popup-overlay"),
-//     exportModuleForm: document.querySelector(".export-modules-form"),
-//     closeFormBtn: document.querySelector(".close-export-form-btn"),
-//     copyBtn: document.querySelector(".copy-export-form-btn"),
-//     textAreaOutput: document.querySelector(".export-modules-text"),
-//     sidebarMenu: document.querySelector(".sidebar-options-menu"),
-//   };
+class ExportModulesPopup {
+  constructor() {
+    return this;
+  }
+  domElements = {
+    popupOverlay: document.querySelector(".popup-overlay"),
+    exportModuleForm: document.querySelector(".export-modules-form"),
+    closeFormBtn: document.querySelector(".close-export-form-btn"),
+    copyBtn: document.querySelector(".copy-export-form-btn"),
+    textAreaOutput: document.querySelector(".export-modules-text"),
+    sidebarMenu: document.querySelector(".sidebar-options-menu"),
+  };
 
-//   configureFormButtons() {
-//     const popupOverlay = this.domElements.popupOverlay;
-//     const closeFormBtn = this.domElements.closeFormBtn;
-//     const copyBtn = this.domElements.copyBtn;
-//     const exportModuleForm = this.domElements.exportModuleForm;
-//     const textAreaOutput = this.domElements.textAreaOutput;
-//     closeFormBtn.addEventListener("click", () => {
-//       popupOverlay.classList.add("hidden");
-//       exportModuleForm.classList.add("hidden");
-//     });
-//     const popup = new PopupGenerator("Copied");
-//     copyBtn.addEventListener("click", () => {
-//       navigator.clipboard.writeText(textAreaOutput.textContent);
-//       popup.doPopup();
-//     });
+  configureFormButtons() {
+    const popupOverlay = this.domElements.popupOverlay;
+    const closeFormBtn = this.domElements.closeFormBtn;
+    const copyBtn = this.domElements.copyBtn;
+    const exportModuleForm = this.domElements.exportModuleForm;
+    const textAreaOutput = this.domElements.textAreaOutput;
+    closeFormBtn.addEventListener("click", () => {
+      popupOverlay.classList.add("hidden");
+      exportModuleForm.classList.add("hidden");
+    });
+    const popup = new PopupGenerator("Copied");
+    copyBtn.addEventListener("click", () => {
+      navigator.clipboard.writeText(textAreaOutput.textContent);
+      popup.doPopup();
+    });
 
-//     exportModuleForm.addEventListener("submit", (event) => {
-//       event.preventDefault();
-//       //export modules list and put it in textAreaOutput
-//       const storageItems = [];
-//       for (let i = 0; i < window.localStorage.length; i++) {
-//         const moduleName = window.localStorage.key(i);
-//         const manualUrl = window.localStorage.getItem(moduleName);
-//         storageItems.push({ name: moduleName, url: manualUrl });
-//       }
-//       storageItems.sort((a, b) => {
-//         if (a.name.toLowerCase().includes("appendix")) return 1;
-//         if (b.name.toLowerCase().includes("appendix")) return -1;
-//         if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
-//         return 1;
-//       });
+    exportModuleForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      //export modules list and put it in textAreaOutput
+      const storageItems = [];
+      for (let i = 0; i < window.localStorage.length; i++) {
+        const moduleName = window.localStorage.key(i);
+        const manualUrl = window.localStorage.getItem(moduleName);
+        storageItems.push({ name: moduleName, url: manualUrl });
+      }
+      storageItems.sort((a, b) => {
+        if (a.name.toLowerCase().includes("appendix")) return 1;
+        if (b.name.toLowerCase().includes("appendix")) return -1;
+        if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
+        return 1;
+      });
 
-//       textAreaOutput.textContent = JSON.stringify(storageItems, null, 2);
-//     });
-//   }
+      textAreaOutput.textContent = JSON.stringify(storageItems, null, 2);
+    });
+  }
 
-//   resetForm() {
-//     const exportModuleForm = this.domElements.exportModuleForm;
-//     const textAreaOutput = this.domElements.textAreaOutput;
-//     exportModuleForm.reset();
-//     textAreaOutput.textContent = "";
-//     return this;
-//   }
+  resetForm() {
+    const exportModuleForm = this.domElements.exportModuleForm;
+    const textAreaOutput = this.domElements.textAreaOutput;
+    exportModuleForm.reset();
+    textAreaOutput.textContent = "";
+    return this;
+  }
 
-//   init() {
-//     this.configureFormButtons();
-//     return this;
-//   }
-// }
+  init() {
+    this.configureFormButtons();
+    return this;
+  }
+}
 
 class SidebarPopup {
   constructor(addNewModulePopup, importModulePopup, nukeSidebarPopup) {
@@ -865,5 +865,5 @@ export {
   AddModulePopup,
   EditModulePopup,
   ImportModulesPopup,
-  // ExportModulesPopup,
+  ExportModulesPopup,
 };

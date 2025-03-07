@@ -13,4 +13,4 @@ new IframeManager().init();
 new Sidebar();
 new EdgeworkPopup();
 new NumberedAlphabetPopup();
-// new ExportModulesPopup().init();
+new ExportModulesPopup().init();
