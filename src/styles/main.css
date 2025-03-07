@@ -114,7 +114,6 @@ svg {
 
 .top-margin {
   margin-top: 10px;
-  width: 40ch;
 }
 
 /* Required Text */
@@ -135,6 +134,13 @@ label[for="url"]:after {
   justify-content: center;
   gap: 4px;
   margin-top: 8px;
+}
+
+.column-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
 }
 
 .text-wrap {

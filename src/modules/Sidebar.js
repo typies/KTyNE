@@ -4,17 +4,17 @@ import {
   ExportModulesPopup,
   ImportModulesPopup,
   SidebarPopup,
+  ImportDefaultListPopup,
 } from "./popup.js";
 import PopupGenerator from "./PopupGenerator.js";
 import mainPubSub from "./PubSub.js";
 import sharedIdCounter from "./sharedIdCounter.js";
-import defaultModules from "./vanillaModules.json";
+import defaultModules from "../defaultModLists/vanillaModules.json";
 const KTANE_TIMWI_URL = "https://ktane.timwi.de/";
 
 class Sidebar {
   constructor(itemList = []) {
     this.sidebarItems = itemList;
-    this.init();
     mainPubSub.subscribe("addNewModule", this.addSidebarItem.bind(this));
     mainPubSub.subscribe("addNewModules", this.addSidebarItems.bind(this));
     mainPubSub.subscribe("deleteModule", this.deleteModule.bind(this));
@@ -37,12 +37,20 @@ class Sidebar {
       ],
       () => this.removeAllSidebarItems()
     );
+
+    const defaultModuleObjs = [
+      { name: "Vanilla Module", fileContents: defaultModules },
+    ];
+
+    this.importDefaultListPopup = new ImportDefaultListPopup(defaultModuleObjs);
     this.sidebarPopup = new SidebarPopup(
       this.addNewModulePopup,
       this.importModulePopup,
       this.exportModulePopup,
-      this.nukeSidebarPopup
+      this.nukeSidebarPopup,
+      this.importDefaultListPopup
     );
+    this.init();
     return this;
   }
 
@@ -63,7 +71,7 @@ class Sidebar {
   init() {
     this.importProjectsFromLocal();
     if (this.sidebarItems.length === 0) {
-      this.addSidebarItems(defaultModules);
+      this.importDefaultListPopup.doPopup(true);
     }
     this.render();
     this.configureStaticSidebarBtns();
@@ -243,13 +251,6 @@ class Sidebar {
     // Syncs the local storage list with the page list
     this.sidebarItems = [];
     this.importProjectsFromLocal();
-  }
-
-  addDefaultSidebarItems(sidebarItems) {
-    sidebarItems.forEach((sidebarItem) => {
-      this.sidebarItems.push(sidebarItem);
-    });
-    this.render();
   }
 
   createSidebarLi(sidebarItem) {

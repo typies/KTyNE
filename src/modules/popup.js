@@ -438,12 +438,14 @@ class SidebarPopup {
     addNewModulePopup,
     importModulePopup,
     exportModulesPopup,
-    nukeSidebarPopup
+    nukeSidebarPopup,
+    importDefaultListPopup
   ) {
     this.addNewModulePopup = addNewModulePopup;
     this.importModulePopup = importModulePopup;
     this.exportModulesPopup = exportModulesPopup;
     this.nukeSidebarPopup = nukeSidebarPopup;
+    this.importDefaultListPopup = importDefaultListPopup;
     this.popup = new PopupGenerator("Options", [
       {
         type: "group",
@@ -498,8 +500,17 @@ class SidebarPopup {
             },
             classList: "nuke-module-list-btn",
           },
+          {
+            type: "button",
+            btnType: "submit",
+            textContent: "Import Default Mod List",
+            listenerEvent: {
+              trigger: "click",
+              callback: () => this.importDefaultListPopup.doPopup(),
+            },
+          },
         ],
-        classList: "column-group",
+        classList: ["column-group", "even-list"],
       },
     ]);
   }
@@ -859,6 +870,48 @@ class ExportModulesPopup {
   }
 }
 
+class ImportDefaultListPopup {
+  constructor(modFilesList) {
+    this.btnSchemaList = modFilesList.map((mfObj) => {
+      return {
+        type: "button",
+        textContent: mfObj.name,
+        listenerEvent: {
+          trigger: "click",
+          callback: (caller) => {
+            if (!Array.from(caller.element.classList).includes("green")) {
+              caller.element.classList.add("green");
+              new PopupGenerator(`${mfObj.name} Added`).doPopup();
+            }
+            mainPubSub.publish("addNewModules", mfObj.fileContents);
+          },
+        },
+      };
+    });
+    return this;
+  }
+
+  doPopup(pageLoad = false) {
+    new PopupGenerator("Default Mod List Options", [
+      {
+        type: "div",
+        textContent: pageLoad
+          ? "Looks like you don't have any saved modules. Would you like to add one of these preset lists?"
+          : "Select Mod Lists you would like to add",
+        classList: "title",
+      },
+      {
+        type: "group",
+        schema: [...this.btnSchemaList],
+        classList: ["column-group", "even-list"],
+      },
+      {
+        type: "close-btn",
+      },
+    ]).doPopup();
+  }
+}
+
 export {
   EdgeworkPopup,
   NumberedAlphabetPopup,
@@ -867,4 +920,5 @@ export {
   EditModulePopup,
   ImportModulesPopup,
   ExportModulesPopup,
+  ImportDefaultListPopup,
 };
