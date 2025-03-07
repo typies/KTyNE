@@ -3,7 +3,7 @@ import IframeManager from "./modules/IframeManager.js";
 import Sidebar from "./modules/Sidebar.js";
 import "./styles/main.css";
 import {
-  EdgeworkPopup,
+  // EdgeworkPopup,
   NumberedAlphabetPopup,
   GridPopup,
 } from "./modules/popup.js";
@@ -11,6 +11,6 @@ import {
 new HeaderList();
 new IframeManager();
 new Sidebar();
-new EdgeworkPopup();
+// new EdgeworkPopup();
 new NumberedAlphabetPopup();
 new GridPopup();

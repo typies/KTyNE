@@ -331,178 +331,219 @@ class NumberedAlphabetPopup {
 
 class EdgeworkPopup {
   constructor() {
-    this.fillIndTable();
-    this.init();
-    return this;
-  }
-  dom = {
-    popupOverlay: document.querySelector(".popup-overlay"),
-    edgework: document.querySelector(".edgework"),
-    edgeworkForm: document.querySelector(".edgework-form"),
-    newEdgeworkBtn: document.querySelector(".edgework-btn"),
-    serialInput: document.querySelector("#serial-input"),
-    batteriesInput: document.querySelector("#batteries-input"),
-    holdersInput: document.querySelector("#holders-input"),
-    portsInput: document.querySelector("#ports"),
-    closeFormBtn: document.querySelector(".edgework-form-close-btn"),
-    resetFormBtn: document.querySelector(".edgework-form-reset-btn"),
-    edgeworkPreview: document.querySelector(".edgework-preview"),
-    serialPreview: document.querySelector(".serial-preview"),
-    batteriesPreview: document.querySelector(".batteries-preview"),
-    portsPreview: document.querySelector(".ports-preview"),
-    indicatorsPreview: document.querySelector(".indicators-preview"),
-  };
-
-  init() {
-    this.configureFormButtons();
-    this.dom.serialInput.addEventListener("input", () => {
-      this.validateSerialInput();
-      this.dom.serialPreview.replaceChildren(
-        this.createSerialEle(this.dom.serialInput.value)
-      );
-    });
-    this.dom.batteriesInput.addEventListener("input", () => {
-      this.validateBatteries();
-      const preview = this.createBatteriesEle(
-        this.dom.batteriesInput.value,
-        this.dom.holdersInput.value
-      );
-      if (preview) this.dom.batteriesPreview.replaceChildren(preview);
-    });
-    this.dom.holdersInput.addEventListener("input", () => {
-      this.validateBatteries();
-      const preview = this.createBatteriesEle(
-        this.dom.batteriesInput.value,
-        this.dom.holdersInput.value
-      );
-      if (preview) this.dom.batteriesPreview.replaceChildren(preview);
-    });
-    this.dom.portsInput.addEventListener("input", () => {
-      this.validatePorts();
-      this.dom.portsPreview.replaceChildren(
-        this.createPortPlatesEle(
-          this.standardizePorts(this.dom.portsInput.value)
-        )
-      );
-    });
-    const allIndicators = this.dom.edgeworkForm.querySelectorAll(
-      "input[type='radio']"
-    );
-    allIndicators.forEach((ele) => {
-      ele.addEventListener("click", () => {
-        const formData = new FormData(this.dom.edgeworkForm);
-        this.dom.indicatorsPreview.replaceChildren(
-          ...this.createIndicatorsEles(formData)
+    this.popup = new PopupGenerator(
+      "Edgework",
+      [
+        {
+          type: "group",
+          schema: [
+            {
+              type: "label",
+              forField: "serial",
+              textContent: "Serial #",
+            },
+            {
+              type: "textInput",
+              name: "serial",
+              id: "serial-input",
+              minlength: "6",
+              maxlength: "6",
+              autocomplete: "off",
+              required: true,
+              oninputCallback: () => {
+                this.validateSerialInput();
+                this.form
+                  .querySelector(".serial-preview")
+                  .replaceChildren(
+                    this.createSerialEle(this.serialInput.value)
+                  );
+              },
+            },
+            {
+              type: "label",
+              forField: "batteries",
+              textContent: "Batteries",
+            },
+            {
+              type: "numberInput",
+              name: "batteries",
+              id: "batteries-input",
+              min: "0",
+              max: "9",
+              oninputCallback: () => {
+                this.validateBatteries();
+                const preview = this.createBatteriesEle(
+                  this.batteriesInput.value,
+                  this.holdersInput.value
+                );
+                if (preview) this.batteriesPreview.replaceChildren(preview);
+              },
+            },
+            {
+              type: "label",
+              forField: "holders",
+              textContent: "Battery Holders",
+            },
+            {
+              type: "numberInput",
+              name: "holders",
+              id: "holders-input",
+              min: "0",
+              max: "9",
+              oninputCallback: () => {
+                this.validateBatteries();
+                const preview = this.createBatteriesEle(
+                  this.batteriesInput.value,
+                  this.holdersInput.value
+                );
+                if (preview) this.batteriesPreview.replaceChildren(preview);
+              },
+            },
+          ],
+          classList: "edgework-first-form-row",
+        },
+        {
+          type: "label",
+          forField: "ports",
+          textContent: "Ports",
+        },
+        {
+          type: "textInput",
+          name: "ports",
+          id: "ports-input",
+          placeholder: "ex: (dvi rj) (serial para) (empty)",
+          autocomplete: "off",
+          oninputCallback: () => {
+            this.validatePorts();
+            this.portsPreview.replaceChildren(
+              this.createPortPlatesEle(
+                this.standardizePorts(this.portsInput.value)
+              )
+            );
+          },
+        },
+        {
+          type: "label",
+          forField: "lit-inds",
+          textContent: "Lit Indicators",
+        },
+        {
+          type: "textInput",
+          name: "lit-inds",
+          id: "lit-inds-input",
+          placeholder: "ex: bob SND trn MSA",
+          autocomplete: "off",
+          oninputCallback: () => {
+            this.litIndsPreview.replaceChildren(
+              this.createIndicatorsEles(
+                this.standardizeIndicators(this.litIndsInput.value),
+                "lit"
+              )
+            );
+          },
+        },
+        {
+          type: "label",
+          forField: "unl-inds",
+          textContent: "UN-Lit Indicators",
+        },
+        {
+          type: "textInput",
+          name: "unlit-inds",
+          id: "unlit-inds-input",
+          placeholder: "ex: bob SND trn MSA",
+          autocomplete: "off",
+          oninputCallback: () => {
+            this.validatePorts();
+            this.unlitIndsPreview.replaceChildren(
+              this.createIndicatorsEles(
+                this.standardizeIndicators(this.unlitIndsInput.value),
+                "unlit"
+              )
+            );
+          },
+        },
+        {
+          type: "no-reset-yes-btn-group",
+          no: "Close",
+          yes: "Create",
+        },
+        {
+          type: "group",
+          classList: ["edgework-preview", "edgework"],
+          schema: [
+            {
+              type: "group",
+              classList: "serial-preview",
+            },
+            {
+              type: "group",
+              classList: "batteries-preview",
+            },
+            {
+              type: "group",
+              classList: "ports-preview",
+            },
+            {
+              type: "group",
+              classList: "lit-inds-preview",
+            },
+            {
+              type: "group",
+              classList: "unlit-inds-preview",
+            },
+          ],
+        },
+      ],
+      () => {
+        this.validateForm();
+        if (!this.form.checkValidity()) {
+          this.reportValidity();
+          return;
+        }
+        this.resetEdgework();
+        const formData = new FormData(this.form);
+        this.populateSerialEle(formData.get("serial"));
+        this.populateBatteries(
+          formData.get("batteries"),
+          formData.get("holders")
         );
-      });
-    });
+        this.populateIndicators([
+          this.standardizeIndicators(formData.get("lit-inds")),
+          this.standardizeIndicators(formData.get("unlit-inds")),
+        ]);
+        this.populatePortPlates(this.standardizePorts(formData.get("ports")));
+      },
+      true
+    );
+    this.form = this.popup.form;
+    this.realEdgework = document.querySelector(".header .edgework");
+    this.serialInput = this.form.querySelector("#serial-input");
+    this.batteriesInput = this.form.querySelector("#batteries-input");
+    this.holdersInput = this.form.querySelector("#holders-input");
+    this.portsInput = this.form.querySelector("#ports-input");
+    this.litIndsInput = this.form.querySelector("#lit-inds-input");
+    this.unlitIndsInput = this.form.querySelector("#unlit-inds-input");
+    this.edgeworkPreview = this.form.querySelector(".edgework-preview");
+    this.serialPreview = this.form.querySelector(".serial-preview");
+    this.batteriesPreview = this.form.querySelector(".batteries-preview");
+    this.holdersPreview = this.form.querySelector(".holders-preview");
+    this.portsPreview = this.form.querySelector(".ports-preview");
+    this.litIndsPreview = this.form.querySelector(".lit-inds-preview");
+    this.unlitIndsPreview = this.form.querySelector(".unlit-inds-preview");
     return this;
   }
 
-  fillIndTable() {
-    const indTable = document.querySelector(".ind-table");
-    const possibleIndicators = [
-      "bob",
-      "car",
-      "clr",
-      "frk",
-      "frq",
-      "ind",
-      "msa",
-      "nsa",
-      "sig",
-      "snd",
-      "trn",
-    ];
-    possibleIndicators.forEach((indName) => {
-      const indGroup = document.createElement("div");
-      indGroup.classList.add("ind-group");
-      const label = document.createElement("label");
-      label.textContent = indName.toUpperCase();
-      const noneRadio = this.createRadio(
-        `${indName}-ind`,
-        indName,
-        "none",
-        true
-      );
-      const litRadio = this.createRadio(
-        `${indName}-ind`,
-        `lit-${indName}`,
-        "lit",
-        false
-      );
-      const unlitRadio = this.createRadio(
-        `${indName}-ind`,
-        `unlit-${indName}`,
-        "unlit",
-        false
-      );
-      indGroup.replaceChildren(label, noneRadio, litRadio, unlitRadio);
-      indTable.appendChild(indGroup);
-    });
-  }
-
-  createRadio(name, id, value, checked = false) {
-    const newRadio = document.createElement("input");
-    newRadio.setAttribute("type", "radio");
-    newRadio.setAttribute("name", name);
-    newRadio.setAttribute("id", id);
-    newRadio.setAttribute("value", value);
-    if (checked) newRadio.setAttribute("checked", "");
-    return newRadio;
-  }
-
-  configureFormButtons() {
-    const newEdgeworkBtn = this.dom.newEdgeworkBtn;
-    const popupOverlay = this.dom.popupOverlay;
-    const closeFormBtn = this.dom.closeFormBtn;
-    const resetFormBtn = this.dom.resetFormBtn;
-    const edgeworkForm = this.dom.edgeworkForm;
-    newEdgeworkBtn.addEventListener("click", () => {
-      popupOverlay.classList.remove("hidden");
-      edgeworkForm.classList.remove("hidden");
-      document.querySelector("#serial-input").focus();
-    });
-
-    closeFormBtn.addEventListener("click", () => {
-      popupOverlay.classList.add("hidden");
-      edgeworkForm.classList.add("hidden");
-    });
-
-    resetFormBtn.addEventListener("click", () => {
-      this.resetForm();
-      this.resetEdgework();
-      document.querySelector("#serial-input").focus();
-    });
-
-    edgeworkForm.addEventListener("submit", (event) => {
-      event.preventDefault();
-      this.validateForm();
-      if (!edgeworkForm.checkValidity()) {
-        edgeworkForm.reportValidity();
-        return;
-      }
-      this.resetEdgework();
-      const formData = new FormData(edgeworkForm);
-      this.populateSerialEle(formData.get("serial"));
-      this.populateBatteries(
-        formData.get("batteries"),
-        formData.get("holders")
-      );
-      this.populateIndicators(formData);
-      this.populatePortPlates(this.standardizePorts(formData.get("ports")));
-      popupOverlay.classList.add("hidden");
-      edgeworkForm.classList.add("hidden");
-    });
+  doPopup() {
+    this.popup.doPopup();
   }
 
   validateSerialInput() {
-    const serialInput = this.dom.serialInput;
-    serialInput.setCustomValidity("");
+    this.serialInput.setCustomValidity("");
     const validSerialRegex = /[A-Za-z0-9]{6}/;
-    const serial = serialInput.value;
+    const serial = this.serialInput.value;
     if (!serial.match(validSerialRegex) || serial.length !== 6) {
-      serialInput.setCustomValidity(
+      this.serialInput.setCustomValidity(
         "Invalid serial. Must be exactly 6 letters/numbers"
       );
       return false;
@@ -511,19 +552,21 @@ class EdgeworkPopup {
   }
 
   validateBatteries() {
-    const batteriesInput = this.dom.batteriesInput;
-    const holdersInput = this.dom.holdersInput;
-    const batteries = batteriesInput.value;
-    const holders = holdersInput.value;
-    batteriesInput.setCustomValidity("");
-    holdersInput.setCustomValidity("");
+    const batteries = this.batteriesInput.value;
+    const holders = this.holdersInput.value;
+    this.batteriesInput.setCustomValidity("");
+    this.holdersInput.setCustomValidity("");
     if (batteries > 2 * holders) {
-      batteriesInput.setCustomValidity("Too much batteries not even holders!");
+      this.batteriesInput.setCustomValidity(
+        "Too much batteries not even holders!"
+      );
       return false;
     }
 
     if (holders > batteries) {
-      holdersInput.setCustomValidity("Too much holders not enough batteries?");
+      this.holdersInput.setCustomValidity(
+        "Too much holders not enough batteries?"
+      );
       return false;
     }
     return true;
@@ -536,7 +579,7 @@ class EdgeworkPopup {
   }
 
   populateSerialEle(serialValue) {
-    const edgework = this.dom.edgework;
+    const edgework = this.realEdgework;
     const serialEle = this.createSerialEle(serialValue);
     edgework.appendChild(serialEle);
   }
@@ -551,7 +594,7 @@ class EdgeworkPopup {
 
   populateBatteries(batteries, holders) {
     if (!batteries || !holders) return;
-    const edgework = this.dom.edgework;
+    const edgework = this.realEdgework;
     const batteryDiv = this.createBatteriesEle(batteries, holders);
     edgework.appendChild(batteryDiv);
   }
@@ -584,40 +627,29 @@ class EdgeworkPopup {
     return batteryDiv;
   }
 
-  populateIndicators(formData) {
-    const edgework = this.dom.edgework;
-    const indicatorEles = this.createIndicatorsEles(formData);
-    edgework.append(indicatorEles[0]);
-    edgework.append(indicatorEles[1]);
+  populateIndicators(indsLists) {
+    const edgework = this.realEdgework;
+    edgework.append(this.createIndicatorsEles(indsLists[0], "lit"));
+    edgework.append(this.createIndicatorsEles(indsLists[1], "unlit"));
   }
 
-  createIndicatorsEles(formData) {
-    const indicatorKeys = formData.keys().filter((key) => key.includes("ind"));
-    const litIndDiv = document.createElement("div");
-    litIndDiv.classList.add("ind-wrapper");
-    const unlitIndDiv = document.createElement("div");
-    unlitIndDiv.classList.add("ind-wrapper");
-    indicatorKeys.forEach((key) => {
-      const indVal = formData.get(key);
-      if (indVal === "none") return;
-      const newIndicator = document.createElement("div");
-      newIndicator.classList.add("widget", "indicator");
-      newIndicator.textContent = key.split("-")[0].toUpperCase();
-      if (indVal === "lit") {
-        newIndicator.classList.add("lit");
-        litIndDiv.appendChild(newIndicator);
-      }
-      if (indVal === "unlit") {
-        newIndicator.classList.add("unlit");
-        unlitIndDiv.appendChild(newIndicator);
-      }
+  createIndicatorsEles(indsList, className) {
+    const indDivWrapper = document.createElement("div");
+    indDivWrapper.classList.add("ind-wrapper");
+    if (indsList.length === 0) return [];
+    indsList.forEach((ind) => {
+      const newInd = document.createElement("div");
+      newInd.classList.add("widget", "indicator");
+      newInd.textContent = ind.toUpperCase();
+      if (ind !== "") newInd.classList.add(className);
+      indDivWrapper.appendChild(newInd);
     });
-    return [litIndDiv, unlitIndDiv];
+    return indDivWrapper;
   }
 
   populatePortPlates(portList) {
     if (portList.length === 0) return;
-    const edgework = this.dom.edgework;
+    const edgework = this.realEdgework;
     const plateDiv = this.createPortPlatesEle(portList);
     edgework.appendChild(plateDiv);
   }
@@ -640,7 +672,7 @@ class EdgeworkPopup {
   }
 
   validatePorts() {
-    const portsInput = this.dom.portsInput;
+    const portsInput = this.portsInput;
     portsInput.setCustomValidity("");
     this.standardizePorts(portsInput.value);
   }
@@ -666,19 +698,24 @@ class EdgeworkPopup {
     return plates;
   }
 
-  resetForm() {
-    const edgeworkForm = this.dom.edgeworkForm;
-    edgeworkForm.reset();
-    this.dom.serialPreview.replaceChildren();
-    this.dom.batteriesPreview.replaceChildren();
-    this.dom.portsPreview.replaceChildren();
-    this.dom.indicatorsPreview.replaceChildren();
-    return this;
+  standardizeIndicators(input) {
+    if (input == "") return [];
+
+    const replacedInput = input
+      .toLowerCase()
+      .replaceAll(",", " ")
+      .replaceAll("  ", " ");
+    const indsRegex = /(bob|car|clr|frk|frq|ind|msa|nsa|sig|snd|trn)+/g;
+    const inds = replacedInput.match(indsRegex);
+    if (!inds) return [];
+    inds.forEach((ind, i) => {
+      inds[i] = inds[i].replaceAll(/\(|\)|\[|\]/g, "");
+    });
+    return inds;
   }
 
   resetEdgework() {
-    const edgework = this.dom.edgework;
-    edgework.replaceChildren();
+    this.realEdgework.replaceChildren();
     return this;
   }
 }

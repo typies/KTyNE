@@ -136,7 +136,11 @@ class InputElement extends HtmlElement {
     required,
     oninputCallback = null,
     accept,
-    listenerEvent
+    listenerEvent,
+    minlength,
+    maxlength,
+    min,
+    max
   ) {
     super("input", [], null, classList);
     Object.assign(this, {
@@ -151,6 +155,10 @@ class InputElement extends HtmlElement {
       oninputCallback,
       accept,
       listenerEvent,
+      minlength,
+      maxlength,
+      min,
+      max,
     });
     this.createInputElement();
     return this;
@@ -171,6 +179,10 @@ class InputElement extends HtmlElement {
       this.element.addEventListener(this.listenerEvent.trigger, () =>
         this.listenerEvent.callback(this)
       );
+    if (this.minlength) this.element.minLength = this.minlength;
+    if (this.maxlength) this.element.maxLength = this.maxlength;
+    if (this.min) this.element.min = this.min;
+    if (this.max) this.element.max = this.max;
     return this.element;
   }
 }
@@ -323,7 +335,28 @@ class PopupGenerator {
           si.required,
           si.oninputCallback,
           si.accept,
-          si.listenerEvent
+          si.listenerEvent,
+          si.minlength,
+          si.maxlength
+        ).element;
+      }
+      if (si.type === "numberInput") {
+        return new InputElement(
+          "number",
+          si.name,
+          si.id,
+          si.classList,
+          si.value,
+          si.placeholder,
+          si.autocomplete,
+          si.required,
+          si.oninputCallback,
+          si.accept,
+          si.listenerEvent,
+          si.minlength,
+          si.maxlength,
+          si.min,
+          si.max
         ).element;
       }
       if (si.type === "label") {
@@ -382,7 +415,11 @@ class PopupGenerator {
                 textContent: si.reset || "Reset",
                 listenerEvent: {
                   trigger: "click",
-                  callback: () => this.form.reset(),
+                  callback: () => {
+                    this.form.reset();
+                    const firstInput = this.form.querySelector("input");
+                    if (firstInput) firstInput.focus();
+                  },
                 },
                 classList: si.resetClassList,
               },

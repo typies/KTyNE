@@ -2,6 +2,9 @@
 
 .edgework-first-form-row {
   text-align: center;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
 }
 
 #serial-input {
@@ -15,6 +18,7 @@ label[for="serial"]:after {
   color: var(--color-red);
   font-size: 0.5em;
   position: absolute;
+  bottom: 0;
   right: 0;
 }
 
@@ -84,8 +88,7 @@ input.ind-checkbox {
   padding: 10px;
   background-color: var(--color-jet);
   min-height: 150px;
-  min-width: 30%;
-  max-width: 100%;
+  width: 100%;
   align-self: center;
 }
 

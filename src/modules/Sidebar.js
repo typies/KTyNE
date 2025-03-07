@@ -5,6 +5,7 @@ import {
   ImportModulesPopup,
   SidebarPopup,
   ImportDefaultListPopup,
+  EdgeworkPopup,
 } from "./popup.js";
 import PopupGenerator from "./PopupGenerator.js";
 import mainPubSub from "./PubSub.js";
@@ -42,6 +43,7 @@ class Sidebar {
       ],
       () => this.removeAllSidebarItems()
     );
+    this.edgeworkPopup = new EdgeworkPopup();
 
     const defaultModuleObjs = [
       { name: "Vanilla Module", fileContents: defaultModules },
@@ -71,6 +73,7 @@ class Sidebar {
     showSidebarBtn: document.querySelector(".show-sidebar-btn"),
     sidebarMenuSidebarBtn: document.querySelector(".options-btn"),
     addOneBtn: document.querySelector(".add-one-btn"),
+    edgeworkBtn: document.querySelector(".edgework-btn"),
   };
 
   init() {
@@ -100,9 +103,7 @@ class Sidebar {
   }
 
   getSidebarItemElement(mName) {
-    const sidebarItems = Array.from(
-      this.dom.sidebarListElement.children
-    );
+    const sidebarItems = Array.from(this.dom.sidebarListElement.children);
     const matchingItem = sidebarItems.find(
       (child) => child.textContent.toLowerCase() === mName.toLowerCase()
     );
@@ -304,6 +305,7 @@ class Sidebar {
     const showSidebarBtn = this.dom.showSidebarBtn;
     const addOneBtn = this.dom.addOneBtn;
     const sidebarMenuSidebarBtn = this.dom.sidebarMenuSidebarBtn;
+    const edgeworkBtn = this.dom.edgeworkBtn;
     filter.addEventListener("keydown", () => {
       this.filterSidebar(filter.value);
     });
@@ -353,6 +355,9 @@ class Sidebar {
     );
     newRepoTabBtn.addEventListener("click", () => {
       newRepoTabPopup.doPopup();
+    });
+    edgeworkBtn.addEventListener("click", () => {
+      this.edgeworkPopup.doPopup();
     });
   }
 
