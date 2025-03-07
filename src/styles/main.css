@@ -93,6 +93,10 @@ svg {
   stroke: var(--color-jet);
 }
 
+.hover {
+  width: fit-content;
+}
+
 .main-container {
   display: grid;
   background: var(--page-bg-color);

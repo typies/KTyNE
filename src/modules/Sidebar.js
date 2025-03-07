@@ -26,8 +26,13 @@ class Sidebar {
     this.exportModulePopup = new ExportModulesPopup();
     this.addNewModulePopup = new AddModulePopup();
     this.nukeSidebarPopup = new PopupGenerator(
-      "Are you sure you want to DELETE ALL SAVED MODULE?\nThis is not reversable",
+      "Are you sure you want to DELETE ALL SAVED MODULE?",
       [
+        {
+          type: "div",
+          textContent: "This action is not reversable",
+          classList: ["red", "center-text"],
+        },
         {
           type: "no-yes-btn-group",
           no: "Get me out of here",
@@ -211,6 +216,21 @@ class Sidebar {
           ]
         ).doPopup();
       }
+    } else {
+      new PopupGenerator(
+        `The following mods were added:`,
+        [
+          {
+            type: "div",
+            textContent: `${addedItems.join(", ")}`,
+            classList: "max-width-50",
+          },
+          {
+            type: "close-btn",
+          },
+        ],
+        null
+      ).doPopup();
     }
   }
 

@@ -881,7 +881,6 @@ class ImportDefaultListPopup {
           callback: (caller) => {
             if (!Array.from(caller.element.classList).includes("green")) {
               caller.element.classList.add("green");
-              new PopupGenerator(`${mfObj.name} Added`).doPopup();
             }
             mainPubSub.publish("addNewModules", mfObj.fileContents);
           },
