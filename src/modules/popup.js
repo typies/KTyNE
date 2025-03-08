@@ -431,7 +431,7 @@ class EdgeworkPopup {
           type: "textInput",
           name: "lit-inds",
           id: "lit-inds-input",
-          placeholder: "ex: bob SND trn MSA",
+          placeholder: "ex: frk bob msa",
           autocomplete: "off",
           oninputCallback: () => {
             this.litIndsPreview.replaceChildren(
@@ -451,7 +451,7 @@ class EdgeworkPopup {
           type: "textInput",
           name: "unlit-inds",
           id: "unlit-inds-input",
-          placeholder: "ex: bob SND trn MSA",
+          placeholder: "ex: frq nsa",
           autocomplete: "off",
           oninputCallback: () => {
             this.validatePorts();
@@ -716,6 +716,7 @@ class EdgeworkPopup {
 
   resetEdgework() {
     this.realEdgework.replaceChildren();
+    this.edgeworkPreview.replaceChildren();
     return this;
   }
 }
