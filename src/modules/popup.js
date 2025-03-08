@@ -939,12 +939,14 @@ class EditModulePopup {
             },
             {
               type: "button",
-              btnType: "submit",
+              btnType: "button",
               textContent: "Delete",
               listenerEvent: {
                 trigger: "click",
-                callback: () =>
-                  this.removeSidebarItemElement(existingSidebaritem),
+                callback: (data) => {
+                  mainPubSub.publish("deleteModule", existingSidebaritem);
+                  data.element.closest(".popup-overlay").remove();
+                },
               },
             },
             {
