@@ -34,8 +34,38 @@
   grid-template-columns: repeat(10, 4ch);
 }
 
+.grid-wrapper {
+  position: relative;
+}
+
 .grid-popup .grid-container {
-  margin-bottom: 12px;
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  justify-self: center;
+  position: relative;
+  margin: 20px;
+}
+
+.row-btns {
+  position: absolute;
+  bottom: 0px;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.col-btns {
+  position: absolute;
+  top: -1em;
+  right: 0;
+}
+
+.add-row-btn:hover path,
+.add-col-btn:hover path,
+.remove-row-btn:hover path,
+.remove-col-btn:hover path {
+  stroke: black;
 }
 
 .grid-popup .grid-row {
@@ -51,6 +81,7 @@
 .grid-popup .grid-cell {
   width: 40px;
   height: 40px;
+  padding: 4px;
   background-color: white;
   border: 1px solid black;
   display: grid;
@@ -69,21 +100,95 @@
   background-color: var(--color-gray);
 }
 
+.color-cell-group {
+  display: flex;
+  flex-wrap: wrap;
+  width: 165px;
+  gap: 1px;
+  place-items: center;
+}
+
+.grid-popup .color-cell-btns {
+  display: flex;
+  gap: 10px;
+  & input[type="color"] {
+    width: 40px;
+  }
+}
+
+.grid-popup .color-cell {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  border: 1px solid black;
+  &.blue {
+    background-color: #0000ff;
+  }
+  &.green {
+    background-color: #008000;
+  }
+  &.purple {
+    background-color: #800080;
+  }
+  &.yellow {
+    background-color: #ffff00;
+  }
+  &.white {
+    background-color: #ffffff;
+  }
+  &.magenta {
+    background-color: #ff00ff;
+  }
+  &.red {
+    background-color: #ff0000;
+  }
+  &.orange {
+    background-color: #ffa500;
+  }
+  &.gray {
+    background-color: #808080;
+  }
+  &.black {
+    background-color: #000000;
+  }
+}
+
+.grid-popup .inputs-wrapper {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.grid-popup .color-inputs {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  position: relative;
+}
+
+.grid-popup .color-inputs input[type="color"] {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+}
+
+.grid-popup .sizing-inputs {
+  display: flex;
+  flex-direction: column;
+}
+
+.grid-popup .btn-group {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+}
+
 .grid-popup .inputs {
   display: flex;
-  flex-direction: row-reverse;
   align-items: center;
+  justify-content: flex-end;
   gap: 6px;
   font-size: 1.5em;
-}
-
-.grid-popup .inputs label {
-  width: 8ch;
-  text-align: end;
-}
-
-.grid-popup .inputs label:nth-child(2) {
-  width: 5ch;
 }
 
 .grid-popup .inputs input {

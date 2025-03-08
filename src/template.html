@@ -132,24 +132,138 @@
       <footer class="footer">
         <button class="grid-btn">Grid</button>
         <div class="grid-popup hidden">
-          <div class="grid-container"></div>
-          <div class="inputs">
-            <input type="number" id="rows" name="rows" value="10" min="1" />
-            <label for="rows">Rows</label>
-            <input type="number" id="cols" name="cols" value="10" min="1" />
-            <label for="cols">Columns</label>
-            <input type="number" id="cell-size" name="cell-size" value="4" />
-            <label for="cell-size">Cell Size</label>
+          <div class="grid-wrapper">
+            <div class="grid-container"></div>
+            <div class="row-btns">
+              <svg
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                class="remove-row-btn"
+              >
+                <title>Remove Row</title>
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g
+                  id="SVGRepo_tracerCarrier"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></g>
+                <g id="SVGRepo_iconCarrier">
+                  <path
+                    stroke="#ed9190"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M3 3v3m18-3v3m0 0v4a2 2 0 0 1-2 2H9m12-6H9M3 6v4a2 2 0 0 0 2 2h4M3 6h6m0-3v3m0 0v6m6-9v9m-6 3 3 3m0 0 3 3m-3-3 3-3m-3 3-3 3"
+                  ></path>
+                </g>
+              </svg>
+              <svg
+                viewBox="-2.4 -2.4 28.80 28.80"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                stroke="#000000"
+                class="add-row-btn"
+              >
+                <title>Add Row</title>
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g
+                  id="SVGRepo_tracerCarrier"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></g>
+                <g id="SVGRepo_iconCarrier">
+                  <path
+                    stroke="#cefb89"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M3 3v3m18-3v3m0 0v4a2 2 0 0 1-2 2H9m12-6H9M3 6v4a2 2 0 0 0 2 2h4M3 6h6m0-3v3m0 0v6m6-9v9m-3 3v3m0 0v3m0-3h3m-3 0H9"
+                  ></path>
+                </g>
+              </svg>
+            </div>
+            <div class="col-btns">
+              <svg
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                class="remove-col-btn"
+              >
+                <title>Remove Column</title>
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g
+                  id="SVGRepo_tracerCarrier"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></g>
+                <g id="SVGRepo_iconCarrier">
+                  <path
+                    stroke="#ed9190"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M3 3h3M3 21h3m0 0h4a2 2 0 0 0 2-2V9M6 21V9m0-6h4a2 2 0 0 1 2 2v4M6 3v6M3 9h3m0 0h6m-9 6h9m3-6 3 3m0 0 3 3m-3-3 3-3m-3 3-3 3"
+                  ></path>
+                </g>
+              </svg>
+              <svg
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                class="add-col-btn"
+              >
+                <title>Add Column</title>
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g
+                  id="SVGRepo_tracerCarrier"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></g>
+                <g id="SVGRepo_iconCarrier">
+                  <path
+                    stroke="#cefb89"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M3 3h3M3 21h3m0 0h4a2 2 0 0 0 2-2V9M6 21V9m0-6h4a2 2 0 0 1 2 2v4M6 3v6M3 9h3m0 0h6m-9 6h9m3-3h3m0 0h3m-3 0v3m0-3V9"
+                  ></path>
+                </g>
+              </svg>
+            </div>
           </div>
-          <div class="inputs">
-            <input type="color" id="color" name="color" value="#ffffff" />
-            <label for="color">Color</label>
-            <input type="checkbox" id="color-click" name="color-onclick" />
-            <label for="color-click">Color Click</label>
-          </div>
-          <div class="inputs">
-            <button class="reset-btn">Reset Grid</button>
-            <button class="swap-index-btn">Swap Indexing</button>
+          <div class="inputs-wrapper">
+            <div class="color-inputs inputs">
+              <input type="color" id="color" name="color" value="#ffffff" />
+              <div class="color-cell-btns">
+                <label for="color-click">Paint?</label>
+                <input type="checkbox" id="color-click" name="color-onclick" />
+              </div>
+              <div class="color-cell-group">
+                <div class="color-cell blue" data-color="#0000ff"></div>
+                <div class="color-cell green" data-color="#008000"></div>
+                <div class="color-cell purple" data-color="#800080"></div>
+                <div class="color-cell yellow" data-color="#ffff00"></div>
+                <div class="color-cell white" data-color="#ffffff"></div>
+                <div class="color-cell magenta" data-color="#ff00ff"></div>
+                <div class="color-cell red" data-color="#ff0000"></div>
+                <div class="color-cell orange" data-color="#ffa500"></div>
+                <div class="color-cell gray" data-color="#808080"></div>
+                <div class="color-cell black" data-color="#000000"></div>
+              </div>
+            </div>
+            <div class="sizing-inputs inputs">
+              <label for="rows">Rows</label>
+              <input type="number" id="rows" name="rows" value="10" min="1" />
+              <label for="cols">Columns</label>
+              <input type="number" id="cols" name="cols" value="10" min="1" />
+            </div>
+            <div class="inputs btn-group">
+              <label for="cell-size">Cell Size</label>
+              <input type="number" id="cell-size" name="cell-size" value="4" />
+              <button class="reset-btn">Reset Grid</button>
+              <button class="swap-index-btn">Swap Indexing</button>
+            </div>
           </div>
         </div>
         <button class="alphabet-btn">Numbered Alphabet</button>

@@ -376,16 +376,9 @@ class Sidebar {
   toggleAddOneMode() {
     this.addOneMode = !this.addOneMode;
     const filter = this.dom.filter;
-    const title = this.dom.moduleListTitle;
-    const collapseSidebarBtn = this.dom.collapseSidebarBtn;
-    collapseSidebarBtn.classList.toggle("hidden");
     this.collapseToggle();
     filter.focus();
-    if (this.addOneMode) {
-      title.textContent = "Add One Mode";
-    } else {
-      title.textContent = "Modules";
-    }
+    filter.value = "";
   }
 
   toggleEditMode() {

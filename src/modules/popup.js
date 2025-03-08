@@ -17,16 +17,39 @@ class GridPopup {
     resetBtn: document.querySelector("button.reset-btn"),
     indexBtn: document.querySelector("button.swap-index-btn"),
     colorClickBtn: document.querySelector("input[name='color-onclick']"),
+    addRowBtn: document.querySelector("svg.add-row-btn"),
+    removeRowBtn: document.querySelector("svg.remove-row-btn"),
+    addColBtn: document.querySelector("svg.add-col-btn"),
+    removeColBtn: document.querySelector("svg.remove-col-btn"),
+    colorCells: document.querySelectorAll(".color-cell"),
   };
+
+  getGridRows() {
+    return this.dom.gridContainer.querySelectorAll(".grid-row");
+  }
+
   configureFormButtons() {
     this.dom.gridBtn.addEventListener("click", () => {
       this.dom.gridPopup.classList.toggle("hidden");
     });
 
+    this.dom.addRowBtn.addEventListener("click", () => this.pushRows());
+    this.dom.removeRowBtn.addEventListener("click", () => this.popRows());
+    this.dom.addColBtn.addEventListener("click", () => this.pushCols());
+    this.dom.removeColBtn.addEventListener("click", () => this.popCols());
+
+    this.dom.colorCells.forEach((cell) => {
+      cell.addEventListener("click", () => {
+        this.bgColor = cell.getAttribute("data-color");
+        this.dom.colorClickBtn.checked = true;
+        this.dom.colorInput.value = cell.getAttribute("data-color");
+      });
+    });
+
     this.dom.heightInput.addEventListener("change", () => {
       const newRows = parseInt(this.dom.heightInput.value);
       if (newRows < 1) return;
-      const rowCount = Array.from(this.dom.gridContainer.children).length - 1;
+      const rowCount = Array.from(this.getGridRows()).length - 1;
       if (newRows < rowCount) {
         this.popRows(rowCount - newRows);
       } else {
@@ -36,9 +59,7 @@ class GridPopup {
     this.dom.widthInput.addEventListener("change", () => {
       const newCols = parseInt(this.dom.widthInput.value);
       if (newCols < 1) return;
-      const colCount =
-        Array.from(this.dom.gridContainer.children)[0].children.length - 1;
-      console.log(colCount);
+      const colCount = Array.from(this.getGridRows())[0].children.length - 1;
       if (newCols < colCount) {
         this.popCols(colCount - newCols);
       } else {
@@ -98,7 +119,7 @@ class GridPopup {
   }
 
   createGrid() {
-    this.dom.gridContainer.replaceChildren();
+    this.getGridRows().forEach((row) => row.remove());
     const topRowIndex = document.createElement("div");
     topRowIndex.appendChild(this.createCell(" "));
     topRowIndex.classList.add("grid-row");
@@ -113,16 +134,6 @@ class GridPopup {
     this.updateGridSize();
   }
 
-  createColumn(index) {
-    const existingRows = this.dom.gridContainer.querySelectorAll(".grid-row");
-    existingRows[0].appendChild(this.createCell(this.indexStart + index));
-    existingRows.slice(1).forEach((row) => {
-      const cell = this.createCell(this.indexStart + index);
-
-      row.appendChild(cell);
-    });
-  }
-
   createRow(index) {
     const cellRow = document.createElement("div");
     cellRow.classList.add("grid-row");
@@ -135,17 +146,15 @@ class GridPopup {
   }
 
   popRows(numberToPop = 1) {
-    const existingRows = Array.from(
-      this.dom.gridContainer.querySelectorAll(".grid-row")
-    );
-    const keepChildren = existingRows.slice(0, -1 * numberToPop);
-    this.dom.gridContainer.replaceChildren(...keepChildren);
+    const allExistingRows = Array.from(this.dom.gridContainer.children);
+    if (allExistingRows.length <= 2) return; // index row + 1 cell
+    allExistingRows.splice(-1 * numberToPop, numberToPop);
+    this.dom.gridContainer.replaceChildren(...allExistingRows);
+    this.updateGridSize();
   }
 
   pushRows(numberToPush = 1) {
-    const numOfExistingRows = Array.from(
-      this.dom.gridContainer.querySelectorAll(".grid-row")
-    ).length;
+    const numOfExistingRows = Array.from(this.getGridRows()).length;
     for (let i = 0; i < numberToPush; i++) {
       this.dom.gridContainer.appendChild(
         this.createRow(numOfExistingRows + i - 1)
@@ -155,22 +164,21 @@ class GridPopup {
   }
 
   popCols(numberToPop = 1) {
-    const existingRows = Array.from(
-      this.dom.gridContainer.querySelectorAll(".grid-row")
-    );
+    const existingRows = Array.from(this.getGridRows());
+
     for (let i = 0; i < numberToPop; i++) {
       existingRows.forEach((row) => {
         const existingCells = Array.from(row.querySelectorAll(".grid-cell"));
+        if (existingCells.length <= 2) return; // index + 1 cell
         const keepCells = existingCells.slice(0, -1);
         row.replaceChildren(...keepCells);
       });
     }
+    this.updateGridSize();
   }
 
   pushCols(numberToPush = 1) {
-    const existingRows = Array.from(
-      this.dom.gridContainer.querySelectorAll(".grid-row")
-    );
+    const existingRows = Array.from(this.getGridRows());
 
     for (let i = 0; i < numberToPush; i++) {
       const numOfExistingCols = existingRows[0].children.length - 1;
