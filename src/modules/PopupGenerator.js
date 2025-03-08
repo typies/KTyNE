@@ -413,7 +413,7 @@ class PopupGenerator {
               {
                 type: "button",
                 textContent: si.reset || "Reset",
-                listenerEvent: {
+                listenerEvent: si.resetCallback || {
                   trigger: "click",
                   callback: () => {
                     this.form.reset();

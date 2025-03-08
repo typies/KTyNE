@@ -467,6 +467,13 @@ class EdgeworkPopup {
           type: "no-reset-yes-btn-group",
           no: "Close",
           yes: "Create",
+          resetCallback: {
+            trigger: "click",
+            callback: () => {
+              this.resetForm();
+              this.resetEdgework();
+            },
+          },
         },
         {
           type: "group",
@@ -527,7 +534,6 @@ class EdgeworkPopup {
     this.edgeworkPreview = this.form.querySelector(".edgework-preview");
     this.serialPreview = this.form.querySelector(".serial-preview");
     this.batteriesPreview = this.form.querySelector(".batteries-preview");
-    this.holdersPreview = this.form.querySelector(".holders-preview");
     this.portsPreview = this.form.querySelector(".ports-preview");
     this.litIndsPreview = this.form.querySelector(".lit-inds-preview");
     this.unlitIndsPreview = this.form.querySelector(".unlit-inds-preview");
@@ -714,9 +720,18 @@ class EdgeworkPopup {
     return inds;
   }
 
+  resetForm() {
+    this.serialPreview.replaceChildren();
+    this.batteriesPreview.replaceChildren();
+    this.portsPreview.replaceChildren();
+    this.litIndsPreview.replaceChildren();
+    this.unlitIndsPreview.replaceChildren();
+    this.form.reset();
+    this.form.querySelector("input").focus();
+  }
+
   resetEdgework() {
     this.realEdgework.replaceChildren();
-    this.edgeworkPreview.replaceChildren();
     return this;
   }
 }
