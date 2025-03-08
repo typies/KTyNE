@@ -71,7 +71,7 @@ class HeaderList {
         },
       ],
       (form) => {
-        const formData = new FormData(form);
+        const formData = new FormData(form.element);
         const newName = formData.get("rename");
         headerText.textContent = newName;
         navigator.clipboard.writeText(newName);

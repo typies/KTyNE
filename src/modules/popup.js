@@ -873,7 +873,7 @@ class AddModulePopup {
         },
       ],
       (form) => {
-        const formData = new FormData(form);
+        const formData = new FormData(form.element);
         mainPubSub.publish("addNewModule", {
           moduleName: formData.get("name"),
           manualUrl: formData.get("url"),

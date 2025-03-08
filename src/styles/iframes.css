@@ -7,6 +7,11 @@
   background-color: white;
 }
 
+.show-sidebar-btn {
+  transform: rotate(180deg);
+  position: absolute;
+}
+
 .add-one-btn {
   top: 24px;
   position: absolute;
@@ -34,10 +39,6 @@
 .add-one-btn {
   border-radius: 0;
   cursor: pointer;
-}
-
-.show-sidebar-btn {
-  transform: rotate(180deg);
 }
 
 .collapse-sidebar-btn:hover,

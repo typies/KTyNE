@@ -149,6 +149,7 @@ class Sidebar {
       this.sidebarItems.push(sidebarItem);
       this.localStorageAdd(sidebarItem);
       if (reRender) this.render();
+      new PopupGenerator(`${sidebarItem.moduleName} Added`).doPopup();
     }
   }
 
@@ -346,7 +347,7 @@ class Sidebar {
         },
       ],
       (form) => {
-        const formData = new FormData(form);
+        const formData = new FormData(form.element);
         const newTabName = formData.get("new-tab-input");
         if (!newTabName || newTabName === "") return;
         navigator.clipboard.writeText(newTabName);
