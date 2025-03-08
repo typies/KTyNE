@@ -110,7 +110,12 @@ class Sidebar {
     return matchingItem;
   }
 
-  addSidebarItem(sidebarItem, reRender = true, skipDuplicates = false) {
+  addSidebarItem(
+    sidebarItem,
+    reRender = true,
+    skipDuplicates = false,
+    hidePopup = false
+  ) {
     if (!sidebarItem.moduleName || sidebarItem.moduleName === "") {
       try {
         const regex = /HTML\/([\w%20]+).html/;
@@ -149,7 +154,8 @@ class Sidebar {
       this.sidebarItems.push(sidebarItem);
       this.localStorageAdd(sidebarItem);
       if (reRender) this.render();
-      new PopupGenerator(`${sidebarItem.moduleName} Added`).doPopup();
+      if (!hidePopup)
+        new PopupGenerator(`${sidebarItem.moduleName} Added`).doPopup();
     }
   }
 
@@ -173,7 +179,12 @@ class Sidebar {
         moduleName: sidebarItem.name,
         manualUrl: sidebarItem.url,
       };
-      const skipped = this.addSidebarItem(newSidebarItemFormatted, false, true);
+      const skipped = this.addSidebarItem(
+        newSidebarItemFormatted,
+        false,
+        true,
+        true
+      );
       if (skipped === "skipped") {
         skippedItems.push(sidebarItem.name);
       } else {

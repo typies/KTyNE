@@ -32,6 +32,7 @@
 .alphabet-popup {
   display: grid;
   grid-template-columns: repeat(10, 4ch);
+  font-size: 1.25em;
 }
 
 .grid-wrapper {
@@ -111,9 +112,6 @@
 .grid-popup .color-cell-btns {
   display: flex;
   gap: 10px;
-  & input[type="color"] {
-    width: 40px;
-  }
 }
 
 .grid-popup .color-cell {
@@ -151,6 +149,9 @@
   &.black {
     background-color: #000000;
   }
+  &.cyan {
+    background-color: #00ffff;
+  }
 }
 
 .grid-popup .inputs-wrapper {
@@ -167,9 +168,9 @@
 }
 
 .grid-popup .color-inputs input[type="color"] {
-  position: absolute;
-  bottom: 6px;
-  right: 6px;
+  padding: 0;
+  height: 40px;
+  width: 40px;
 }
 
 .grid-popup .sizing-inputs {
@@ -212,7 +213,6 @@
 }
 
 .mini-btn {
-  border-radius: 6px;
-  font-size: 12px;
-  padding: 3px 6px;
+  border-radius: 10px;
+  padding: 4px 10px;
 }

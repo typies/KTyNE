@@ -85,7 +85,7 @@ class GridPopup {
     cell.classList.add("grid-cell");
     cell.style.fontSize = this.fontSize + "px" || "20px";
 
-    if (!textContent) {
+    if (!textContent && textContent !== "") {
       // Not header/row cell
       cell.setAttribute("contenteditable", "");
       cell.setAttribute("spellcheck", "false");
@@ -119,9 +119,9 @@ class GridPopup {
   }
 
   createGrid() {
-    this.getGridRows().forEach((row) => row.remove());
+    this.dom.gridContainer.replaceChildren();
     const topRowIndex = document.createElement("div");
-    topRowIndex.appendChild(this.createCell(" "));
+    topRowIndex.appendChild(this.createCell(""));
     topRowIndex.classList.add("grid-row");
     for (let col = 0; col < this.dom.widthInput.value; col++) {
       topRowIndex.appendChild(this.createCell(this.indexStart + col));
@@ -146,11 +146,12 @@ class GridPopup {
   }
 
   popRows(numberToPop = 1) {
-    const allExistingRows = Array.from(this.dom.gridContainer.children);
-    if (allExistingRows.length <= 2) return; // index row + 1 cell
-    allExistingRows.splice(-1 * numberToPop, numberToPop);
-    this.dom.gridContainer.replaceChildren(...allExistingRows);
-    this.updateGridSize();
+    const existingRows = Array.from(this.getGridRows());
+    if (existingRows.length <= 2) return; // index row + 1 cell
+    existingRows.splice(-1 * numberToPop, numberToPop);
+    this.dom.gridContainer.replaceChildren(...existingRows);
+    // this.updateGridSize();
+    this.dom.heightInput.value = existingRows.length - 1;
   }
 
   pushRows(numberToPush = 1) {
@@ -160,7 +161,8 @@ class GridPopup {
         this.createRow(numOfExistingRows + i - 1)
       );
     }
-    this.updateGridSize();
+    // this.updateGridSize();
+    this.dom.heightInput.value = numOfExistingRows - 1 + numberToPush;
   }
 
   popCols(numberToPop = 1) {
@@ -174,7 +176,8 @@ class GridPopup {
         row.replaceChildren(...keepCells);
       });
     }
-    this.updateGridSize();
+    // this.updateGridSize();
+    this.dom.widthInput.value = existingRows[0].children.length - numberToPop;
   }
 
   pushCols(numberToPush = 1) {
@@ -210,7 +213,9 @@ class GridPopup {
         row.appendChild(cell);
       });
     }
-    this.updateGridSize();
+    // this.updateGridSize();
+    this.dom.widthInput.value =
+      existingRows[0].children.length - 2 + numberToPush;
   }
 
   switchIndexing(newIndexStart = 0) {
@@ -266,28 +271,12 @@ class NumberedAlphabetPopup {
     this.fillAlphaPopup();
   }
 
-  dom = {
-    alphaBtn: document.querySelector(".alphabet-btn"),
-    zeroBtn: document.querySelector(".zero-btn"),
-    oneBtn: document.querySelector(".one-btn"),
-    alphaPopup: document.querySelector(".alphabet-popup"),
-  };
   configureFormButtons() {
-    const alphaBtn = this.dom.alphaBtn;
-    const alphaPopup = this.dom.alphaPopup;
-    const zeroBtn = this.dom.zeroBtn;
-    const oneBtn = this.dom.oneBtn;
-    alphaBtn.addEventListener("click", () => {
-      alphaPopup.classList.toggle("hidden");
-    });
+    this.alphaBtn.addEventListener("click", () =>
+      this.alphaPopup.classList.toggle("hidden")
+    );
 
-    zeroBtn.addEventListener("click", () => {
-      this.changeLabelsZero();
-    });
-
-    oneBtn.addEventListener("click", () => {
-      this.changeLabelsOne();
-    });
+    this.swapIndexBtn.addEventListener("click", () => this.swapIndexing());
   }
 
   fillAlphaPopup() {
@@ -303,35 +292,40 @@ class NumberedAlphabetPopup {
     }
   }
 
+  swapIndexing() {
+    if (this.indexing === 0) this.changeLabelsOne();
+    else this.changeLabelsZero();
+  }
+
   changeLabelsZero() {
-    const zeroBtn = this.dom.zeroBtn;
-    const oneBtn = this.dom.oneBtn;
-    const spans = this.dom.alphaPopup.querySelectorAll("div span");
+    const spans = this.alphaPopup.querySelectorAll("div span");
     spans.forEach((span, index) => {
       const spanParts = span.textContent.split(":");
       spanParts[0] = index;
       span.textContent = spanParts.join(":");
     });
     spans[9].classList.add("single-digit");
-    zeroBtn.classList.add("selected");
-    oneBtn.classList.remove("selected");
+    this.indexing = 0;
   }
 
   changeLabelsOne() {
-    const zeroBtn = this.dom.zeroBtn;
-    const oneBtn = this.dom.oneBtn;
-    const spans = this.dom.alphaPopup.querySelectorAll("div span");
+    const spans = this.alphaPopup.querySelectorAll("div span");
     spans.forEach((span, index) => {
       const spanParts = span.textContent.split(":");
       spanParts[0] = index + 1;
       span.textContent = spanParts.join(":");
     });
     spans[9].classList.remove("single-digit");
-    zeroBtn.classList.remove("selected");
-    oneBtn.classList.add("selected");
+    this.indexing = 1;
   }
 
   init() {
+    this.indexing = 1;
+    this.alphaBtn = document.querySelector(".alphabet-btn");
+    this.alphaPopup = document.querySelector(".alphabet-popup");
+    this.swapIndexBtn = this.alphaPopup.querySelector(".swap-index-btn");
+    this.zeroBtn = this.alphaPopup.querySelector(".zero-btn");
+    this.oneBtn = this.alphaPopup.querySelector(".one-btn");
     this.configureFormButtons();
     return this;
   }
