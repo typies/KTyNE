@@ -744,7 +744,7 @@ class EdgeworkPopup {
       .replaceAll(",", " ")
       .replaceAll("  ", " ")
       .trim();
-    const portsRegex = /[([]?[dvi|parallel|ps2|rj|serial|rca|empty|none| ,-]+/g;
+    const portsRegex = /[([][dvi|parallel|ps2|rj|serial|rca|empty|none| ,-]+/g;
     const plates = replacedInput.match(portsRegex);
     if (!plates) return [];
     plates.forEach((plate, i) => {
