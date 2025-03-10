@@ -140,7 +140,8 @@ class InputElement extends HtmlElement {
     minlength,
     maxlength,
     min,
-    max
+    max,
+    fitcontent
   ) {
     super("input", [], null, classList);
     Object.assign(this, {
@@ -159,6 +160,7 @@ class InputElement extends HtmlElement {
       maxlength,
       min,
       max,
+      fitcontent,
     });
     this.createInputElement();
     return this;
@@ -183,6 +185,8 @@ class InputElement extends HtmlElement {
     if (this.maxlength) this.element.maxLength = this.maxlength;
     if (this.min) this.element.min = this.min;
     if (this.max) this.element.max = this.max;
+    if (this.fitcontent)
+      this.element.style.width = this.element.value.length + 2 + "ch";
     return this.element;
   }
 }
@@ -337,7 +341,10 @@ class PopupGenerator {
           si.accept,
           si.listenerEvent,
           si.minlength,
-          si.maxlength
+          si.maxlength,
+          si.min,
+          si.max,
+          si.fitcontent
         ).element;
       }
       if (si.type === "numberInput") {

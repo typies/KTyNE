@@ -20,7 +20,6 @@ class Sidebar {
     mainPubSub.subscribe("addNewModules", this.addSidebarItems.bind(this));
     mainPubSub.subscribe("deleteModule", this.deleteModule.bind(this));
     mainPubSub.subscribe("replaceModule", this.handleReplaceSub.bind(this));
-    mainPubSub.subscribe("toggleEditMode", this.toggleEditMode.bind(this));
 
     this.editModulePopup = new EditModulePopup();
     this.importModulePopup = new ImportModulesPopup();
@@ -105,7 +104,7 @@ class Sidebar {
   getSidebarItemElement(mName) {
     const sidebarItems = Array.from(this.dom.sidebarListElement.children);
     const matchingItem = sidebarItems.find(
-      (child) => child.textContent.toLowerCase() === mName.toLowerCase()
+      (child) => child.innerText.toLowerCase() === mName.toLowerCase()
     );
     return matchingItem;
   }
@@ -259,7 +258,7 @@ class Sidebar {
   }
 
   removeSidebarItemElement(sidebarItem) {
-    this.localStorageRemove(sidebarItem.textContent);
+    this.localStorageRemove(sidebarItem.innerText);
     sidebarItem.remove();
     this.syncLists();
   }
@@ -290,22 +289,22 @@ class Sidebar {
     const sidebarListElement = this.dom.sidebarListElement;
     const newSidebarListItem = document.createElement("li");
     newSidebarListItem.classList.add("sidebar-item");
-    if (this.editMode) {
-      // Used to maintain orange color when filter is cleared
-      newSidebarListItem.classList.toggle("orange");
-    }
     newSidebarListItem.addEventListener("click", () => {
-      if (this.editMode) {
-        this.editModulePopup.generate(sidebarItem).doPopup();
-      } else {
-        this.openNewModule(sidebarItem.moduleName, sidebarItem.manualUrl);
-      }
+      this.openNewModule(sidebarItem.moduleName, sidebarItem.manualUrl);
 
       if (this.addOneMode) {
         this.toggleAddOneMode();
       }
     });
     newSidebarListItem.textContent = sidebarItem.moduleName;
+    const newEditBtn = document.querySelector(".edit-svg").cloneNode(true);
+    newEditBtn.classList.remove("hidden");
+    newEditBtn.addEventListener("click", (event) => {
+      event.stopPropagation();
+      this.editModulePopup.generate(sidebarItem).doPopup();
+    });
+
+    newSidebarListItem.append(newEditBtn);
     sidebarListElement.appendChild(newSidebarListItem);
   }
 
@@ -390,22 +389,6 @@ class Sidebar {
     this.collapseToggle();
     filter.focus();
     filter.value = "";
-  }
-
-  toggleEditMode() {
-    const title = this.dom.moduleListTitle;
-    const addNewRepoTabBtn = this.dom.newRepoTabBtn;
-    const moduleList = document.querySelectorAll(".sidebar-item");
-    this.editMode = !this.editMode;
-    moduleList.forEach((item) => {
-      item.classList.toggle("orange");
-    });
-    if (this.editMode) {
-      title.textContent = "Click Module To Edit";
-    } else {
-      title.textContent = "Modules";
-    }
-    addNewRepoTabBtn.classList.toggle("hidden");
   }
 
   openNewModule(modName, url) {

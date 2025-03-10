@@ -117,9 +117,23 @@ svg.sidebar-filter-clear {
   word-break: break-word;
   text-align: start;
   cursor: pointer;
+  display: flex;
+  justify-content: space-between;
 }
 
 .sidebar-item:hover,
 .new-repo-tab-btn:hover {
   color: white;
+}
+
+.edit-svg {
+  border-radius: 0;
+  min-width: 1em;
+  min-height: 1em;
+  width: 1em;
+  height: 1em;
+}
+
+.edit-svg:hover {
+  fill: white;
 }

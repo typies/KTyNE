@@ -41,6 +41,7 @@ form div.title {
   padding: 4px;
   line-height: 1.4em;
   font-size: inherit;
+  max-width: 80vw;
 }
 
 form input[name="url"] {

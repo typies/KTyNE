@@ -768,16 +768,6 @@ class SidebarPopup {
           {
             type: "button",
             btnType: "submit",
-            textContent: this.editMode ? "Exit Edit Mode" : "Enter Edit Mode",
-            listenerEvent: {
-              trigger: "click",
-              callback: () => mainPubSub.publish("toggleEditMode"),
-            },
-            classList: ["edit-mode-btn", this.editMode ? "orange" : null],
-          },
-          {
-            type: "button",
-            btnType: "submit",
             textContent: "Import Module List",
             listenerEvent: {
               trigger: "click",
@@ -915,6 +905,7 @@ class EditModulePopup {
               value: existingSidebaritem.manualUrl,
               autocomplete: "off",
               required: true,
+              fitcontent: true,
             },
             {
               type: "label",
