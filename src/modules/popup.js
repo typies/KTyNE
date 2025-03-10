@@ -29,6 +29,35 @@ class GridPopup {
   }
 
   configureFormButtons() {
+    document.addEventListener("keydown", (event) => {
+      if (
+        !this.dom.gridPopup ||
+        this.dom.gridPopup.classList.contains("hidden")
+      )
+        return;
+      const colorList = [
+        "#0000ff",
+        "#ff0000",
+        "#008000",
+        "#ffff00",
+        "#ff00ff",
+        "#ffa500",
+        "#00ffff",
+        "#ffffff",
+        "#000000",
+        "#808080",
+        "#800080",
+      ];
+      if (event.altKey && Number.isInteger(+event.key))
+        this.setColor(colorList[event.key]);
+      if (event.altKey && event.key === "b") this.setColor("#000000");
+      if (event.altKey && event.key === "w") this.setColor("#ffffff");
+      if (event.altKey && event.key === "g") this.setColor("#808080");
+      if (event.altKey && event.key === "q") this.setColor("#800080");
+      if (event.altKey && event.key === "`") this.setColor("#00ffff");
+      console.log(colorList[event.key]);
+    });
+
     this.dom.gridBtn.addEventListener("click", () => {
       this.dom.gridPopup.classList.toggle("hidden");
     });
@@ -40,9 +69,7 @@ class GridPopup {
 
     this.dom.colorCells.forEach((cell) => {
       cell.addEventListener("click", () => {
-        this.bgColor = cell.getAttribute("data-color");
-        this.dom.colorClickBtn.checked = true;
-        this.dom.colorInput.value = cell.getAttribute("data-color");
+        this.setColor(cell.getAttribute("data-color"));
       });
     });
 
@@ -78,6 +105,18 @@ class GridPopup {
     this.dom.indexBtn.addEventListener("click", () =>
       this.switchIndexing(this.indexStart ? 0 : 1)
     );
+  }
+
+  setColor(color) {
+    if (this.bgColor === color) {
+      this.bgColor = null;
+      this.dom.colorClickBtn.checked = false;
+      this.dom.colorInput.value = "#ffffff";
+      return;
+    }
+    this.bgColor = color;
+    this.dom.colorClickBtn.checked = true;
+    this.dom.colorInput.value = color;
   }
 
   createCell(textContent = null) {

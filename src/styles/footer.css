@@ -111,7 +111,10 @@
 
 .grid-popup .color-cell-btns {
   display: flex;
+  justify-content: end;
   gap: 10px;
+  position: relative;
+  width: 100%;
 }
 
 .grid-popup .color-cell {
@@ -119,39 +122,51 @@
   height: 40px;
   cursor: pointer;
   border: 1px solid black;
-  &.blue {
+  display: grid;
+  place-items: center;
+  color: black;
+  &.clr-blue {
     background-color: #0000ff;
   }
-  &.green {
+  &.clr-green {
     background-color: #008000;
   }
-  &.purple {
+  &.clr-purple {
     background-color: #800080;
   }
-  &.yellow {
+  &.clr-yellow {
     background-color: #ffff00;
   }
-  &.white {
+  &.clr-white {
     background-color: #ffffff;
   }
-  &.magenta {
+  &.clr-magenta {
     background-color: #ff00ff;
   }
-  &.red {
+  &.clr-red {
     background-color: #ff0000;
   }
-  &.orange {
+  &.clr-orange {
     background-color: #ffa500;
   }
-  &.gray {
+  &.clr-gray {
     background-color: #808080;
   }
-  &.black {
+  &.clr-black {
     background-color: #000000;
+    color: white;
   }
-  &.cyan {
+  &.clr-cyan {
     background-color: #00ffff;
   }
+}
+
+.color-tip {
+  position: absolute;
+  top: 1em;
+  left: 0;
+  font-size: 0.5em;
+  vertical-align: bottom;
 }
 
 .grid-popup .inputs-wrapper {
@@ -198,7 +213,7 @@
   font-size: inherit;
 }
 .grid-popup .inputs input[type="checkbox"] {
-  transform: scale(1.5);
+  width: 20px;
 }
 
 .single-digit {
