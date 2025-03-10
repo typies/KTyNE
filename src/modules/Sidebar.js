@@ -117,12 +117,12 @@ class Sidebar {
   ) {
     if (!sidebarItem.moduleName || sidebarItem.moduleName === "") {
       try {
-        const regex = /HTML\/([\w%20]+).html/;
+        const regex = /HTML\/([\S%20]+).html/;
         const regexResult = sidebarItem.manualUrl.match(regex);
         if (!regexResult) return;
 
-        const regexName = regexResult[1].split("%20").join(" ");
-        sidebarItem.moduleName = regexName;
+        const decodedName = decodeURIComponent(regexResult[1]);
+        sidebarItem.moduleName = decodedName;
       } catch {
         new PopupGenerator(
           `Error processing the following URL: ${sidebarItem.manualUrl}`
@@ -176,8 +176,8 @@ class Sidebar {
     const addedItems = [];
     sidebarItemsList.forEach((sidebarItem) => {
       const newSidebarItemFormatted = {
-        moduleName: sidebarItem.name,
-        manualUrl: sidebarItem.url,
+        moduleName: sidebarItem.moduleName,
+        manualUrl: sidebarItem.defaultManualUrl,
       };
       const sidebarReturn = this.addSidebarItem(
         newSidebarItemFormatted,
@@ -187,63 +187,40 @@ class Sidebar {
       );
       if (typeof sidebarReturn === "string") {
         skippedItems.push(sidebarReturn);
-      } else {
+      } else if (sidebarReturn !== null) {
         addedItems.push(sidebarReturn.moduleName);
+      } else {
+        return;
       }
     });
     this.render();
-    if (skippedItems.length > 0) {
-      if (skippedItems.length === sidebarItemsList.length) {
-        new PopupGenerator("All of those modules are already known.", [
-          {
-            type: "close-btn",
-          },
-        ]).doPopup();
-      } else if (
-        skippedItems.length <
-        sidebarItemsList.length - skippedItems.length
-      ) {
-        new PopupGenerator(
-          `The following items were duplicates and were skipped`,
-          [
-            {
-              type: "label",
-              textContent: `${addedItems.join(", ")}`,
-            },
-            {
-              type: "close-btn",
-            },
-          ]
-        ).doPopup();
-      } else {
-        new PopupGenerator(
-          `Those were mostly duplicates, But the following were added:`,
-          [
-            {
-              type: "label",
-              textContent: `${addedItems.join(", ")}`,
-            },
-            {
-              type: "close-btn",
-            },
-          ]
-        ).doPopup();
-      }
+    if (skippedItems.length > 50 || addedItems.length > 50) {
+      new PopupGenerator(`Import complete`, [
+        {
+          type: "close-btn",
+        },
+      ]).doPopup();
     } else {
-      new PopupGenerator(
-        `The following mods were added:`,
-        [
-          {
-            type: "div",
-            textContent: `${addedItems.join(", ")}`,
-            classList: "max-width-50",
-          },
-          {
-            type: "close-btn",
-          },
-        ],
-        null
-      ).doPopup();
+      new PopupGenerator(`Import complete`, [
+        {
+          type: "label",
+          textContent: `Skipped: ${skippedItems.join(", ") || "None"}`,
+          classList: "max-width-50",
+        },
+        {
+          type: "label",
+          textContent: ` `,
+          classList: "max-width-50",
+        },
+        {
+          type: "div",
+          textContent: `Added: ${addedItems.join(", ") || "None"}`,
+          classList: "max-width-50",
+        },
+        {
+          type: "close-btn",
+        },
+      ]).doPopup();
     }
   }
 
@@ -432,7 +409,13 @@ class Sidebar {
       return;
     }
     sidebarListChildren.forEach((ele) => {
-      if (ele.textContent.toLowerCase().includes(filterTermCleaned)) {
+      if (
+        ele.textContent.toLowerCase().includes(filterTermCleaned) ||
+        ele.textContent
+          .toLowerCase()
+          .replace("’", "'")
+          .includes(filterTermCleaned)
+      ) {
         ele.classList.remove("hidden");
       } else {
         ele.classList.add("hidden");
