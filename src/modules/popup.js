@@ -798,7 +798,7 @@ class SidebarPopup {
           {
             type: "button",
             btnType: "button",
-            textContent: "Add new Module",
+            textContent: "Add New Module",
             listenerEvent: {
               trigger: "click",
               callback: () => this.addNewModulePopup.doPopup(),
