@@ -135,7 +135,7 @@ class Sidebar {
     const existingSidebarItem = this.getSidebarItem(trimmedModName);
     if (existingSidebarItem) {
       if (skipDuplicates) {
-        return "skipped";
+        return sidebarItem.moduleName;
       }
       new PopupGenerator(
         `${trimmedModName} already exists. Would you like to overwrite?`,
@@ -155,6 +155,7 @@ class Sidebar {
       if (reRender) this.render();
       if (!hidePopup)
         new PopupGenerator(`${sidebarItem.moduleName} Added`).doPopup();
+      return sidebarItem;
     }
   }
 
@@ -178,16 +179,16 @@ class Sidebar {
         moduleName: sidebarItem.name,
         manualUrl: sidebarItem.url,
       };
-      const skipped = this.addSidebarItem(
+      const sidebarReturn = this.addSidebarItem(
         newSidebarItemFormatted,
         false,
         true,
         true
       );
-      if (skipped === "skipped") {
-        skippedItems.push(sidebarItem.name);
+      if (typeof sidebarReturn === "string") {
+        skippedItems.push(sidebarReturn);
       } else {
-        addedItems.push(sidebarItem.name);
+        addedItems.push(sidebarReturn.moduleName);
       }
     });
     this.render();
