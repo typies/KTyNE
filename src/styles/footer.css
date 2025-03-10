@@ -46,20 +46,7 @@
   justify-self: center;
   position: relative;
   margin: 20px;
-}
-
-.row-btns {
-  position: absolute;
-  bottom: 0px;
-  left: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.col-btns {
-  position: absolute;
-  top: -1em;
-  right: 0;
+  margin-top: 40px;
 }
 
 .add-row-btn:hover path,
@@ -126,38 +113,38 @@
   place-items: center;
   color: black;
   &.clr-blue {
-    background-color: #0000ff;
-  }
-  &.clr-green {
-    background-color: #008000;
-  }
-  &.clr-purple {
-    background-color: #800080;
-  }
-  &.clr-yellow {
-    background-color: #ffff00;
-  }
-  &.clr-white {
-    background-color: #ffffff;
-  }
-  &.clr-magenta {
-    background-color: #ff00ff;
+    background-color: rgb(0, 0, 255);
   }
   &.clr-red {
-    background-color: #ff0000;
+    background-color: rgb(255, 0, 0);
+  }
+  &.clr-green {
+    background-color: rgb(0, 128, 0);
+  }
+  &.clr-yellow {
+    background-color: rgb(255, 255, 0);
+  }
+  &.clr-magenta {
+    background-color: rgb(255, 0, 255);
   }
   &.clr-orange {
-    background-color: #ffa500;
-  }
-  &.clr-gray {
-    background-color: #808080;
-  }
-  &.clr-black {
-    background-color: #000000;
-    color: white;
+    background-color: rgb(255, 165, 0);
   }
   &.clr-cyan {
-    background-color: #00ffff;
+    background-color: rgb(0, 255, 255);
+  }
+  &.clr-white {
+    background-color: rgb(255, 255, 255);
+  }
+  &.clr-black {
+    background-color: rgb(0, 0, 0);
+    color: white;
+  }
+  &.clr-gray {
+    background-color: rgb(128, 128, 128);
+  }
+  &.clr-purple {
+    background-color: rgb(128, 0, 128);
   }
 }
 
@@ -186,11 +173,6 @@
   padding: 0;
   height: 40px;
   width: 40px;
-}
-
-.grid-popup .sizing-inputs {
-  display: flex;
-  flex-direction: column;
 }
 
 .grid-popup .btn-group {
@@ -230,4 +212,36 @@
 .mini-btn {
   border-radius: 10px;
   padding: 4px 10px;
+}
+
+.row-btns {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.col-btns {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  top: -2.5em;
+  right: 20px;
+}
+
+.col-btns svg {
+  align-self: end;
+}
+
+.row-btns input,
+.col-btns input {
+  width: 4ch;
+  height: 4ch;
+  text-align: center;
+  display: block;
 }

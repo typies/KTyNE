@@ -47,12 +47,12 @@ class GridPopup {
           "#808080",
           "#800080",
         ];
-        if (event.altKey && Number.isInteger(+event.key))
-          this.setColor(colorList[event.key]);
-        if (event.altKey && event.key === "b") this.setColor("#000000");
+        if (event.altKey && Number.isInteger(parseInt(event.key)))
+          this.setColor(colorList[event.key - 1]);
+        if (event.altKey && event.key === "q") this.setColor("#000000");
         if (event.altKey && event.key === "w") this.setColor("#ffffff");
         if (event.altKey && event.key === "g") this.setColor("#808080");
-        if (event.altKey && event.key === "q") this.setColor("#800080");
+        if (event.altKey && event.key === "s") this.setColor("#800080");
         if (event.altKey && event.key === "`") this.setColor("#00ffff");
       }
     });
@@ -135,11 +135,11 @@ class GridPopup {
         if (this.dom.colorClickBtn.checked)
           cell.style.backgroundColor = this.bgColor;
         if (
-          this.getLuminance(this.bgColor) !== 0 &&
-          this.getLuminance(this.bgColor) < 0.5
+          this.getLuminance(cell.style.backgroundColor) === 0 ||
+          this.getLuminance(cell.style.backgroundColor) < 0.5
         )
           cell.style.color = "white";
-        else if (this.getLuminance(this.bgColor) >= 0.5)
+        else if (this.getLuminance(cell.style.backgroundColor) >= 0.5)
           cell.style.color = "black";
       });
       cell.addEventListener("input", () => {
@@ -188,27 +188,32 @@ class GridPopup {
   }
 
   popRows(numberToPop = 1) {
+    if (numberToPop === 0) return;
     const existingRows = Array.from(this.getGridRows());
+    this.dom.heightInput.value = existingRows.length - 1 - numberToPop;
+
     if (existingRows.length <= 2) return; // index row + 1 cell
     existingRows.splice(-1 * numberToPop, numberToPop);
     this.dom.gridContainer.replaceChildren(...existingRows);
-    // this.updateGridSize();
-    this.dom.heightInput.value = existingRows.length - 1;
   }
 
   pushRows(numberToPush = 1) {
+    if (numberToPush === 0) return;
     const numOfExistingRows = Array.from(this.getGridRows()).length;
+    this.dom.heightInput.value = numOfExistingRows - 1 + numberToPush;
+
     for (let i = 0; i < numberToPush; i++) {
       this.dom.gridContainer.appendChild(
         this.createRow(numOfExistingRows + i - 1)
       );
     }
-    // this.updateGridSize();
-    this.dom.heightInput.value = numOfExistingRows - 1 + numberToPush;
   }
 
   popCols(numberToPop = 1) {
+    if (numberToPop === 0) return;
     const existingRows = Array.from(this.getGridRows());
+    this.dom.widthInput.value =
+      existingRows[0].children.length - 1 - numberToPop;
 
     for (let i = 0; i < numberToPop; i++) {
       existingRows.forEach((row) => {
@@ -218,12 +223,13 @@ class GridPopup {
         row.replaceChildren(...keepCells);
       });
     }
-    // this.updateGridSize();
-    this.dom.widthInput.value = existingRows[0].children.length - numberToPop;
   }
 
   pushCols(numberToPush = 1) {
+    if (numberToPush === 0) return;
     const existingRows = Array.from(this.getGridRows());
+    this.dom.widthInput.value =
+      existingRows[0].children.length - 1 + numberToPush;
 
     for (let i = 0; i < numberToPush; i++) {
       const numOfExistingCols = existingRows[0].children.length - 1;
@@ -232,17 +238,6 @@ class GridPopup {
       );
       existingRows.slice(1).forEach((row) => {
         const cell = this.createCell();
-        cell.addEventListener("click", () => {
-          if (this.dom.colorClickBtn.checked)
-            cell.style.backgroundColor = this.bgColor;
-          if (
-            this.getLuminance(this.bgColor) !== 0 &&
-            this.getLuminance(this.bgColor) < 0.5
-          )
-            cell.style.color = "white";
-          else if (this.getLuminance(this.bgColor) >= 0.5)
-            cell.style.color = "black";
-        });
         cell.addEventListener("input", () => {
           if (
             (cell.textContent.length > 6 && this.cellSize < 5) ||
@@ -255,9 +250,6 @@ class GridPopup {
         row.appendChild(cell);
       });
     }
-    // this.updateGridSize();
-    this.dom.widthInput.value =
-      existingRows[0].children.length - 2 + numberToPush;
   }
 
   switchIndexing(newIndexStart = 0) {
@@ -272,13 +264,8 @@ class GridPopup {
   }
 
   getLuminance(bgColor) {
-    const bgColorHex = bgColor.substring(1);
-    const rgb = parseInt(bgColorHex, 16);
-    const { r, g, b } = {
-      r: (rgb >> 16) & 0xff,
-      g: (rgb >> 8) & 0xff,
-      b: (rgb >> 0) & 0xff,
-    };
+    const rgb = bgColor.replace("rgb(", "").replace(")", "").split(", ");
+    const { r, g, b } = { r: rgb[0], g: rgb[1], b: rgb[2] };
 
     const luminance =
       (0.2126 * r) / 255 + (0.7152 * g) / 255 + (0.0722 * b) / 255;
