@@ -150,3 +150,7 @@ label[for="url"]:after {
 .text-wrap {
   white-space: pre-line;
 }
+
+.underline {
+  text-decoration: underline;
+}

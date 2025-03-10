@@ -121,6 +121,10 @@ svg.sidebar-filter-clear {
   justify-content: space-between;
 }
 
+.new-repo-tab-btn {
+  justify-content: start;
+}
+
 .sidebar-item:hover,
 .new-repo-tab-btn:hover {
   color: white;

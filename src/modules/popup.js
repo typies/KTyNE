@@ -31,35 +31,39 @@ class GridPopup {
   configureFormButtons() {
     document.addEventListener("keydown", (event) => {
       if (
-        !this.dom.gridPopup ||
-        this.dom.gridPopup.classList.contains("hidden")
-      )
-        return;
-      const colorList = [
-        "#0000ff",
-        "#ff0000",
-        "#008000",
-        "#ffff00",
-        "#ff00ff",
-        "#ffa500",
-        "#00ffff",
-        "#ffffff",
-        "#000000",
-        "#808080",
-        "#800080",
-      ];
-      if (event.altKey && Number.isInteger(+event.key))
-        this.setColor(colorList[event.key]);
-      if (event.altKey && event.key === "b") this.setColor("#000000");
-      if (event.altKey && event.key === "w") this.setColor("#ffffff");
-      if (event.altKey && event.key === "g") this.setColor("#808080");
-      if (event.altKey && event.key === "q") this.setColor("#800080");
-      if (event.altKey && event.key === "`") this.setColor("#00ffff");
-      console.log(colorList[event.key]);
+        this.dom.gridPopup &&
+        !this.dom.gridPopup.classList.contains("hidden")
+      ) {
+        const colorList = [
+          "#0000ff",
+          "#ff0000",
+          "#008000",
+          "#ffff00",
+          "#ff00ff",
+          "#ffa500",
+          "#00ffff",
+          "#ffffff",
+          "#000000",
+          "#808080",
+          "#800080",
+        ];
+        if (event.altKey && Number.isInteger(+event.key))
+          this.setColor(colorList[event.key]);
+        if (event.altKey && event.key === "b") this.setColor("#000000");
+        if (event.altKey && event.key === "w") this.setColor("#ffffff");
+        if (event.altKey && event.key === "g") this.setColor("#808080");
+        if (event.altKey && event.key === "q") this.setColor("#800080");
+        if (event.altKey && event.key === "`") this.setColor("#00ffff");
+      }
     });
 
     this.dom.gridBtn.addEventListener("click", () => {
       this.dom.gridPopup.classList.toggle("hidden");
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.altKey && event.key === "r")
+        this.dom.gridPopup.classList.toggle("hidden");
     });
 
     this.dom.addRowBtn.addEventListener("click", () => this.pushRows());
@@ -108,8 +112,7 @@ class GridPopup {
   }
 
   setColor(color) {
-    if (this.bgColor === color) {
-      this.bgColor = null;
+    if (this.bgColor === color && this.dom.colorClickBtn.checked) {
       this.dom.colorClickBtn.checked = false;
       this.dom.colorInput.value = "#ffffff";
       return;
@@ -314,6 +317,10 @@ class NumberedAlphabetPopup {
     this.alphaBtn.addEventListener("click", () =>
       this.alphaPopup.classList.toggle("hidden")
     );
+    document.addEventListener("keydown", (event) => {
+      if (event.altKey && event.key === "a")
+        this.alphaPopup.classList.toggle("hidden");
+    });
 
     this.swapIndexBtn.addEventListener("click", () => this.swapIndexing());
   }

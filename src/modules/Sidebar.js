@@ -354,6 +354,7 @@ class Sidebar {
         },
         {
           type: "no-yes-btn-group",
+          no: "Cancel",
           yes: "Open",
         },
       ],
@@ -365,6 +366,9 @@ class Sidebar {
         this.openNewModule(newTabName, KTANE_TIMWI_URL);
       }
     );
+    document.addEventListener("keydown", (event) => {
+      if (event.altKey && event.key === "n") newRepoTabPopup.doPopup();
+    });
     newRepoTabBtn.addEventListener("click", () => {
       newRepoTabPopup.doPopup();
     });
