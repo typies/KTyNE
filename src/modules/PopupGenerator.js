@@ -465,11 +465,42 @@ class PopupGenerator {
           si.listenerEvent
         ).element;
       }
+      if (si.type === "btn-group") {
+        const sortedBtns = this.btnSort(si.btnTextList);
+        const URL_PREFIX = "https://ktane.timwi.de/HTML/";
+        const btnNames = sortedBtns.map((btn) =>
+          decodeURIComponent(btn).replace(URL_PREFIX, "").replace(".html", "")
+        );
+        const btnEles = btnNames.map(
+          (btn) =>
+            new ButtonElement(
+              btn,
+              {
+                trigger: "click",
+                callback: (data) => {
+                  this.formSubmit(
+                    sortedBtns[btnNames.indexOf(data.textContent)]
+                  );
+                  const parentOverlay = data.element.closest(".popup-overlay");
+                  document.body.removeChild(parentOverlay);
+                },
+              },
+              "button",
+              "manual-choice-btn"
+            ).element
+        );
+        return new DivWrapperEle(btnEles, "manual-choices-group").element;
+      }
 
       throw Error(
         "Bad form schema, could not be parsed. Missed si.type: " + si.type
       );
     });
+  }
+
+  btnSort(btns) {
+    const sorted = btns.sort();
+    return [sorted.at(-1), ...sorted.slice(0, -1)];
   }
 
   doPopup() {

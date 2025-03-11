@@ -59,3 +59,8 @@ form input[name="url"] {
 .center-text {
   text-align: center;
 }
+
+.manual-choices-group {
+  display: flex;
+  flex-direction: column;
+}

@@ -4,13 +4,12 @@ import {
   ExportModulesPopup,
   ImportModulesPopup,
   SidebarPopup,
-  ImportDefaultListPopup,
   EdgeworkPopup,
 } from "./popup.js";
 import PopupGenerator from "./PopupGenerator.js";
 import mainPubSub from "./PubSub.js";
 import sharedIdCounter from "./sharedIdCounter.js";
-import defaultModules from "../defaultModLists/vanillaModules.json";
+import fullModList from "../defaultModLists/fullList.json";
 const KTANE_TIMWI_URL = "https://ktane.timwi.de/";
 
 class Sidebar {
@@ -44,11 +43,6 @@ class Sidebar {
     );
     this.edgeworkPopup = new EdgeworkPopup();
 
-    const defaultModuleObjs = [
-      { name: "Vanilla Module", fileContents: defaultModules },
-    ];
-
-    this.importDefaultListPopup = new ImportDefaultListPopup(defaultModuleObjs);
     this.sidebarPopup = new SidebarPopup(
       this.addNewModulePopup,
       this.importModulePopup,
@@ -80,6 +74,7 @@ class Sidebar {
     if (this.sidebarItems.length === 0) {
       this.importDefaultListPopup.doPopup(true);
     }
+    this.addSidebarItems(fullModList, true);
     this.render();
     this.configureStaticSidebarBtns();
   }
@@ -134,6 +129,13 @@ class Sidebar {
 
     const existingSidebarItem = this.getSidebarItem(trimmedModName);
     if (existingSidebarItem) {
+      sidebarItem.manualList = [
+        ...new Set([
+          ...existingSidebarItem.manualList,
+          ...sidebarItem.manualList,
+        ]),
+      ];
+      this.localStorageUpdate(sidebarItem.moduleName, sidebarItem);
       if (skipDuplicates) {
         return sidebarItem.moduleName;
       }
@@ -171,13 +173,14 @@ class Sidebar {
     this.addSidebarItem(newSidebarItem, true, true);
   }
 
-  addSidebarItems(sidebarItemsList) {
+  addSidebarItems(sidebarItemsList, disablePopup = false) {
     const skippedItems = [];
     const addedItems = [];
     sidebarItemsList.forEach((sidebarItem) => {
       const newSidebarItemFormatted = {
         moduleName: sidebarItem.moduleName,
-        manualUrl: sidebarItem.defaultManualUrl,
+        manualList: sidebarItem.manualList,
+        manualUrl: sidebarItem.manualUrl,
       };
       const sidebarReturn = this.addSidebarItem(
         newSidebarItemFormatted,
@@ -185,6 +188,7 @@ class Sidebar {
         true,
         true
       );
+      if (disablePopup) return;
       if (typeof sidebarReturn === "string") {
         skippedItems.push(sidebarReturn);
       } else if (sidebarReturn !== null) {
@@ -194,6 +198,7 @@ class Sidebar {
       }
     });
     this.render();
+    if (disablePopup) return;
     if (skippedItems.length > 50 || addedItems.length > 50) {
       new PopupGenerator(`Import complete`, [
         {
@@ -242,7 +247,19 @@ class Sidebar {
   }
 
   localStorageAdd(module) {
-    localStorage.setItem(module.moduleName, module.manualUrl);
+    localStorage.setItem(
+      module.moduleName,
+      JSON.stringify({
+        manualList: module.manualList,
+        manualUrl: module.manualUrl,
+        moduleList: module.moduleList,
+      })
+    );
+  }
+
+  localStorageUpdate(moduleName, localStorageItem) {
+    this.localStorageRemove(moduleName);
+    this.localStorageAdd(localStorageItem);
   }
 
   localStorageRemove(moduleName) {
@@ -251,9 +268,15 @@ class Sidebar {
 
   importProjectsFromLocal() {
     for (let i = 0; i < window.localStorage.length; i++) {
-      const moduleName = window.localStorage.key(i);
-      const manualUrl = window.localStorage.getItem(moduleName);
-      this.sidebarItems.push({ moduleName, manualUrl });
+      const localStorageKey = window.localStorage.key(i);
+      const localStorageValue = window.localStorage.getItem(localStorageKey);
+      const jsonValue = JSON.parse(localStorageValue);
+      const moduleObj = {
+        moduleName: localStorageKey,
+        manualList: jsonValue.manualList,
+        manualUrl: jsonValue.manualUrl,
+      };
+      this.sidebarItems.push(moduleObj);
     }
   }
 
@@ -269,6 +292,9 @@ class Sidebar {
     newSidebarListItem.classList.add("sidebar-item");
     newSidebarListItem.addEventListener("click", () => {
       this.openNewModule(sidebarItem.moduleName, sidebarItem.manualUrl);
+      this.dom.filter.focus();
+      this.dom.filter.value = "";
+      this.filterSidebar("");
 
       if (this.addOneMode) {
         this.toggleAddOneMode();
@@ -279,11 +305,38 @@ class Sidebar {
     newEditBtn.classList.remove("hidden");
     newEditBtn.addEventListener("click", (event) => {
       event.stopPropagation();
-      this.editModulePopup.generate(sidebarItem).doPopup();
+      // this.editModulePopup.generate(sidebarItem).doPopup();
+      new PopupGenerator(
+        `Set default manual for ${sidebarItem.moduleName}`,
+        [
+          {
+            type: "btn-group",
+            moduleName: sidebarItem.moduleName,
+            btnTextList: sidebarItem.manualList,
+          },
+          {
+            type: "close-btn",
+          },
+        ],
+        (data) => {
+          this.setDefaultManual(sidebarItem.moduleName, data);
+        }
+      ).doPopup();
     });
 
     newSidebarListItem.append(newEditBtn);
     sidebarListElement.appendChild(newSidebarListItem);
+  }
+  setDefaultManual(modName, newDefaultManual) {
+    const existingGroupItem = this.getSidebarItem(modName);
+    existingGroupItem.manualUrl = newDefaultManual;
+    this.localStorageUpdate(modName, {
+      moduleName: modName,
+      manualList: existingGroupItem.manualList,
+      manualUrl: newDefaultManual,
+    });
+    this.syncLists();
+    this.render();
   }
 
   configureStaticSidebarBtns() {

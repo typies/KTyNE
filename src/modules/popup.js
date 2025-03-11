@@ -1115,7 +1115,7 @@ class ImportModulesPopup {
   handleExample(caller) {
     const form = this.popup.form;
     const textAreaInput = form.querySelector(".popup-text-area");
-    const example = `[\n  {\n    "moduleName": "Logic",\n    "defaultManualUrl": "https://ktane.timwi.de/HTML/Logic.html"\n  },\n  {\n    "moduleName": "Silly Slots",\n    "defaultManualUrl": "https://ktane.timwi.de/HTML/Silly%20Slots.html"\n  },\n  {\n    "defaultManualUrl": "https://ktane.timwi.de/HTML/Yippee.html"\n  }\n]`;
+    const example = `[\n  {\n    "moduleName": "Logic",\n    "manualUrl": "https://ktane.timwi.de/HTML/Logic.html"\n  },\n  {\n    "moduleName": "Silly Slots",\n    "manualUrl": "https://ktane.timwi.de/HTML/Silly%20Slots.html"\n  },\n  {\n    "manualUrl": "https://ktane.timwi.de/HTML/Yippee.html"\n  }\n]`;
 
     if (textAreaInput.hasAttribute("contenteditable")) {
       this.currentTextInputValue = textAreaInput.textContent;
