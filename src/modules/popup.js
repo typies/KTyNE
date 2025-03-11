@@ -72,12 +72,6 @@ class GridPopup {
     this.dom.addColBtn.addEventListener("click", () => this.pushCols());
     this.dom.removeColBtn.addEventListener("click", () => this.popCols());
 
-    this.dom.colorCells.forEach((cell) => {
-      cell.addEventListener("click", () => {
-        this.setColor(cell.getAttribute("data-color"));
-      });
-    });
-
     this.dom.heightInput.addEventListener("change", () => {
       const newRows = parseInt(this.dom.heightInput.value);
       if (newRows < 1) return;
@@ -123,6 +117,20 @@ class GridPopup {
     this.dom.colorInput.value = color;
   }
 
+  colorCell(cell) {
+    {
+      if (this.dom.colorClickBtn.checked)
+        cell.style.backgroundColor = this.bgColor;
+      if (
+        this.getLuminance(cell.style.backgroundColor) === 0 ||
+        this.getLuminance(cell.style.backgroundColor) < 0.5
+      )
+        cell.style.color = "white";
+      else if (this.getLuminance(cell.style.backgroundColor) >= 0.5)
+        cell.style.color = "black";
+    }
+  }
+
   createCell(textContent = null) {
     const cell = document.createElement("div");
     cell.classList.add("grid-cell");
@@ -132,16 +140,11 @@ class GridPopup {
       // Not header/row cell
       cell.setAttribute("contenteditable", "");
       cell.setAttribute("spellcheck", "false");
-      cell.addEventListener("click", () => {
-        if (this.dom.colorClickBtn.checked)
-          cell.style.backgroundColor = this.bgColor;
-        if (
-          this.getLuminance(cell.style.backgroundColor) === 0 ||
-          this.getLuminance(cell.style.backgroundColor) < 0.5
-        )
-          cell.style.color = "white";
-        else if (this.getLuminance(cell.style.backgroundColor) >= 0.5)
-          cell.style.color = "black";
+      cell.addEventListener("mousedown", () => (this.coloring = true));
+      document.addEventListener("mouseup", () => (this.coloring = false));
+      cell.addEventListener("mousedown", () => this.colorCell(cell));
+      cell.addEventListener("mouseover", () => {
+        if (this.coloring) this.colorCell(cell);
       });
       cell.addEventListener("input", () => {
         if (cell.textContent.length > 6 && this.cellSize < 5) {
