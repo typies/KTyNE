@@ -6,7 +6,8 @@ class HtmlElement {
       textContent,
       classList,
     });
-    if (this.classList) this.classList = this.asArray(this.classList);
+    if (this.classList)
+      this.classList = this.asArray(this.classList).filter((c) => c !== "");
     if (this.children) this.children = this.asArray(this.children);
     this.createHtmlElement();
     return this;
@@ -21,7 +22,7 @@ class HtmlElement {
     try {
       this.element = document.createElement(this.htmlTag);
       this.element.textContent = this.textContent;
-      if (this.children)
+      if (this.children && this.children.length > 0)
         this.children.forEach((child) => this.element.appendChild(child));
       this.element.classList.add(...this.classList);
       return this.element;
@@ -425,7 +426,7 @@ class PopupGenerator {
                   callback: () => {
                     this.form.reset();
                     const firstInput = this.form.querySelector("input");
-                    if (firstInput) firstInput.focus();
+                    if (firstInput) firstInput.select();
                   },
                 },
                 classList: si.resetClassList,
@@ -512,7 +513,7 @@ class PopupGenerator {
     document.body.appendChild(this.popup.element);
     if (!this.dontReset) this.form.reset();
     const anyInput = this.popup.element.querySelector("input");
-    if (anyInput) anyInput.focus();
+    if (anyInput) anyInput.select();
   }
 }
 

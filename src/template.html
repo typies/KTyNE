@@ -11,16 +11,43 @@
       <header class="header">
         <ul class="open-modules-list"></ul>
         <div class="edgework-wrapper">
-          <div class="edgework"></div>
+          <div class="edgework">
+            <button class="edgework-btn">Edgework?</button>
+          </div>
         </div>
-        <button class="edgework-btn">Edgework?</button>
       </header>
       <div class="main">
         <div class="sidebar">
           <div class="sidebar-top-wrapper">
             <div class="module-list-title-wrapper">
               <div class="module-list-title">Modules</div>
-
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                class="add-module-btn"
+                height="20px"
+                width="20px"
+              >
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g
+                  id="SVGRepo_tracerCarrier"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></g>
+                <g id="SVGRepo_iconCarrier">
+                  <g id="Edit / Add_Row">
+                    <path
+                      id="Vector"
+                      d="M3 14V15C3 16.1046 3.89543 17 5 17L19 17C20.1046 17 21 16.1046 21 15L21 13C21 11.8954 20.1046 11 19 11H13M10 8H7M7 8H4M7 8V5M7 8V11"
+                      stroke="#000000"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    ></path>
+                  </g>
+                </g>
+              </svg>
               <svg
                 class="split-button"
                 viewBox="0 0 24.00 24.00"
@@ -136,158 +163,194 @@
       ></div>
 
       <footer class="footer">
-        <button class="grid-btn">G<span class="underline">r</span>id</button>
-        <div class="grid-popup hidden">
-          <div class="grid-wrapper">
-            <div class="grid-container"></div>
-            <div class="row-btns">
-              <svg
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                class="remove-row-btn"
-                height="20px"
-                width="20px"
-              >
-                <title>Remove Row</title>
-                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                <g
-                  id="SVGRepo_tracerCarrier"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                ></g>
-                <g id="SVGRepo_iconCarrier">
-                  <path
-                    stroke="#ed9190"
+        <div class="last-repo-sync">Last Repo Sync:</div>
+        <div></div>
+        <div class="right-btns">
+          <button class="grid-btn">G<span class="underline">r</span>id</button>
+          <div class="grid-popup hidden">
+            <div class="grid-wrapper">
+              <div class="grid-container"></div>
+              <div class="row-btns">
+                <svg
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  class="remove-row-btn"
+                  height="20px"
+                  width="20px"
+                >
+                  <title>Remove Row</title>
+                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                  <g
+                    id="SVGRepo_tracerCarrier"
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M3 3v3m18-3v3m0 0v4a2 2 0 0 1-2 2H9m12-6H9M3 6v4a2 2 0 0 0 2 2h4M3 6h6m0-3v3m0 0v6m6-9v9m-6 3 3 3m0 0 3 3m-3-3 3-3m-3 3-3 3"
-                  ></path>
-                </g>
-              </svg>
-              <label for="rows">Row</label>
-              <input type="tel" id="rows" name="rows" value="10" min="1" />
-              <svg
-                viewBox="-2.4 -2.4 28.80 28.80"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                stroke="#000000"
-                class="add-row-btn"
-                height="20px"
-                width="20px"
-              >
-                <title>Add Row</title>
-                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                <g
-                  id="SVGRepo_tracerCarrier"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                ></g>
-                <g id="SVGRepo_iconCarrier">
-                  <path
-                    stroke="#cefb89"
+                  ></g>
+                  <g id="SVGRepo_iconCarrier">
+                    <path
+                      stroke="#ed9190"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M3 3v3m18-3v3m0 0v4a2 2 0 0 1-2 2H9m12-6H9M3 6v4a2 2 0 0 0 2 2h4M3 6h6m0-3v3m0 0v6m6-9v9m-6 3 3 3m0 0 3 3m-3-3 3-3m-3 3-3 3"
+                    ></path>
+                  </g>
+                </svg>
+                <label for="rows">Row</label>
+                <input
+                  type="tel"
+                  id="rows"
+                  name="rows"
+                  value="10"
+                  min="1"
+                  tabindex="2"
+                />
+                <svg
+                  viewBox="-2.4 -2.4 28.80 28.80"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  stroke="#000000"
+                  class="add-row-btn"
+                  height="20px"
+                  width="20px"
+                >
+                  <title>Add Row</title>
+                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                  <g
+                    id="SVGRepo_tracerCarrier"
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M3 3v3m18-3v3m0 0v4a2 2 0 0 1-2 2H9m12-6H9M3 6v4a2 2 0 0 0 2 2h4M3 6h6m0-3v3m0 0v6m6-9v9m-3 3v3m0 0v3m0-3h3m-3 0H9"
-                  ></path>
-                </g>
-              </svg>
-            </div>
-            <div class="col-btns">
-              <svg
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                class="remove-col-btn"
-                height="20px"
-                width="20px"
-              >
-                <title>Remove Column</title>
-                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                <g
-                  id="SVGRepo_tracerCarrier"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                ></g>
-                <g id="SVGRepo_iconCarrier">
-                  <path
-                    stroke="#ed9190"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M3 3h3M3 21h3m0 0h4a2 2 0 0 0 2-2V9M6 21V9m0-6h4a2 2 0 0 1 2 2v4M6 3v6M3 9h3m0 0h6m-9 6h9m3-6 3 3m0 0 3 3m-3-3 3-3m-3 3-3 3"
-                  ></path>
-                </g>
-              </svg>
-              <div>
-                <label for="cols">Col</label>
-                <input type="tel" id="cols" name="cols" value="10" min="1" />
+                  ></g>
+                  <g id="SVGRepo_iconCarrier">
+                    <path
+                      stroke="#cefb89"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M3 3v3m18-3v3m0 0v4a2 2 0 0 1-2 2H9m12-6H9M3 6v4a2 2 0 0 0 2 2h4M3 6h6m0-3v3m0 0v6m6-9v9m-3 3v3m0 0v3m0-3h3m-3 0H9"
+                    ></path>
+                  </g>
+                </svg>
               </div>
-              <svg
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                class="add-col-btn"
-                height="20px"
-                width="20px"
-              >
-                <title>Add Column</title>
-                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                <g
-                  id="SVGRepo_tracerCarrier"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                ></g>
-                <g id="SVGRepo_iconCarrier">
-                  <path
-                    stroke="#cefb89"
+              <div class="col-btns">
+                <svg
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  class="remove-col-btn"
+                  height="20px"
+                  width="20px"
+                >
+                  <title>Remove Column</title>
+                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                  <g
+                    id="SVGRepo_tracerCarrier"
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M3 3h3M3 21h3m0 0h4a2 2 0 0 0 2-2V9M6 21V9m0-6h4a2 2 0 0 1 2 2v4M6 3v6M3 9h3m0 0h6m-9 6h9m3-3h3m0 0h3m-3 0v3m0-3V9"
-                  ></path>
-                </g>
-              </svg>
+                  ></g>
+                  <g id="SVGRepo_iconCarrier">
+                    <path
+                      stroke="#ed9190"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M3 3h3M3 21h3m0 0h4a2 2 0 0 0 2-2V9M6 21V9m0-6h4a2 2 0 0 1 2 2v4M6 3v6M3 9h3m0 0h6m-9 6h9m3-6 3 3m0 0 3 3m-3-3 3-3m-3 3-3 3"
+                    ></path>
+                  </g>
+                </svg>
+                <div>
+                  <label for="cols">Col</label>
+                  <input
+                    type="tel"
+                    id="cols"
+                    name="cols"
+                    value="10"
+                    min="1"
+                    tabindex="1"
+                  />
+                </div>
+                <svg
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  class="add-col-btn"
+                  height="20px"
+                  width="20px"
+                >
+                  <title>Add Column</title>
+                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                  <g
+                    id="SVGRepo_tracerCarrier"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></g>
+                  <g id="SVGRepo_iconCarrier">
+                    <path
+                      stroke="#cefb89"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M3 3h3M3 21h3m0 0h4a2 2 0 0 0 2-2V9M6 21V9m0-6h4a2 2 0 0 1 2 2v4M6 3v6M3 9h3m0 0h6m-9 6h9m3-3h3m0 0h3m-3 0v3m0-3V9"
+                    ></path>
+                  </g>
+                </svg>
+              </div>
+            </div>
+            <div class="inputs-wrapper">
+              <div class="color-inputs inputs">
+                <div class="color-tip">(alt+key)</div>
+                <div class="color-cell-btns">
+                  <label for="color-click">Paint?</label>
+                  <input
+                    type="checkbox"
+                    id="color-click"
+                    name="color-onclick"
+                  />
+                </div>
+                <div class="color-cell-group">
+                  <div class="color-cell clr-blue" data-color="#0000ff">1</div>
+                  <div class="color-cell clr-red" data-color="#ff0000">2</div>
+                  <div class="color-cell clr-green" data-color="#008000">3</div>
+                  <div class="color-cell clr-yellow" data-color="#ffff00">
+                    4
+                  </div>
+                  <div class="color-cell clr-magenta" data-color="#ff00ff">
+                    5
+                  </div>
+                  <div class="color-cell clr-orange" data-color="#ffa500">
+                    6
+                  </div>
+                  <div class="color-cell clr-cyan" data-color="#00ffff">~</div>
+                  <div class="color-cell clr-white" data-color="#ffffff">w</div>
+                  <div class="color-cell clr-black" data-color="#000000">q</div>
+                  <div class="color-cell clr-gray" data-color="#808080">g</div>
+                  <div class="color-cell clr-purple" data-color="#800080">
+                    s
+                  </div>
+                  <input type="color" id="color" name="color" value="#ffffff" />
+                </div>
+              </div>
+              <div class="inputs btn-group">
+                <label for="cell-size">Cell Size</label>
+                <input
+                  type="number"
+                  id="cell-size"
+                  name="cell-size"
+                  value="4"
+                  tabindex="3"
+                />
+                <button class="reset-btn">Reset Grid</button>
+                <button class="swap-index-btn">Swap Indexing</button>
+              </div>
             </div>
           </div>
-          <div class="inputs-wrapper">
-            <div class="color-inputs inputs">
-              <div class="color-tip">(alt+key)</div>
-              <div class="color-cell-btns">
-                <label for="color-click">Paint?</label>
-                <input type="checkbox" id="color-click" name="color-onclick" />
-              </div>
-              <div class="color-cell-group">
-                <div class="color-cell clr-blue" data-color="#0000ff">1</div>
-                <div class="color-cell clr-red" data-color="#ff0000">2</div>
-                <div class="color-cell clr-green" data-color="#008000">3</div>
-                <div class="color-cell clr-yellow" data-color="#ffff00">4</div>
-                <div class="color-cell clr-magenta" data-color="#ff00ff">5</div>
-                <div class="color-cell clr-orange" data-color="#ffa500">6</div>
-                <div class="color-cell clr-cyan" data-color="#00ffff">~</div>
-                <div class="color-cell clr-white" data-color="#ffffff">w</div>
-                <div class="color-cell clr-black" data-color="#000000">q</div>
-                <div class="color-cell clr-gray" data-color="#808080">g</div>
-                <div class="color-cell clr-purple" data-color="#800080">s</div>
-                <input type="color" id="color" name="color" value="#ffffff" />
-              </div>
+          <button class="alphabet-btn">
+            Numbered <span class="underline">A</span>lphabet
+          </button>
+          <div class="alphabet-popup hidden">
+            <div class="mini-btn-wrapper">
+              <button class="mini-btn swap-index-btn">Swap Indexing</button>
             </div>
-            <div class="inputs btn-group">
-              <label for="cell-size">Cell Size</label>
-              <input type="number" id="cell-size" name="cell-size" value="4" />
-              <button class="reset-btn">Reset Grid</button>
-              <button class="swap-index-btn">Swap Indexing</button>
-            </div>
-          </div>
-        </div>
-        <button class="alphabet-btn">
-          Numbered <span class="underline">A</span>lphabet
-        </button>
-        <div class="alphabet-popup hidden">
-          <div class="mini-btn-wrapper">
-            <button class="mini-btn swap-index-btn">Swap Indexing</button>
           </div>
         </div>
       </footer>

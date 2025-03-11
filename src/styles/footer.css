@@ -5,7 +5,7 @@
   background-color: var(--color-jet);
 
   display: flex;
-  justify-content: end;
+  justify-content: space-between;
   gap: 8px;
   padding: 10px;
   position: relative;
@@ -13,6 +13,10 @@
 
 .selected {
   color: white;
+}
+
+.last-repo-sync {
+  color: var(--color-blue);
 }
 
 .alphabet-popup,

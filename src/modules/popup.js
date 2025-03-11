@@ -1,3 +1,4 @@
+import mainPubSub from "./PubSub.js";
 import PopupGenerator from "./PopupGenerator.js";
 
 class GridPopup {
@@ -56,13 +57,14 @@ class GridPopup {
       }
     });
 
-    this.dom.gridBtn.addEventListener("click", () => {
+    const showPopup = () => {
       this.dom.gridPopup.classList.toggle("hidden");
-    });
+      this.dom.widthInput.select();
+    };
 
+    this.dom.gridBtn.addEventListener("click", showPopup);
     document.addEventListener("keydown", (event) => {
-      if (event.altKey && event.key === "r")
-        this.dom.gridPopup.classList.toggle("hidden");
+      if (event.altKey && event.key === "r") showPopup();
     });
 
     this.dom.addRowBtn.addEventListener("click", () => this.pushRows());
@@ -406,11 +408,11 @@ class EdgeworkPopup {
               max: "9",
               oninputCallback: () => {
                 this.validateBatteries();
-                const preview = this.createBatteriesEle(
+                const preview = this.createBatteriesEleList(
                   this.batteriesInput.value,
                   this.holdersInput.value
                 );
-                if (preview) this.batteriesPreview.replaceChildren(preview);
+                if (preview) this.batteriesPreview.replaceChildren(...preview);
               },
             },
             {
@@ -426,11 +428,11 @@ class EdgeworkPopup {
               max: "9",
               oninputCallback: () => {
                 this.validateBatteries();
-                const preview = this.createBatteriesEle(
+                const preview = this.createBatteriesEleList(
                   this.batteriesInput.value,
                   this.holdersInput.value
                 );
-                if (preview) this.batteriesPreview.replaceChildren(preview);
+                if (preview) this.batteriesPreview.replaceChildren(...preview);
               },
             },
           ],
@@ -450,7 +452,7 @@ class EdgeworkPopup {
           oninputCallback: () => {
             this.validatePorts();
             this.portsPreview.replaceChildren(
-              this.createPortPlatesEle(
+              ...this.createPortPlatesEleList(
                 this.standardizePorts(this.portsInput.value)
               )
             );
@@ -469,7 +471,7 @@ class EdgeworkPopup {
           autocomplete: "off",
           oninputCallback: () => {
             this.litIndsPreview.replaceChildren(
-              this.createIndicatorsEles(
+              ...this.createIndicatorsEleList(
                 this.standardizeIndicators(this.litIndsInput.value),
                 "lit"
               )
@@ -490,7 +492,7 @@ class EdgeworkPopup {
           oninputCallback: () => {
             this.validatePorts();
             this.unlitIndsPreview.replaceChildren(
-              this.createIndicatorsEles(
+              ...this.createIndicatorsEleList(
                 this.standardizeIndicators(this.unlitIndsInput.value),
                 "unlit"
               )
@@ -621,7 +623,7 @@ class EdgeworkPopup {
   populateSerialEle(serialValue) {
     const edgework = this.realEdgework;
     const serialEle = this.createSerialEle(serialValue);
-    edgework.appendChild(serialEle);
+    edgework.append(serialEle);
   }
 
   createSerialEle(serialValue) {
@@ -635,11 +637,11 @@ class EdgeworkPopup {
   populateBatteries(batteries, holders) {
     if (!batteries || !holders) return;
     const edgework = this.realEdgework;
-    const batteryDiv = this.createBatteriesEle(batteries, holders);
-    edgework.appendChild(batteryDiv);
+    const batteryDiv = this.createBatteriesEleList(batteries, holders);
+    edgework.append(...batteryDiv);
   }
 
-  createBatteriesEle(batteries, holders) {
+  createBatteriesEleList(batteries, holders) {
     if (
       batteries > 2 * holders ||
       holders > batteries ||
@@ -650,53 +652,50 @@ class EdgeworkPopup {
     }
     const numOfAAPairs = batteries - holders;
     const numOfD = batteries - 2 * numOfAAPairs;
-    const batteryDiv = document.createElement("div");
-    batteryDiv.classList.add("battery-wrapper");
+    const batteriesList = [];
 
     for (let i = 0; i < numOfAAPairs; i++) {
       const newAAWidget = document.createElement("div");
       newAAWidget.classList.add("widget", "battery", "aa");
-      batteryDiv.appendChild(newAAWidget);
+      batteriesList.push(newAAWidget);
     }
 
     for (let i = 0; i < numOfD; i++) {
       const newDWidget = document.createElement("div");
       newDWidget.classList.add("widget", "battery", "d");
-      batteryDiv.appendChild(newDWidget);
+      batteriesList.push(newDWidget);
     }
-    return batteryDiv;
+    return batteriesList;
   }
 
   populateIndicators(indsLists) {
     const edgework = this.realEdgework;
-    edgework.append(this.createIndicatorsEles(indsLists[0], "lit"));
-    edgework.append(this.createIndicatorsEles(indsLists[1], "unlit"));
+    edgework.append(...this.createIndicatorsEleList(indsLists[0], "lit"));
+    edgework.append(...this.createIndicatorsEleList(indsLists[1], "unlit"));
   }
 
-  createIndicatorsEles(indsList, className) {
-    const indDivWrapper = document.createElement("div");
-    indDivWrapper.classList.add("ind-wrapper");
+  createIndicatorsEleList(indsList, className) {
+    const indList = [];
     if (indsList.length === 0) return [];
     indsList.forEach((ind) => {
       const newInd = document.createElement("div");
       newInd.classList.add("widget", "indicator");
       newInd.textContent = ind.toUpperCase();
       if (ind !== "") newInd.classList.add(className);
-      indDivWrapper.appendChild(newInd);
+      indList.push(newInd);
     });
-    return indDivWrapper;
+    return indList;
   }
 
   populatePortPlates(portList) {
     if (portList.length === 0) return;
     const edgework = this.realEdgework;
-    const plateDiv = this.createPortPlatesEle(portList);
-    edgework.appendChild(plateDiv);
+    edgework.append(...this.createPortPlatesEleList(portList));
   }
 
-  createPortPlatesEle(portList) {
-    const plateDiv = document.createElement("div");
-    if (portList.length === 0) return plateDiv;
+  createPortPlatesEleList(portList) {
+    const portPlateList = [];
+    if (portList.length === 0) return portPlateList;
     portList.forEach((plate) => {
       const newPlate = document.createElement("div");
       newPlate.classList.add("widget", "portplate");
@@ -706,9 +705,9 @@ class EdgeworkPopup {
         if (port !== "") newPort.classList.add(port.toLowerCase());
         newPlate.appendChild(newPort);
       });
-      plateDiv.appendChild(newPlate);
+      portPlateList.push(newPlate);
     });
-    return plateDiv;
+    return portPlateList;
   }
 
   validatePorts() {
@@ -762,13 +761,81 @@ class EdgeworkPopup {
     this.litIndsPreview.replaceChildren();
     this.unlitIndsPreview.replaceChildren();
     this.form.reset();
-    this.form.querySelector("input").focus();
+    this.form.querySelector("input").select();
   }
 
   resetEdgework() {
-    this.realEdgework.replaceChildren();
+    this.realEdgework.replaceChildren(
+      Array.from(this.realEdgework.children).at(0)
+    );
     return this;
   }
 }
 
-export { EdgeworkPopup, NumberedAlphabetPopup, GridPopup };
+class AddModulePopup {
+  constructor() {
+    this.popup = new PopupGenerator(
+      "Add New Module",
+      [
+        {
+          type: "group",
+          schema: [
+            {
+              type: "label",
+              forField: "url",
+              textContent: "Module URL",
+            },
+            {
+              type: "textInput",
+              name: "url",
+              id: "url",
+              placeholder: "https://ktane.timwi.de/HTML/Logic.html",
+              autocomplete: "off",
+              required: true,
+            },
+            {
+              type: "label",
+              forField: "name",
+              textContent: "Module Name",
+            },
+            {
+              type: "textInput",
+              name: "name",
+              id: "name",
+              placeholder: "Logic",
+              autocomplete: "off",
+              required: true,
+            },
+          ],
+        },
+        {
+          type: "group",
+          classList: "form-btn-group",
+          schema: [
+            {
+              type: "button",
+            },
+            {
+              type: "button",
+              btnType: "submit",
+            },
+          ],
+        },
+      ],
+      (form) => {
+        const formData = new FormData(form.element);
+        mainPubSub.publish("addNewModule", {
+          moduleName: formData.get("name"),
+          manualList: [formData.get("url")],
+          manualUrl: formData.get("url"),
+        });
+      }
+    );
+  }
+
+  doPopup() {
+    this.popup.doPopup();
+  }
+}
+
+export { AddModulePopup, EdgeworkPopup, NumberedAlphabetPopup, GridPopup };

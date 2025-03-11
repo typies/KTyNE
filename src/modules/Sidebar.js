@@ -1,8 +1,10 @@
-import { EdgeworkPopup } from "./popup.js";
+import { AddModulePopup, EdgeworkPopup } from "./popup.js";
 import PopupGenerator from "./PopupGenerator.js";
 import mainPubSub from "./PubSub.js";
 import sharedIdCounter from "./sharedIdCounter.js";
-import fullModList from "../defaultModLists/fullList.json";
+import fullModList from "../defaultModLists/fullList(Mar 11 2025).json";
+const FULL_LIST_URL = "../defaultModLists/fullList(Mar 11 2025).json";
+
 const KTANE_TIMWI_URL = "https://ktane.timwi.de/";
 
 class Sidebar {
@@ -10,6 +12,10 @@ class Sidebar {
     this.sidebarItems = itemList;
     this.edgeworkPopup = new EdgeworkPopup();
     this.init();
+    this.addNewModulePopup = new AddModulePopup();
+    mainPubSub.subscribe("addNewModule", (data) =>
+      this.addSidebarItem(data, true)
+    );
     this.newRepoTabPopup = new PopupGenerator(
       "Opening New KTANE.TIMEWI.DE Tab",
       [
@@ -51,47 +57,106 @@ class Sidebar {
     showSidebarBtn: document.querySelector(".show-sidebar-btn"),
     addOneBtn: document.querySelector(".add-one-btn"),
     edgeworkBtn: document.querySelector(".edgework-btn"),
+    addModuleBtn: document.querySelector(".add-module-btn"),
+    lastRepoSyncText: document.querySelector(".last-repo-sync"),
   };
 
   init() {
-    this.importProjectsFromLocal();
+    this.importModulesFromLocal();
     this.addSidebarItems(fullModList);
     this.configureStaticSidebarBtns();
+    this.dom.lastRepoSyncText.textContent =
+      this.dom.lastRepoSyncText.textContent +
+      ` ${FULL_LIST_URL.slice(FULL_LIST_URL.indexOf("(") + 1, FULL_LIST_URL.indexOf(")"))}`;
     this.render();
   }
 
   render() {
-    if (this.sidebarItems instanceof Array) {
-      this.dom.sidebarListElement.replaceChildren(
-        ...this.sidebarItems.map((sidebarItem) =>
-          this.createSidebarLi(sidebarItem)
-        )
-      );
-    }
-    this.sortSidebar();
+    this.dom.sidebarListElement.replaceChildren(
+      ...this.getFiftyModules().map((sidebarItem) =>
+        this.createSidebarLi(sidebarItem)
+      )
+    );
   }
 
-  localStorageAdd(module) {
+  getFiftyModules() {
+    const recentModules = this.localStorageGetRecent();
+    if (recentModules.length === 50) return recentModules;
+
+    const recentModNames = recentModules.map((item) => item.moduleName);
+
+    const moreModules = this.sidebarItems
+      .filter((item) => !recentModNames.includes(item.moduleName))
+      .slice(0, 50);
+    const fifty = [...recentModules, ...moreModules];
+    return fifty;
+  }
+
+  localStorageAppendRecent(moduleItem) {
+    const recentModules = this.localStorageGetRecent();
+    if (recentModules >= 50) {
+      recentModules.splice(50);
+    }
+    const indexOfExistingRecent = recentModules.findIndex(
+      (item) => item.moduleName === moduleItem.moduleName
+    );
+    if (indexOfExistingRecent === -1) {
+      recentModules.unshift(moduleItem);
+      window.localStorage.setItem(
+        "recentModules",
+        JSON.stringify(recentModules)
+      );
+    } else {
+      recentModules.splice(indexOfExistingRecent, 1);
+      const updatedRecents = [
+        moduleItem,
+        ...recentModules.slice(0, indexOfExistingRecent),
+        ...recentModules.slice(indexOfExistingRecent),
+      ];
+      window.localStorage.setItem(
+        "recentModules",
+        JSON.stringify(updatedRecents)
+      );
+    }
+  }
+
+  localStorageGetRecent() {
+    return JSON.parse(window.localStorage.getItem("recentModules")) || [];
+  }
+
+  localStorageDeleteRecent(moduleName) {
+    const recentModules = this.localStorageGetRecent();
+    const indexOfExistingRecent = recentModules.findIndex(
+      (item) => item.moduleName === moduleName
+    );
+    if (indexOfExistingRecent !== -1)
+      recentModules.splice(indexOfExistingRecent, 1);
+
+    window.localStorage.setItem("recentModules", JSON.stringify(recentModules));
+  }
+
+  localStorageAddModule(module) {
     localStorage.setItem(
       module.moduleName,
       JSON.stringify({
         manualList: module.manualList,
         manualUrl: module.manualUrl,
         moduleList: module.moduleList,
+        deleteable: module.deleteable,
       })
     );
   }
 
-  localStorageRemove(moduleName) {
+  localStorageRemoveModule(moduleName) {
     localStorage.removeItem(moduleName);
   }
 
-  localStorageUpdate(moduleName, localStorageItem) {
-    this.localStorageRemove(moduleName);
-    this.localStorageAdd(localStorageItem);
+  localStorageUpdateModule(moduleName, localStorageItem) {
+    this.localStorageRemoveModule(moduleName);
+    this.localStorageAddModule(localStorageItem);
   }
 
-  importProjectsFromLocal() {
+  importModulesFromLocal() {
     for (let i = 0; i < window.localStorage.length; i++) {
       const localStorageKey = window.localStorage.key(i);
       const localStorageValue = window.localStorage.getItem(localStorageKey);
@@ -100,6 +165,7 @@ class Sidebar {
         moduleName: localStorageKey,
         manualList: jsonValue.manualList,
         manualUrl: jsonValue.manualUrl,
+        deleteable: jsonValue.deleteable,
       };
       this.sidebarItems.push(moduleObj);
     }
@@ -120,12 +186,7 @@ class Sidebar {
     return matchingItem;
   }
 
-  addSidebarItem(
-    sidebarItem,
-    reRender = true,
-    skipDuplicates = false,
-    hidePopup = false
-  ) {
+  addSidebarItem(sidebarItem, deleteable = false) {
     const existingSidebarItem = this.getSidebarItem(sidebarItem.moduleName);
     if (existingSidebarItem) {
       sidebarItem.manualList = [
@@ -134,17 +195,12 @@ class Sidebar {
           ...sidebarItem.manualList,
         ]),
       ];
-      this.localStorageUpdate(sidebarItem.moduleName, sidebarItem);
-      if (skipDuplicates) {
-        return sidebarItem.moduleName;
-      }
+      this.localStorageUpdateModule(sidebarItem.moduleName, sidebarItem);
     } else {
+      if (deleteable) sidebarItem.deleteable = true;
       this.sidebarItems.push(sidebarItem);
-      this.localStorageAdd(sidebarItem);
-      if (reRender) this.render();
-      if (!hidePopup)
-        new PopupGenerator(`${sidebarItem.moduleName} Added`).doPopup();
-      return sidebarItem;
+      this.localStorageAddModule(sidebarItem);
+      return;
     }
   }
 
@@ -155,19 +211,20 @@ class Sidebar {
         manualList: sidebarItem.manualList,
         manualUrl: sidebarItem.manualUrl,
       };
-      this.addSidebarItem(newSidebarItemFormatted, false, true, true);
+      this.addSidebarItem(newSidebarItemFormatted);
     });
   }
 
   syncLists() {
     // Syncs the local storage list with the page list
     this.sidebarItems = [];
-    this.importProjectsFromLocal();
+    this.importModulesFromLocal();
   }
 
   openModule(sidebarItem) {
     this.openNewModule(sidebarItem.moduleName, sidebarItem.manualUrl);
-    this.dom.filter.focus();
+    this.localStorageAppendRecent(sidebarItem);
+    this.dom.filter.select();
     this.dom.filter.value = "";
     this.filterSidebar("");
 
@@ -208,29 +265,83 @@ class Sidebar {
     const editBtn = this.createEditSvg();
     editBtn.addEventListener("click", (event) => {
       event.stopPropagation();
-      // this.editModulePopup.generate(sidebarItem).doPopup();
-      new PopupGenerator(
-        `Set default manual for ${sidebarItem.moduleName}`,
-        [
-          {
-            type: "default-manual-btn-group",
-            moduleName: sidebarItem.moduleName,
-            btnTextList: sidebarItem.manualList,
-            currentDefault: sidebarItem.manualUrl,
-          },
-          {
-            type: "close-btn",
-          },
-        ],
-        (data) => {
-          this.setDefaultManual(sidebarItem.moduleName, data);
-        }
-      ).doPopup();
+      if (!sidebarItem.deleteable) {
+        new PopupGenerator(
+          `Set default manual for ${sidebarItem.moduleName}`,
+          [
+            {
+              type: "default-manual-btn-group",
+              moduleName: sidebarItem.moduleName,
+              btnTextList: sidebarItem.manualList,
+              currentDefault: sidebarItem.manualUrl,
+            },
+            {
+              type: "close-btn",
+            },
+          ],
+          (data) => {
+            this.setDefaultManual(sidebarItem.moduleName, data);
+          }
+        ).doPopup();
+      } else {
+        new PopupGenerator(
+          `Editing ${sidebarItem.moduleName}`,
+          [
+            {
+              type: "label",
+              textContent:
+                "Default Manual (add more by adding more module with the same name)",
+            },
+            {
+              type: "default-manual-btn-group",
+              moduleName: sidebarItem.moduleName,
+              btnTextList: sidebarItem.manualList,
+              currentDefault: sidebarItem.manualUrl,
+            },
+            {
+              type: "group",
+              schema: [
+                {
+                  type: "button",
+                  textContent: "Close",
+                },
+                {
+                  type: "button",
+                  textContent: "Delete",
+                  listenerEvent: {
+                    trigger: "click",
+                    callback: (data) => {
+                      data.element.closest(".popup-overlay").remove();
+                      this.removeSidebarItemElement(newSidebarListItem);
+                    },
+                  },
+                },
+              ],
+              classList: "form-btn-group",
+            },
+          ],
+          (data) => {
+            this.setDefaultManual(sidebarItem.moduleName, data);
+          }
+        ).doPopup();
+      }
     });
 
     newSidebarListItem.append(editBtn);
     return newSidebarListItem;
   }
+
+  removeSidebarItemElement(sidebarItem) {
+    this.localStorageRemove(sidebarItem.innerText);
+    this.localStorageDeleteRecent(sidebarItem.innerText);
+    sidebarItem.remove();
+    this.syncLists();
+  }
+
+  localStorageRemove(moduleName) {
+    localStorage.removeItem(moduleName);
+  }
+
   setDefaultManual(modName, newDefaultManual) {
     const existingGroupItem = this.getSidebarItem(modName);
     new PopupGenerator(`New default set for ${modName}`, [
@@ -239,7 +350,7 @@ class Sidebar {
     ]).doPopup();
     if (existingGroupItem.manualUrl !== newDefaultManual) {
       existingGroupItem.manualUrl = newDefaultManual;
-      this.localStorageUpdate(modName, {
+      this.localStorageUpdateModule(modName, {
         moduleName: modName,
         manualList: existingGroupItem.manualList,
         manualUrl: newDefaultManual,
@@ -252,6 +363,12 @@ class Sidebar {
   configureStaticSidebarBtns() {
     this.dom.filter.addEventListener("input", () => {
       this.filterSidebar(this.dom.filter.value);
+    });
+    this.dom.filter.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        const attemptingToOpen = this.getSidebarItem(this.dom.filter.value);
+        if (attemptingToOpen) this.openModule(attemptingToOpen);
+      }
     });
     this.dom.filterClear.addEventListener("click", () => {
       this.dom.filter.value = "";
@@ -276,6 +393,9 @@ class Sidebar {
     this.dom.edgeworkBtn.addEventListener("click", () => {
       this.edgeworkPopup.doPopup();
     });
+    this.dom.addModuleBtn.addEventListener("click", () => {
+      this.addNewModulePopup.doPopup();
+    });
   }
 
   collapseToggle() {
@@ -288,7 +408,7 @@ class Sidebar {
   toggleAddOneMode() {
     this.addOneMode = !this.addOneMode;
     this.collapseToggle();
-    this.dom.filter.focus();
+    this.dom.filter.select();
     this.dom.filter.value = "";
   }
 
@@ -301,39 +421,48 @@ class Sidebar {
     sharedIdCounter.incrementId();
   }
 
+  moduleSort(a, b) {
+    if (a.toLowerCase() < b.toLowerCase()) return -1;
+    return 1;
+  }
+
   sortSidebar() {
     const sidebarList = Array.from(this.dom.sidebarListElement.children);
-    sidebarList.sort((a, b) => {
-      a = a.textContent.toLowerCase();
-      b = b.textContent.toLowerCase();
-      if (a < b) return -1;
-      return 1;
-    });
+    sidebarList.sort((a, b) => this.moduleSort(a.textContent, b.textContent));
     this.dom.sidebarListElement.replaceChildren(...sidebarList);
   }
 
   filterSidebar(filterTerm) {
     const filterTermCleaned = filterTerm.toLowerCase().trim();
-    const sidebarListChildren = Array.from(
-      this.dom.sidebarListElement.children
-    );
     if (filterTermCleaned === "") {
       this.render();
       return;
     }
-    sidebarListChildren.forEach((ele) => {
-      if (
-        ele.textContent.toLowerCase().includes(filterTermCleaned) ||
-        ele.textContent
-          .toLowerCase()
-          .replace("’", "'")
-          .includes(filterTermCleaned)
-      ) {
-        ele.classList.remove("hidden");
-      } else {
-        ele.classList.add("hidden");
-      }
-    });
+
+    const filterFn = (list, term) => {
+      return list.filter(
+        (item) =>
+          item.moduleName.toLowerCase().includes(term) ||
+          item.moduleName.toLowerCase().replace("’", "'").includes(term)
+      );
+    };
+
+    this.dom.sidebarListElement.replaceChildren();
+    const matchingRecents = filterFn(
+      this.localStorageGetRecent(),
+      filterTermCleaned
+    );
+    const matchingItems = filterFn(this.sidebarItems, filterTermCleaned);
+
+    const displayItems = [
+      ...matchingRecents,
+      ...matchingItems.sort((a, b) =>
+        this.moduleSort(a.moduleName, b.moduleName)
+      ),
+    ];
+    displayItems.forEach((item) =>
+      this.dom.sidebarListElement.append(this.createSidebarLi(item))
+    );
   }
 }
 

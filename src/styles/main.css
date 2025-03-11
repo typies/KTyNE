@@ -122,10 +122,12 @@ svg {
 
 /* Required Text */
 label[for="serial"],
-label[for="url"] {
+label[for="url"],
+label[for="name"] {
   position: relative;
 }
-label[for="url"]:after {
+label[for="url"]:after,
+label[for="name"]:after {
   content: "required";
   color: var(--color-red);
   font-size: 0.5em;
