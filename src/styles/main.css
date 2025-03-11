@@ -103,7 +103,7 @@ svg {
     "header header" minmax(50px, auto)
     "main notes" 1fr
     "footer footer" 50px
-    / 1fr minmax(20ch, 40ch);
+    / 1fr clamp(15ch, 35ch, 25vw);
   height: 100dvh;
   height: 100vh;
   gap: 1px;

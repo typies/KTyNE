@@ -458,7 +458,13 @@ class Sidebar {
       this.localStorageGetRecent(),
       filterTermCleaned
     );
-    const matchingItems = filterFn(this.sidebarItems, filterTermCleaned);
+    const matchingNames = matchingRecents.map((item) => item.moduleName);
+    const matchingItems = filterFn(
+      this.sidebarItems.filter(
+        (item) => !matchingNames.includes(item.moduleName)
+      ),
+      filterTermCleaned
+    );
 
     const displayItems = [
       ...matchingRecents,
