@@ -465,12 +465,9 @@ class PopupGenerator {
           si.listenerEvent
         ).element;
       }
-      if (si.type === "btn-group") {
+      if (si.type === "default-manual-btn-group") {
         const sortedBtns = this.btnSort(si.btnTextList);
-        const URL_PREFIX = "https://ktane.timwi.de/HTML/";
-        const btnNames = sortedBtns.map((btn) =>
-          decodeURIComponent(btn).replace(URL_PREFIX, "").replace(".html", "")
-        );
+        const btnNames = sortedBtns.map((btn) => this.trimUrl(btn));
         const btnEles = btnNames.map(
           (btn) =>
             new ButtonElement(
@@ -486,7 +483,10 @@ class PopupGenerator {
                 },
               },
               "button",
-              "manual-choice-btn"
+              [
+                "manual-choice-btn",
+                btn === this.trimUrl(si.currentDefault) ? "green" : "",
+              ]
             ).element
         );
         return new DivWrapperEle(btnEles, "manual-choices-group").element;
@@ -496,6 +496,11 @@ class PopupGenerator {
         "Bad form schema, could not be parsed. Missed si.type: " + si.type
       );
     });
+  }
+
+  trimUrl(url) {
+    const URL_PREFIX = "https://ktane.timwi.de/HTML/";
+    return decodeURIComponent(url).replace(URL_PREFIX, "").replace(".html", "");
   }
 
   btnSort(btns) {
