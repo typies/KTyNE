@@ -80,6 +80,7 @@ svg.sidebar-filter-clear {
   cursor: pointer;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .new-repo-tab-btn {

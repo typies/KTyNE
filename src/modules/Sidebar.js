@@ -124,6 +124,11 @@ class Sidebar {
     return JSON.parse(window.localStorage.getItem("recentModules")) || [];
   }
 
+  localStorageUpdateRecent(newItem) {
+    this.localStorageDeleteRecent(newItem.moduleName);
+    this.localStorageAppendRecent(newItem);
+  }
+
   localStorageDeleteRecent(moduleName) {
     const recentModules = this.localStorageGetRecent();
     const indexOfExistingRecent = recentModules.findIndex(
@@ -244,7 +249,6 @@ class Sidebar {
       "path"
     );
 
-    editBtn.setAttribute("viewbox", "0 0 20 20");
     editBtn.setAttribute("fill", "#87ceeb");
     path1.setAttribute(
       "d",
@@ -350,11 +354,13 @@ class Sidebar {
     ]).doPopup();
     if (existingGroupItem.manualUrl !== newDefaultManual) {
       existingGroupItem.manualUrl = newDefaultManual;
-      this.localStorageUpdateModule(modName, {
+      const newItem = {
         moduleName: modName,
         manualList: existingGroupItem.manualList,
         manualUrl: newDefaultManual,
-      });
+      };
+      this.localStorageUpdateRecent(newItem);
+      this.localStorageUpdateModule(modName, newItem);
       this.syncLists();
       this.render();
     }
