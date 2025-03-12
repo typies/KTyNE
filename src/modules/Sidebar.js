@@ -68,35 +68,55 @@ class Sidebar {
     this.dom.lastRepoSyncText.textContent =
       this.dom.lastRepoSyncText.textContent +
       ` ${FULL_LIST_URL.slice(FULL_LIST_URL.indexOf("(") + 1, FULL_LIST_URL.indexOf(")"))}`;
-    this.render();
+    this.renderSome();
   }
 
-  render() {
+  renderSome(amount = 50) {
+    this.renderAllMode
+      ? this.renderAll()
+      : this.dom.sidebarListElement.replaceChildren(
+          ...this.getModules(amount).map((sidebarItem) =>
+            this.createSidebarLi(sidebarItem)
+          )
+        );
+
+    const renderAllBtn = document.createElement("li");
+    renderAllBtn.classList.add(...["sidebar-item", "green"]);
+    renderAllBtn.addEventListener("click", () => {
+      this.renderAllMode = true;
+      this.renderAll();
+    });
+    renderAllBtn.textContent = "Show all modules";
+    this.dom.sidebarListElement.append(renderAllBtn);
+  }
+
+  renderAll() {
     this.dom.sidebarListElement.replaceChildren(
-      ...this.getFiftyModules().map((sidebarItem) =>
+      ...this.getModules(this.sidebarItems.length).map((sidebarItem) =>
         this.createSidebarLi(sidebarItem)
       )
     );
   }
 
-  getFiftyModules() {
+  getModules(amount = 50) {
     const recentModules = this.localStorageGetRecent();
-    if (recentModules.length === 50) return recentModules;
+    if (recentModules.length >= amount) return recentModules.slice(0, amount);
 
     const recentModNames = recentModules.map((item) => item.moduleName);
 
     const moreModules = this.sidebarItems
       .filter((item) => !recentModNames.includes(item.moduleName))
-      .slice(0, 50);
-    const fifty = [...recentModules, ...moreModules];
-    return fifty;
+      .slice(0, amount);
+    const modules = [...recentModules, ...moreModules];
+    return modules;
   }
 
   localStorageAppendRecent(moduleItem) {
+    const MAX_RECENT_AMOUNT = 50;
     if (!moduleItem || !moduleItem.moduleName || !moduleItem.manualUrl) return;
     const recentModules = this.localStorageGetRecent();
-    if (recentModules >= 50) {
-      recentModules.splice(50);
+    if (recentModules >= MAX_RECENT_AMOUNT) {
+      recentModules.splice(MAX_RECENT_AMOUNT);
     }
     const indexOfExistingRecent = recentModules.findIndex(
       (item) => item.moduleName === moduleItem.moduleName
@@ -363,7 +383,7 @@ class Sidebar {
       this.localStorageUpdateRecent(newItem);
       this.localStorageUpdateModule(modName, newItem);
       this.syncLists();
-      this.render();
+      this.renderSome();
     }
   }
 
@@ -449,7 +469,7 @@ class Sidebar {
   filterSidebar(filterTerm) {
     const filterTermCleaned = filterTerm.toLowerCase().trim();
     if (filterTermCleaned === "") {
-      this.render();
+      this.renderSome();
       return;
     }
 
