@@ -1,7 +1,6 @@
 import { AddModulePopup, EdgeworkPopup } from "./popup.js";
 import PopupGenerator from "./PopupGenerator.js";
 import mainPubSub from "./PubSub.js";
-import sharedIdCounter from "./sharedIdCounter.js";
 import fullModList from "../defaultModLists/fullList(Mar 11 2025).json";
 const FULL_LIST_URL = "../defaultModLists/fullList(Mar 11 2025).json";
 

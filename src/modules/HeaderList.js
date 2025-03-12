@@ -70,21 +70,13 @@ class HeaderList {
     return nameParts.join(" ");
   }
 
-  addHeaderListItem(pubsubData, skipDuplicateCheck = false) {
-    const moduleName = this.shortenName(pubsubData.moduleName);
-    const openedModules = Array.from(this.dom.headerList.children).slice(1);
-
-    const openModuleNames = openedModules.map(
-      (item) => item.querySelector(".header-item-text").textContent
-    );
-    const matchingOpenModules = openModuleNames.filter(
-      (item) => item === moduleName
-    );
-    if (
-      !skipDuplicateCheck &&
-      matchingOpenModules.length == 1 && // If user already said they want extra tabs don't need asking for this mod
-      matchingOpenModules.includes(moduleName)
-    ) {
+  handleDuplicateTab(passedData, skipDuplicateCheck = false) {
+    const moduleName = this.shortenName(passedData.moduleName);
+    const matchingModules = this.getHeaderListItemByName(moduleName);
+    if (matchingModules.length > 1) {
+      return; // If user already said they want extra tabs don't need asking for this mod
+    }
+    if (!skipDuplicateCheck && matchingModules.length == 1) {
       new PopupGenerator(
         "This module already exists. What would you like to do?",
         [
@@ -98,11 +90,31 @@ class HeaderList {
               {
                 type: "button",
                 btnType: "submit",
-                textContent: "Open Another",
+                textContent: "Switch to Open Tab",
                 listenerEvent: {
                   trigger: "click",
                   callback: () => {
-                    this.addHeaderListItem(pubsubData, true);
+                    if (
+                      matchingModules[0].classList.contains(
+                        "current-header-item"
+                      )
+                    )
+                      return;
+                    mainPubSub.publish("tabChange", {
+                      iframeId:
+                        matchingModules[0].getAttribute("data-module-id"),
+                    });
+                  },
+                },
+              },
+              {
+                type: "button",
+                btnType: "submit",
+                textContent: "Open New",
+                listenerEvent: {
+                  trigger: "click",
+                  callback: () => {
+                    this.addHeaderListItem(passedData, true);
                   },
                 },
               },
@@ -114,9 +126,9 @@ class HeaderList {
                   trigger: "click",
                   callback: () => {
                     this.closeHeaderListItem(
-                      openedModules[0].getAttribute("data-module-id")
+                      matchingModules[0].getAttribute("data-module-id")
                     );
-                    this.addHeaderListItem(pubsubData, true);
+                    this.addHeaderListItem(passedData, true);
                   },
                 },
               },
@@ -125,6 +137,20 @@ class HeaderList {
           },
         ]
       ).doPopup();
+      return;
+    }
+  }
+
+  addHeaderListItem(pubsubData, skipDuplicateCheck = false) {
+    const moduleName = this.shortenName(pubsubData.moduleName);
+
+    // Duplciate checking
+    const matchingModules = this.getHeaderListItemByName(moduleName);
+    if (
+      !skipDuplicateCheck &&
+      matchingModules.length == 1 // If user already said they want extra tabs don't need asking for this mod
+    ) {
+      this.handleDuplicateTab(pubsubData);
       return;
     }
 
@@ -218,6 +244,18 @@ class HeaderList {
   getHeaderListItem(headerListItemId) {
     const headerList = this.dom.headerList;
     return headerList.querySelector(`[data-module-id="${headerListItemId}"]`);
+  }
+
+  getHeaderListItemByName(moduleName) {
+    const cleanedModuleName = this.shortenName(moduleName);
+    const openedModules = Array.from(this.dom.headerList.children).slice(1);
+
+    const matchingModules = openedModules.filter(
+      (item) =>
+        item.querySelector(".header-item-text").textContent ===
+        cleanedModuleName
+    );
+    return matchingModules;
   }
 
   addHeaderItemClass(pubsubData) {
