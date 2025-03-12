@@ -9,15 +9,14 @@
 }
 
 .open-modules-list {
-  flex: 1;
+  flex: 2;
   margin: 10px;
   gap: 10px;
   color: var(--color-blue);
   align-self: flex-end;
-  max-width: fit-content;
   display: flex;
-  flex-wrap: wrap-reverse;
-  max-width: 90vw; /* Keeps tabs from hiding behind edgework button */
+  flex-wrap: wrap;
+  max-width: fit-content;
 }
 
 .open-module-list-item {
@@ -65,21 +64,17 @@
 
 .edgework-btn {
   margin: 12px 12px;
-  top: 0;
-  right: 0;
 }
 
 .edgework-wrapper {
   flex: 1;
   flex-wrap: wrap;
   background-color: var(--color-jet);
-  width: 100%;
-  align-self: flex-end;
+  align-self: flex-start;
   justify-content: flex-start;
   display: flex;
   flex-direction: row-reverse;
   min-width: 270px;
-  max-width: 550px;
 }
 
 .edgework {
@@ -185,4 +180,8 @@
 
 .widget.portplate span.rca {
   background-image: url(/src/images/PortRCA.png);
+}
+
+.close-all-header-tabs {
+  font-size: 1rem;
 }

@@ -16,12 +16,24 @@ class HeaderList {
       "removeHeaderItemClass",
       this.removeHeaderItemClass.bind(this)
     );
+    this.init();
     return this;
   }
 
   dom = {
     headerList: document.querySelector(".open-modules-list"),
+    closeAllBtn: document.querySelector(".close-all-header-tabs"),
   };
+
+  init() {
+    this.dom.closeAllBtn.addEventListener("click", () => {
+      Array.from(this.dom.headerList.children)
+        .slice(1)
+        .forEach((item) => {
+          this.closeHeaderListItem(item.getAttribute("data-module-id"));
+        });
+    });
+  }
 
   // Ex: Silly Slots => Silly Slots
   // Ex: Bamboozling Button Grid => Bam. Butt. Grid
@@ -49,20 +61,16 @@ class HeaderList {
         if (nameParts.join(" ").length <= MAX_TITLE_LEN) {
           return word; // Inside check to not cut off more letters than needed
         } else if (word.length >= longestWordLength) {
-          console.log(word.slice(0, word.length - 2) + ".");
           return word.slice(0, word.length - 2) + "."; // This word is the longest -> Trim it down 1 letter
         }
         return word; // There are longest words, trim those first.
       });
-      console.log(nameParts);
       longestWordLength--;
     }
     return nameParts.join(" ");
   }
 
   addHeaderListItem(pubsubData) {
-    const headerList = this.dom.headerList;
-
     const newHeaderListItemId = sharedIdCounter.getId();
     const newHeaderListItem = document.createElement("li");
     newHeaderListItem.classList.add("open-module-list-item");
@@ -121,7 +129,7 @@ class HeaderList {
       renamePopup.doPopup();
     });
 
-    headerList.appendChild(newHeaderListItem);
+    this.dom.headerList.appendChild(newHeaderListItem);
     this.sortHeaderList();
   }
 
