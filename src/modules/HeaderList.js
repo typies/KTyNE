@@ -70,14 +70,71 @@ class HeaderList {
     return nameParts.join(" ");
   }
 
-  addHeaderListItem(pubsubData) {
+  addHeaderListItem(pubsubData, skipDuplicateCheck = false) {
+    const moduleName = this.shortenName(pubsubData.moduleName);
+    const openedModules = Array.from(this.dom.headerList.children).slice(1);
+
+    const openModuleNames = openedModules.map(
+      (item) => item.querySelector(".header-item-text").textContent
+    );
+    const matchingOpenModules = openModuleNames.filter(
+      (item) => item === moduleName
+    );
+    if (
+      !skipDuplicateCheck &&
+      matchingOpenModules.length == 1 && // If user already said they want extra tabs don't need asking for this mod
+      matchingOpenModules.includes(moduleName)
+    ) {
+      new PopupGenerator(
+        "This module already exists. What would you like to do?",
+        [
+          {
+            type: "group",
+            schema: [
+              {
+                type: "button",
+                textContent: "Cancel",
+              },
+              {
+                type: "button",
+                btnType: "submit",
+                textContent: "Open Another",
+                listenerEvent: {
+                  trigger: "click",
+                  callback: () => {
+                    this.addHeaderListItem(pubsubData, true);
+                  },
+                },
+              },
+              {
+                type: "button",
+                btnType: "submit",
+                textContent: "Replace Existing",
+                listenerEvent: {
+                  trigger: "click",
+                  callback: () => {
+                    this.closeHeaderListItem(
+                      openedModules[0].getAttribute("data-module-id")
+                    );
+                    this.addHeaderListItem(pubsubData, true);
+                  },
+                },
+              },
+            ],
+            classList: "form-btn-group",
+          },
+        ]
+      ).doPopup();
+      return;
+    }
+
     const newHeaderListItemId = sharedIdCounter.getId();
     const newHeaderListItem = document.createElement("li");
     newHeaderListItem.classList.add("open-module-list-item");
     newHeaderListItem.setAttribute("data-module-id", newHeaderListItemId);
     const headerText = document.createElement("span");
-    const moduleName = pubsubData.moduleName;
-    headerText.textContent = this.shortenName(moduleName);
+    headerText.classList.add("header-item-text");
+    headerText.textContent = moduleName;
     const tabClose = document.createElement("span");
     tabClose.classList.add("close-btn");
     tabClose.textContent = "x";
@@ -131,6 +188,11 @@ class HeaderList {
 
     this.dom.headerList.appendChild(newHeaderListItem);
     this.sortHeaderList();
+    mainPubSub.publish("addIframe", { manualUrl: pubsubData.manualUrl });
+    mainPubSub.publish("tabChange", {
+      iframeId: sharedIdCounter.getId(),
+    });
+    sharedIdCounter.incrementId();
   }
 
   sortHeaderList() {

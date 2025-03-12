@@ -447,12 +447,10 @@ class Sidebar {
   }
 
   openNewModule(modName, url) {
-    mainPubSub.publish("addIframe", { manualUrl: url });
-    mainPubSub.publish("addHeaderListItem", { moduleName: modName });
-    mainPubSub.publish("tabChange", {
-      iframeId: sharedIdCounter.getId(),
+    mainPubSub.publish("addHeaderListItem", {
+      moduleName: modName,
+      manualUrl: url,
     });
-    sharedIdCounter.incrementId();
   }
 
   moduleSort(a, b) {
