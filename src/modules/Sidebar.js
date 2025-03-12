@@ -93,6 +93,7 @@ class Sidebar {
   }
 
   localStorageAppendRecent(moduleItem) {
+    if (!moduleItem || !moduleItem.moduleName || !moduleItem.manualUrl) return;
     const recentModules = this.localStorageGetRecent();
     if (recentModules >= 50) {
       recentModules.splice(50);
@@ -366,14 +367,21 @@ class Sidebar {
     }
   }
 
+  attemptToOpen() {
+    const exactMatch = this.getSidebarItem(this.dom.filter.value);
+    const sidebarItems = this.dom.sidebarListElement.children;
+    if (exactMatch) this.openModule(exactMatch);
+    else if (sidebarItems.length === 1)
+      this.openModule(this.getSidebarItem(sidebarItems[0].textContent));
+  }
+
   configureStaticSidebarBtns() {
     this.dom.filter.addEventListener("input", () => {
       this.filterSidebar(this.dom.filter.value);
     });
     this.dom.filter.addEventListener("keydown", (event) => {
       if (event.key === "Enter") {
-        const attemptingToOpen = this.getSidebarItem(this.dom.filter.value);
-        if (attemptingToOpen) this.openModule(attemptingToOpen);
+        this.attemptToOpen();
       }
     });
     this.dom.filterClear.addEventListener("click", () => {
