@@ -63,6 +63,12 @@ class GridPopup {
       this.dom.widthInput.select();
     };
 
+    this.dom.colorCells.forEach((colorEle) => {
+      colorEle.addEventListener("click", () =>
+        this.setColor(colorEle.getAttribute("data-color"))
+      );
+    });
+
     this.dom.gridBtn.addEventListener("click", showPopup);
     document.addEventListener("keydown", (event) => {
       if (event.altKey && event.key === "r") showPopup();
