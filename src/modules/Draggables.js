@@ -1,9 +1,5 @@
 import interact from "interactjs";
 
-// Global to preserve location between screen resizes
-const alphabetPosition = { x: 0, y: 0 };
-const gridPosition = { x: 0, y: 0 };
-
 window.addEventListener("resize", () => {
   // Reset rect objs on window change
   setUpBodyBoundDraggable(".alphabet-popup-wrapper.draggable");

@@ -607,8 +607,22 @@ class EdgeworkPopup {
     return this;
   }
 
+  resetPosition() {
+    const manualRect = document
+      .querySelector(".manuals")
+      .getBoundingClientRect();
+    const edgeworkFormStyle = getComputedStyle(this.form);
+    console.log(edgeworkFormStyle.width);
+
+    console.log(manualRect);
+    this.form.style.position = "absolute";
+    this.form.style.left = `${parseInt(manualRect.left) + (parseInt(manualRect.width) - parseInt(edgeworkFormStyle.width)) / 2}px`;
+    this.form.style.top = `${parseInt(manualRect.top) + (parseInt(manualRect.height) - parseInt(edgeworkFormStyle.height)) / 2}px`;
+  }
+
   doPopup() {
     this.popup.doPopup();
+    this.resetPosition();
   }
 
   validateSerialInput() {
