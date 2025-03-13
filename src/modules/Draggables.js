@@ -3,6 +3,7 @@ import interact from "interactjs";
 // resize event handler for keeping notes area extending all the way to the bottom of the screen
 let currentWindowHeight = window.innerHeight;
 window.addEventListener("resize", () => {
+  console.log("fire");
   const newWindowHeight = window.innerHeight;
   let dy = currentWindowHeight - newWindowHeight;
 
@@ -17,13 +18,47 @@ window.addEventListener("resize", () => {
 
   // Reset bodyRect obj for draggable popups
   bodyRect = document.body.getBoundingClientRect();
+  interact(".alphabet-popup-wrapper.draggable").draggable({
+    listeners: {
+      move(event) {
+        positionAlphabet.x += event.dx;
+        positionAlphabet.y += event.dy;
+
+        event.target.style.transform = `translate(${positionAlphabet.x}px, ${positionAlphabet.y}px)`;
+      },
+    },
+    modifiers: [
+      interact.modifiers.restrictRect({
+        restriction: bodyRect,
+      }),
+    ],
+  });
+
+  interact(".grid-popup-wrapper.draggable").draggable({
+    listeners: {
+      move(event) {
+        position.x += event.dx;
+        position.y += event.dy;
+
+        event.target.style.transform = `translate(${position.x}px, ${position.y}px)`;
+      },
+    },
+    modifiers: [
+      interact.modifiers.restrictRect({
+        restriction: bodyRect,
+      }),
+    ],
+  });
 });
 
 // Delay everything until page is done loading so heights can be calculated properly
 let bodyRect;
+
+const positionAlphabet = { x: 0, y: 0 };
+const position = { x: 0, y: 0 };
+
 document.addEventListener("DOMContentLoaded", () => {
   bodyRect = document.body.getBoundingClientRect();
-  console.log(bodyRect);
   interact(".notes-wrapper.resize-enabled").resizable({
     edges: { top: true, left: true, bottom: true },
     listeners: {
@@ -55,27 +90,22 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // grid popup dragger
-  const position = { x: 0, y: 0 };
-  interact(".grid-popup-wrapper.draggable")
-    .draggable({
-      listeners: {
-        move(event) {
-          position.x += event.dx;
-          position.y += event.dy;
+  interact(".grid-popup-wrapper.draggable").draggable({
+    listeners: {
+      move(event) {
+        position.x += event.dx;
+        position.y += event.dy;
 
-          event.target.style.transform = `translate(${position.x}px, ${position.y}px)`;
-        },
+        event.target.style.transform = `translate(${position.x}px, ${position.y}px)`;
       },
-      modifiers: [
-        interact.modifiers.restrictRect({
-          restriction: bodyRect,
-        }),
-      ],
-    })
-    .actionChecker();
+    },
+    modifiers: [
+      interact.modifiers.restrictRect({
+        restriction: bodyRect,
+      }),
+    ],
+  });
 
-  // alphabet popup dragger
-  const positionAlphabet = { x: 0, y: 0 };
   interact(".alphabet-popup-wrapper.draggable").draggable({
     listeners: {
       move(event) {

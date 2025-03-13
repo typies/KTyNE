@@ -1,7 +1,6 @@
 /* Footer css */
 
 .footer {
-  grid-area: footer;
   background-color: var(--color-jet);
 
   display: flex;
