@@ -147,7 +147,7 @@
   border: 1px solid var(--color-jet);
   display: grid;
   place-items: center;
-  color: var(--color-jet);
+  color: black;
   &.clr-blue {
     background-color: rgb(0, 0, 255);
   }

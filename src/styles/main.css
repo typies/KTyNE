@@ -99,12 +99,6 @@ svg {
 
 .main-container {
   background: var(--page-bg-color);
-  /* display: grid;
-  grid:
-    "header " minmax(50px, auto)
-    "main " 1fr
-    "footer " var(--footer-height)
-    / 1fr; */
   display: flex;
   flex-direction: column;
   height: 100dvh;
@@ -113,7 +107,6 @@ svg {
 }
 
 .main {
-  /* grid-area: main; */
   display: flex;
   flex: 1;
   overflow: hidden;

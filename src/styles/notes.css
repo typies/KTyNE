@@ -2,7 +2,12 @@
 
 .notes-wrapper-wrapper {
   height: 100%;
-  background-color: var(--color-jet);
+  background: linear-gradient(
+    0deg,
+    rgba(53, 53, 53, 1) 25%,
+    rgba(135, 206, 235, 1) 70%,
+    rgba(210, 215, 223, 1) 95%
+  );
 }
 
 .notes-wrapper {

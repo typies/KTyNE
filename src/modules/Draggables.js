@@ -65,17 +65,27 @@ document.addEventListener("DOMContentLoaded", () => {
           .getBoundingClientRect();
 
         const minHeight = 0;
-        const maxHeight =
-          notesWWRect.height - (event.rect.top - notesWWRect.top);
+        // const maxHeight = notesWWRect.height;
+        const maxHeight = parseInt(
+          notesWWRect.height - (event.rect.top - notesWWRect.top)
+        );
 
         const noChange =
           event.deltaRect.top === 0 &&
           event.deltaRect.bottom === 0 &&
           event.deltaRect.left === 0;
+        console.log("event.rect.top", event.rect.top);
+        console.log("event.rect.height", event.rect.height);
+        console.log(maxHeight);
+        console.log("1");
         if (noChange) return;
-        if (event.rect.top < notesWWRect.top) return;
-        if (event.rect.height < minHeight) return;
-        if (event.rect.height > maxHeight) return;
+        console.log("2");
+        if (parseInt(event.rect.top) < parseInt(notesWWRect.top)) return;
+        console.log("3");
+        if (parseInt(event.rect.height) < minHeight) return;
+        console.log("4");
+        if (parseInt(event.rect.height) > maxHeight) return;
+        console.log("5");
 
         let { x, y } = event.target.dataset;
 
