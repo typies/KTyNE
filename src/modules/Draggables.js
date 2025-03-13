@@ -39,15 +39,25 @@ document.addEventListener("DOMContentLoaded", () => {
         const maxHeight = parseInt(
           notesWWRect.height - (event.rect.top - notesWWRect.top)
         );
-
         const noChange =
           event.deltaRect.top === 0 &&
           event.deltaRect.bottom === 0 &&
           event.deltaRect.left === 0;
         if (noChange) return;
-        if (parseInt(event.rect.top) < parseInt(notesWWRect.top)) return;
-        if (parseInt(event.rect.height) < minHeight) return;
-        if (parseInt(event.rect.height) > maxHeight) return;
+        if (parseInt(event.rect.top) < parseInt(notesWWRect.top)) {
+          event.rect.top = notesWWRect.top;
+          return;
+        }
+        if (parseInt(event.rect.bottom) > parseInt(notesWWRect.bottom)) {
+          event.rect.bottom = notesWWRect.bottom;
+        }
+        if (parseInt(event.rect.height) < minHeight) {
+          event.rect.height = minHeight;
+          return;
+        }
+        if (parseInt(event.rect.height) > maxHeight) {
+          event.rect.height = maxHeight;
+        }
 
         let { x, y } = event.target.dataset;
 
@@ -80,16 +90,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     item.addEventListener("mouseout", () => {
       item.parentElement.classList.remove("draggable");
-    });
-  });
-
-  // Hide buttons for headers
-  const hideBtns = Array.from(
-    document.querySelectorAll(".drag-area .hide-btn")
-  );
-  hideBtns.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      btn.parentElement.parentElement.classList.add("hidden");
     });
   });
 

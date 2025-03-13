@@ -71,6 +71,13 @@ class GridPopup {
       this.dom.gridPopupWrapper.style.transform = "none";
     });
 
+    this.dom.gridPopupWrapper
+      .querySelector(".drag-area .hide-btn")
+      .addEventListener("click", () => {
+        this.dom.gridPopupWrapper.classList.add("hidden");
+        this.dom.gridBtn.classList.remove("selected");
+      });
+
     this.dom.colorCells.forEach((colorEle) => {
       colorEle.addEventListener("click", () =>
         this.setColor(colorEle.getAttribute("data-color"))
@@ -334,6 +341,13 @@ class NumberedAlphabetPopup {
       this.alphaBtn.classList.remove("selected");
       this.alphaPopupWrapper.style.transform = "none";
     });
+
+    this.alphaPopupWrapper
+      .querySelector(".drag-area .hide-btn")
+      .addEventListener("click", () => {
+        this.alphaPopupWrapper.classList.add("hidden");
+        this.alphaBtn.classList.remove("selected");
+      });
 
     this.alphaBtn.addEventListener("click", togglePopup);
     document.addEventListener("keydown", (event) => {
