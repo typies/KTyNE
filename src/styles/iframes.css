@@ -13,6 +13,18 @@
   touch-action: none;
 }
 
+/* This is used to block the mouse from touching the iframe when moving resizeable area*/
+.iframe-cover {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0); /* Transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
 .show-sidebar-btn {
   transform: rotate(180deg);
   position: absolute;

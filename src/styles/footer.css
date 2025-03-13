@@ -89,7 +89,7 @@
 .add-col-btn:hover path,
 .remove-row-btn:hover path,
 .remove-col-btn:hover path {
-  stroke: black;
+  stroke: var(--color-jet);
 }
 
 .grid-popup .grid-row {
@@ -107,7 +107,7 @@
   height: 40px;
   padding: 4px;
   background-color: white;
-  border: 1px solid black;
+  border: 1px solid var(--color-jet);
   display: grid;
   place-items: center;
   text-align: center;
@@ -144,10 +144,10 @@
   width: 40px;
   height: 40px;
   cursor: pointer;
-  border: 1px solid black;
+  border: 1px solid var(--color-jet);
   display: grid;
   place-items: center;
-  color: black;
+  color: var(--color-jet);
   &.clr-blue {
     background-color: rgb(0, 0, 255);
   }

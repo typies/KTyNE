@@ -172,6 +172,7 @@
           <ul class="module-list"></ul>
         </div>
         <div class="manuals">
+          <div class="iframe-cover hidden"></div>
           <svg
             class="add-one-btn hidden"
             viewBox="0 0 24 24"
@@ -206,44 +207,44 @@
             />
           </svg>
         </div>
-        <div class="notes-wrapper resize-enabled">
-          <svg
-            class="split-notes-btn"
-            viewBox="0 0 24.00 24.00"
-            fill="none"
-            height="20px"
-            width="20px"
-          >
-            <title>Split Notepad</title>
-            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-            <g
-              id="SVGRepo_tracerCarrier"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke="#CCCCCC"
-              stroke-width="0.048"
-            ></g>
-            <g id="SVGRepo_iconCarrier">
-              <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M6 4C4.34315 4 3 5.34315 3 7V17C3 18.6569 4.34315 20 6 20H18C19.6569 20 21 18.6569 21 17V7C21 5.34315 19.6569 4 18 4H6ZM5 7C5 6.44772 5.44772 6 6 6H11V18H6C5.44772 18 5 17.5523 5 17V7ZM13 18H18C18.5523 18 19 17.5523 19 17V7C19 6.44772 18.5523 6 18 6H13V18Z"
-                fill="#000000"
-              ></path>
-            </g>
-          </svg>
-          <div
-            class="notes"
-            contenteditable="plaintext-only"
-            spellcheck="false"
-          >
-            <p>Tip: You can resize this area while no manuals are open</p>
+        <div class="notes-wrapper-wrapper">
+          <div class="notes-wrapper">
+            <svg
+              class="split-notes-btn"
+              viewBox="0 0 24.00 24.00"
+              fill="none"
+              height="20px"
+              width="20px"
+            >
+              <title>Split Notepad</title>
+              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+              <g
+                id="SVGRepo_tracerCarrier"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke="#CCCCCC"
+                stroke-width="0.048"
+              ></g>
+              <g id="SVGRepo_iconCarrier">
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M6 4C4.34315 4 3 5.34315 3 7V17C3 18.6569 4.34315 20 6 20H18C19.6569 20 21 18.6569 21 17V7C21 5.34315 19.6569 4 18 4H6ZM5 7C5 6.44772 5.44772 6 6 6H11V18H6C5.44772 18 5 17.5523 5 17V7ZM13 18H18C18.5523 18 19 17.5523 19 17V7C19 6.44772 18.5523 6 18 6H13V18Z"
+                  fill="#000000"
+                ></path>
+              </g>
+            </svg>
+            <div
+              class="notes"
+              contenteditable="plaintext-only"
+              spellcheck="false"
+            ></div>
+            <div
+              class="second-notes hidden"
+              contenteditable="plaintext-only"
+              spellcheck="false"
+            ></div>
           </div>
-          <div
-            class="second-notes hidden"
-            contenteditable="plaintext-only"
-            spellcheck="false"
-          ></div>
         </div>
       </div>
 
