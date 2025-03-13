@@ -117,6 +117,7 @@ class HeaderList {
                     this.addHeaderListItem(passedData, true);
                   },
                 },
+                classList: ["green"],
               },
               {
                 type: "button",
@@ -131,6 +132,7 @@ class HeaderList {
                     this.addHeaderListItem(passedData, true);
                   },
                 },
+                classList: ["red"],
               },
             ],
             classList: "form-btn-group",

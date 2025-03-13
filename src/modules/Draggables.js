@@ -28,58 +28,20 @@ function setUpBodyBoundDraggable(selector) {
 // Delay until page is done loading so heights can be calculated properly
 document.addEventListener("DOMContentLoaded", () => {
   interact(".notes-wrapper").resizable({
-    edges: { top: true, left: true, bottom: true },
+    edges: { left: true },
     listeners: {
       move: function (event) {
-        const notesWWRect = document // Keep this inside move fn (Otherwise values are slightly off)
-          .querySelector(".notes-wrapper-wrapper")
-          .getBoundingClientRect();
-
-        const minHeight = 0;
-        const maxHeight = parseInt(
-          notesWWRect.height - (event.rect.top - notesWWRect.top)
-        );
-        const noChange =
-          event.deltaRect.top === 0 &&
-          event.deltaRect.bottom === 0 &&
-          event.deltaRect.left === 0;
-        if (noChange) return;
-        if (parseInt(event.rect.top) < parseInt(notesWWRect.top)) {
-          event.rect.top = notesWWRect.top;
-          return;
-        }
-        if (parseInt(event.rect.bottom) > parseInt(notesWWRect.bottom)) {
-          event.rect.bottom = notesWWRect.bottom;
-        }
-        if (parseInt(event.rect.height) < minHeight) {
-          event.rect.height = minHeight;
-          return;
-        }
-        if (parseInt(event.rect.height) > maxHeight) {
-          event.rect.height = maxHeight;
-        }
-
-        let { x, y } = event.target.dataset;
-
+        let x = event.target.dataset.x;
         x = (parseFloat(x) || 0) + event.deltaRect.left;
-        y = (parseFloat(y) || 0) + event.deltaRect.top;
-
-        const yTransform =
-          event.rect.height === notesWWRect.height ? 0 : `${y}px`;
-
         Object.assign(event.target.style, {
           width: `${event.rect.width}px`,
-          height: `${event.rect.height}px`,
-          transform: `translate(0, ${yTransform})`,
         });
-
-        Object.assign(event.target.dataset, { x, y });
+        Object.assign(event.target.dataset, { x });
       },
     },
   });
 
   setUpBodyBoundDraggable(".alphabet-popup-wrapper.draggable");
-
   setUpBodyBoundDraggable(".grid-popup-wrapper.draggable");
 
   // Makes divs only draggable by their header
