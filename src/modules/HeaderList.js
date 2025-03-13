@@ -224,11 +224,13 @@ class HeaderList {
   sortHeaderList() {
     const headerList = this.dom.headerList;
     const headerListChildren = Array.from(headerList.children);
-    headerListChildren.sort((a, b) => {
+    headerListChildren.slice(1).sort((a, b) => {
       if (a.textContent.toLowerCase() < b.textContent.toLowerCase()) return -1;
       return 1;
     });
-    headerList.replaceChildren(...headerListChildren);
+    headerList.replaceChildren(
+      ...[headerListChildren[0], ...headerListChildren]
+    );
   }
 
   closeHeaderListItem(headerListItemId) {
