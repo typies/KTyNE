@@ -18,44 +18,39 @@ window.addEventListener("resize", () => {
 
   // Reset bodyRect obj for draggable popups
   bodyRect = document.body.getBoundingClientRect();
-  interact(".alphabet-popup-wrapper.draggable").draggable({
-    listeners: {
-      move(event) {
-        positionAlphabet.x += event.dx;
-        positionAlphabet.y += event.dy;
 
-        event.target.style.transform = `translate(${positionAlphabet.x}px, ${positionAlphabet.y}px)`;
-      },
-    },
-    modifiers: [
-      interact.modifiers.restrictRect({
-        restriction: bodyRect,
-      }),
-    ],
-  });
+  setUpBodyBoundDraggable(
+    alphabetPosition,
+    ".alphabet-popup-wrapper.draggable"
+  );
 
-  interact(".grid-popup-wrapper.draggable").draggable({
-    listeners: {
-      move(event) {
-        position.x += event.dx;
-        position.y += event.dy;
-
-        event.target.style.transform = `translate(${position.x}px, ${position.y}px)`;
-      },
-    },
-    modifiers: [
-      interact.modifiers.restrictRect({
-        restriction: bodyRect,
-      }),
-    ],
-  });
+  setUpBodyBoundDraggable(gridPosition, ".grid-popup-wrapper.draggable");
 });
+
+function setUpBodyBoundDraggable(positions, selector) {
+  if (!positions) positions = { x: 0, y: 0 };
+  interact(selector).draggable({
+    listeners: {
+      move(event) {
+        positions.x += event.dx;
+        positions.y += event.dy;
+
+        event.target.style.transform = `translate(${positions.x}px, ${positions.y}px)`;
+      },
+    },
+    modifiers: [
+      interact.modifiers.restrictRect({
+        restriction: bodyRect,
+      }),
+    ],
+  });
+}
 
 // Delay everything until page is done loading so heights can be calculated properly
 let bodyRect;
 
-const positionAlphabet = { x: 0, y: 0 };
-const position = { x: 0, y: 0 };
+const alphabetPosition = { x: 0, y: 0 };
+const gridPosition = { x: 0, y: 0 };
 
 document.addEventListener("DOMContentLoaded", () => {
   bodyRect = document.body.getBoundingClientRect();
@@ -89,38 +84,12 @@ document.addEventListener("DOMContentLoaded", () => {
     },
   });
 
-  // grid popup dragger
-  interact(".grid-popup-wrapper.draggable").draggable({
-    listeners: {
-      move(event) {
-        position.x += event.dx;
-        position.y += event.dy;
+  setUpBodyBoundDraggable(
+    alphabetPosition,
+    ".alphabet-popup-wrapper.draggable"
+  );
 
-        event.target.style.transform = `translate(${position.x}px, ${position.y}px)`;
-      },
-    },
-    modifiers: [
-      interact.modifiers.restrictRect({
-        restriction: bodyRect,
-      }),
-    ],
-  });
-
-  interact(".alphabet-popup-wrapper.draggable").draggable({
-    listeners: {
-      move(event) {
-        positionAlphabet.x += event.dx;
-        positionAlphabet.y += event.dy;
-
-        event.target.style.transform = `translate(${positionAlphabet.x}px, ${positionAlphabet.y}px)`;
-      },
-    },
-    modifiers: [
-      interact.modifiers.restrictRect({
-        restriction: bodyRect,
-      }),
-    ],
-  });
+  setUpBodyBoundDraggable(gridPosition, ".grid-popup-wrapper.draggable");
 
   // Makes divs only draggable by their header
   const draggableGridAreas = document.querySelectorAll(".drag-area");
