@@ -10,6 +10,7 @@
     rgba(135, 206, 235, 1) 70%,
     rgba(210, 215, 223, 1) 95%
   );
+  touch-action: none;
 }
 
 .show-sidebar-btn {
@@ -48,7 +49,8 @@
 
 .collapse-sidebar-btn:hover,
 .show-sidebar-btn:hover,
-.add-one-btn:hover {
+.add-one-btn:hover,
+.add-module-btn:hover {
   stroke: var(--color-blue);
   fill: var(--color-blue);
 }
@@ -60,10 +62,12 @@
   stroke: none;
 }
 
+.split-notes-btn:hover,
 .split-button:hover {
   stroke: var(--color-green);
 }
 
+.split-notes-btn.selected,
 .split-button.selected {
   stroke: var(--color-green);
 }

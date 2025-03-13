@@ -71,6 +71,7 @@ class IframeManager {
       });
       this.currentIframe.classList.remove("current-iframe");
       this.currentIframe.classList.add("hidden-iframe");
+      this.notesResizeCheck();
     }
     this.currentIframe = iframe;
     if (iframe) {
@@ -81,8 +82,24 @@ class IframeManager {
       iframe.classList.remove("hidden-iframe");
       iframe.classList.remove("alternate-iframe");
       iframe.classList.add("current-iframe");
+      this.notesResizeCheck();
     }
   }
+
+  notesResizeCheck() {
+    // Disable notes dragging when sidebar is open due to interact.js / iframe poor compatibility
+    if (
+      document.querySelector(".current-iframe") ||
+      document.querySelector(".alternate-iframe")
+    ) {
+      document
+        .querySelector(".notes-wrapper")
+        .classList.remove("resize-enabled");
+    } else {
+      document.querySelector(".notes-wrapper").classList.add("resize-enabled");
+    }
+  }
+
   setAlternateIframe(iframe) {
     if (this.alternateIframe) {
       mainPubSub.publish("removeHeaderItemClass", {
@@ -91,6 +108,7 @@ class IframeManager {
       });
       this.alternateIframe.classList.remove("alternate-iframe");
       this.alternateIframe.classList.add("hidden-iframe");
+      this.notesResizeCheck();
     }
     this.alternateIframe = iframe;
     if (iframe) {
@@ -129,6 +147,7 @@ class IframeManager {
         headerListItemId: this.getIdByIframe(this.alternateIframe),
         headerClass: "alternate-header-item",
       });
+      this.notesResizeCheck();
     }
   }
 }

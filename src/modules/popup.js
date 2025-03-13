@@ -8,6 +8,7 @@ class GridPopup {
 
   dom = {
     gridBtn: document.querySelector(".grid-btn"),
+    gridPopupWrapper: document.querySelector(".grid-popup-wrapper"),
     gridPopup: document.querySelector(".grid-popup"),
     gridContainer: document.querySelector(".grid-popup .grid-container"),
     heightInput: document.querySelector("input[name='rows']"),
@@ -31,8 +32,8 @@ class GridPopup {
   configureFormButtons() {
     document.addEventListener("keydown", (event) => {
       if (
-        this.dom.gridPopup &&
-        !this.dom.gridPopup.classList.contains("hidden")
+        this.dom.gridPopupWrapper &&
+        !this.dom.gridPopupWrapper.classList.contains("hidden")
       ) {
         const colorList = [
           "#0000ff",
@@ -58,7 +59,7 @@ class GridPopup {
     });
 
     const showPopup = () => {
-      this.dom.gridPopup.classList.toggle("hidden");
+      this.dom.gridPopupWrapper.classList.toggle("hidden");
       this.dom.widthInput.select();
     };
 
@@ -133,6 +134,9 @@ class GridPopup {
 
   createCell(textContent = null) {
     const cell = document.createElement("div");
+    cell.addEventListener("mousedown", (event) => {
+      event.stopPropagation();
+    });
     cell.classList.add("grid-cell");
     cell.style.fontSize = this.fontSize + "px" || "20px";
 
@@ -306,11 +310,11 @@ class NumberedAlphabetPopup {
 
   configureFormButtons() {
     this.alphaBtn.addEventListener("click", () =>
-      this.alphaPopup.classList.toggle("hidden")
+      this.alphaPopupWrapper.classList.toggle("hidden")
     );
     document.addEventListener("keydown", (event) => {
       if (event.altKey && event.key === "a")
-        this.alphaPopup.classList.toggle("hidden");
+        this.alphaPopupWrapper.classList.toggle("hidden");
     });
 
     this.swapIndexBtn.addEventListener("click", () => this.swapIndexing());
@@ -360,6 +364,7 @@ class NumberedAlphabetPopup {
     this.indexing = 1;
     this.alphaBtn = document.querySelector(".alphabet-btn");
     this.alphaPopup = document.querySelector(".alphabet-popup");
+    this.alphaPopupWrapper = document.querySelector(".alphabet-popup-wrapper");
     this.swapIndexBtn = this.alphaPopup.querySelector(".swap-index-btn");
     this.zeroBtn = this.alphaPopup.querySelector(".zero-btn");
     this.oneBtn = this.alphaPopup.querySelector(".one-btn");

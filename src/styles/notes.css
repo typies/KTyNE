@@ -1,24 +1,59 @@
 /* Notes css */
 
-.notes {
-  grid-area: notes;
+.notes-wrapper {
+  width: 20vw;
+  touch-action: none;
+  position: relative;
+  display: flex;
+  max-width: 60vw;
+  border-bottom: 1px solid black;
+}
+
+.notes,
+.second-notes {
+  flex-basis: 50%;
+  flex-grow: 1;
   padding: 10px;
 
   overflow: scroll;
   font-family: "NotoSansMono", "sans-serif";
 
+  border-top: 1px solid var(--color-jet);
   background-image: linear-gradient(
     to top,
     var(--notes-line-color) 0.1em,
-    transparent 0.1em
+    var(--color-gray) 0.1em
   );
   background-size: 100% 1.4em;
   background-attachment: local;
   padding-top: 0.2rem;
   line-height: 1.4;
   overflow: auto;
+
+  margin-top: -1px;
 }
 
+.notes:has(+ .second-notes:not(.hidden)) {
+  border-right: 1px solid var(--color-jet);
+}
+
+.notes:has(+ .second-notes.hidden),
+.second-notes {
+  padding-right: 22px;
+}
+
+.second-notes:focus,
 .notes:focus {
   outline: none;
+}
+
+.split-notes-btn {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+}
+
+.bad-resize-msg {
+  position: absolute;
+  bottom: -50px;
 }

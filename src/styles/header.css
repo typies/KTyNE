@@ -1,7 +1,6 @@
 /* Header css */
 
 .header {
-  grid-area: header;
   background-color: var(--color-jet);
   display: flex;
   justify-content: space-between;

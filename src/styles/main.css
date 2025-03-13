@@ -17,6 +17,7 @@
   --color-blue: #87ceeb;
   --color-orange: #edc090;
   --page-bg-color: var(--color-gray, white);
+  --footer-height: 50px;
 
   --notes-line-color: #85c1e9;
 }
@@ -97,22 +98,26 @@ svg {
 }
 
 .main-container {
-  display: grid;
   background: var(--page-bg-color);
+  /* display: grid;
   grid:
-    "header header" minmax(50px, auto)
-    "main notes" 1fr
-    "footer footer" 50px
-    / 1fr clamp(15ch, 35ch, 25vw);
+    "header " minmax(50px, auto)
+    "main " 1fr
+    "footer " var(--footer-height)
+    / 1fr; */
+  display: flex;
+  flex-direction: column;
   height: 100dvh;
   height: 100vh;
   gap: 1px;
 }
 
 .main {
-  grid-area: main;
+  /* grid-area: main; */
   display: flex;
+  flex: 1;
   overflow: hidden;
+  position: relative;
 }
 
 .top-margin {
@@ -123,15 +128,13 @@ svg {
 label[for="serial"],
 label[for="url"],
 label[for="name"] {
-  position: relative;
+  position: relative; /* Do not remove: Needed for edgework ":after" */
 }
 label[for="url"]:after,
 label[for="name"]:after {
   content: "required";
   color: var(--color-red);
   font-size: 0.5em;
-  position: absolute;
-  top: 0;
 }
 
 .form-btn-group {

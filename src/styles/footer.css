@@ -22,24 +22,54 @@
   color: var(--color-blue);
 }
 
-.alphabet-popup,
-.grid-popup {
+.grid-popup-wrapper,
+.alphabet-popup-wrapper {
   position: absolute;
   background-color: var(--color-gray);
   margin: 4px;
   right: 0;
-  bottom: calc(100%);
+  bottom: var(--footer-height);
   border: 1px solid var(--color-jet);
-  padding: 8px;
   border-radius: 8px;
   color: var(--color-jet);
-  gap: 2px;
+}
+
+.drag-area {
+  border-radius: inherit;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border: 1px solid var(--color-gray);
+}
+
+.grid-popup {
+  padding: 8px;
+  cursor: default;
+}
+
+.drag-area {
+  height: 20px;
+  background-color: var(--color-jet);
+  position: relative;
+}
+
+.drag-area .hide-btn {
+  color: white;
+  position: absolute;
+  top: 4px;
+  right: 4px;
+}
+
+.drag-area .hide-btn:hover {
+  color: var(--color-red);
+  cursor: pointer;
 }
 
 .alphabet-popup {
   display: grid;
+  padding: 12px;
   grid-template-columns: repeat(10, 4ch);
   font-size: 1.25em;
+  width: 514px; /* Width specified for draggable calculations */
 }
 
 .grid-wrapper {
