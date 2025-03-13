@@ -60,6 +60,7 @@ class GridPopup {
 
     const showPopup = () => {
       this.dom.gridPopupWrapper.classList.toggle("hidden");
+      this.dom.gridBtn.classList.toggle("selected");
       this.dom.widthInput.select();
     };
 
@@ -315,12 +316,14 @@ class NumberedAlphabetPopup {
   }
 
   configureFormButtons() {
-    this.alphaBtn.addEventListener("click", () =>
-      this.alphaPopupWrapper.classList.toggle("hidden")
-    );
+    const togglePopup = () => {
+      this.alphaPopupWrapper.classList.toggle("hidden");
+      this.alphaBtn.classList.toggle("selected");
+    };
+
+    this.alphaBtn.addEventListener("click", togglePopup);
     document.addEventListener("keydown", (event) => {
-      if (event.altKey && event.key === "a")
-        this.alphaPopupWrapper.classList.toggle("hidden");
+      if (event.altKey && event.key === "a") togglePopup();
     });
 
     this.swapIndexBtn.addEventListener("click", () => this.swapIndexing());
