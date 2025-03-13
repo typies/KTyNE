@@ -63,64 +63,32 @@ document.addEventListener("DOMContentLoaded", () => {
         notesWWRect = document // Keep this inside move fn (Otherwise values are slightly off)
           .querySelector(".notes-wrapper-wrapper")
           .getBoundingClientRect();
-        let notesRect = document
-          .querySelector(".notes")
-          .getBoundingClientRect();
 
-        // No change return to prevent view behaviors
-        if (
-          event.deltaRect.top === 0 &&
-          event.deltaRect.bottom === 0 &&
-          event.deltaRect.left === 0
-        )
-          return;
-
-        const minY = 0; // Top of notes box
-        const maxY = notesWWRect.bottom - notesWWRect.top;
-        console.log(event.target.dataset.y);
-        if (minY > event.target.dataset.y || event.target.dataset.y > maxY) {
-          if (minY > event.target.dataset.y) event.target.dataset.y = 0;
-          else if (event.target.dataset.y > maxY) event.target.dataset.y = maxY;
-          return;
-        }
-        let { x, y } = event.target.dataset;
-
-        x = (parseFloat(x) || 0) + event.deltaRect.left;
-        y = (parseFloat(y) || 0) + event.deltaRect.top;
-        if (event.deltaRect.top === 0 && y === 0) {
-          y = (parseFloat(y) || 0) + event.deltaRect.bottom;
-        }
-
-        if (event.rect.top < notesWWRect.top) event.rect.top = notesWWRect.top;
         const minHeight = 0;
         const maxHeight =
           notesWWRect.height - (event.rect.top - notesWWRect.top);
 
-        if (
-          event.rect.top === notesWWRect.top &&
-          event.deltaRect.bottom === 0
-        ) {
-          y = 0;
-          event.rect.height = notesRect.bottom - notesRect.top;
-          // return;
-        }
-        if (y === 0 && x === 0) return;
+        const noChange =
+          event.deltaRect.top === 0 &&
+          event.deltaRect.bottom === 0 &&
+          event.deltaRect.left === 0;
+        if (noChange) return;
+        if (event.rect.top < notesWWRect.top) return;
+        if (event.rect.height < minHeight) return;
+        if (event.rect.height > maxHeight) return;
 
-        // Prevent notes from expanding out of notesWW
-        if (event.rect.height < minHeight) {
-          event.rect.height = minHeight;
-        }
+        let { x, y } = event.target.dataset;
 
-        if (event.rect.height > maxHeight) {
-          event.rect.height = maxHeight;
-        }
+        x = (parseFloat(x) || 0) + event.deltaRect.left;
+        y = (parseFloat(y) || 0) + event.deltaRect.top;
 
-        console.log(maxHeight - event.rect.height);
+        const yTransform =
+          event.rect.height === notesWWRect.height ? 0 : `${y}px`;
 
         Object.assign(event.target.style, {
           width: `${event.rect.width}px`,
           height: `${event.rect.height}px`,
-          transform: `translate(0, ${y}px)`,
+          transform: `translate(0, ${yTransform})`,
         });
 
         Object.assign(event.target.dataset, { x, y });
