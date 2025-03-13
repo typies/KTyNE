@@ -143,6 +143,7 @@ class HeaderList {
 
   addHeaderListItem(pubsubData, skipDuplicateCheck = false) {
     const moduleName = this.shortenName(pubsubData.moduleName);
+    this.dom.closeAllBtn.classList.remove("hidden");
 
     // Duplciate checking
     const matchingModules = this.getHeaderListItemByName(moduleName);
@@ -240,6 +241,10 @@ class HeaderList {
       this.removeHeaderItemClass({ headerListItemId });
     }
     itemToRemove.remove();
+    console.log(this.dom.headerList);
+    if (!this.dom.headerList.querySelector("li"))
+      this.dom.closeAllBtn.classList.add("hidden");
+
     mainPubSub.publish("removeIframe", { iframeId: headerListItemId });
   }
 
