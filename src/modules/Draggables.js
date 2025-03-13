@@ -1,31 +1,15 @@
 import interact from "interactjs";
 
-// resize event handler for keeping notes area extending all the way to the bottom of the screen
-let currentWindowHeight = window.innerHeight;
+// Global to preserve location between screen resizes
+const alphabetPosition = { x: 0, y: 0 };
+const gridPosition = { x: 0, y: 0 };
+
 window.addEventListener("resize", () => {
-  const newWindowHeight = window.innerHeight;
-  let dy = currentWindowHeight - newWindowHeight;
-
-  const notes = document.querySelector(".notes-wrapper");
-  const notesHeight = parseInt(
-    getComputedStyle(notes).height.replace("px", "")
-  );
-
-  const newy = notesHeight - dy;
-  notes.style.height = `${newy}px`;
-  currentWindowHeight = newWindowHeight;
-
   // Reset rect objs on window change
-  bodyRect = document.body.getBoundingClientRect();
-  notesWWRect = document
-    .querySelector(".notes-wrapper-wrapper")
-    .getBoundingClientRect();
-
   setUpBodyBoundDraggable(
     alphabetPosition,
     ".alphabet-popup-wrapper.draggable"
   );
-
   setUpBodyBoundDraggable(gridPosition, ".grid-popup-wrapper.draggable");
 });
 
@@ -42,17 +26,11 @@ function setUpBodyBoundDraggable(positions, selector) {
     },
     modifiers: [
       interact.modifiers.restrictRect({
-        restriction: bodyRect,
+        restriction: document.body.getBoundingClientRect(),
       }),
     ],
   });
 }
-
-let bodyRect;
-let notesWWRect;
-
-const alphabetPosition = { x: 0, y: 0 };
-const gridPosition = { x: 0, y: 0 };
 
 // Delay until page is done loading so heights can be calculated properly
 document.addEventListener("DOMContentLoaded", () => {
@@ -60,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
     edges: { top: true, left: true, bottom: true },
     listeners: {
       move: function (event) {
-        notesWWRect = document // Keep this inside move fn (Otherwise values are slightly off)
+        const notesWWRect = document // Keep this inside move fn (Otherwise values are slightly off)
           .querySelector(".notes-wrapper-wrapper")
           .getBoundingClientRect();
 
@@ -125,7 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  /* This is used to block the mouse from touching the iframe when moving resizeable area*/
+  /* Block the mouse from touching the iframe when moving resizeable area*/
   const notesArea = document.querySelector(".notes");
   const iframeCover = document.querySelector(".iframe-cover");
   notesArea.addEventListener("mousedown", () => {
