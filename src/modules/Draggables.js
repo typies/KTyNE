@@ -6,15 +6,12 @@ const gridPosition = { x: 0, y: 0 };
 
 window.addEventListener("resize", () => {
   // Reset rect objs on window change
-  setUpBodyBoundDraggable(
-    alphabetPosition,
-    ".alphabet-popup-wrapper.draggable"
-  );
-  setUpBodyBoundDraggable(gridPosition, ".grid-popup-wrapper.draggable");
+  setUpBodyBoundDraggable(".alphabet-popup-wrapper.draggable");
+  setUpBodyBoundDraggable(".grid-popup-wrapper.draggable");
 });
 
-function setUpBodyBoundDraggable(positions, selector) {
-  if (!positions) positions = { x: 0, y: 0 };
+function setUpBodyBoundDraggable(selector) {
+  const positions = { x: 0, y: 0 };
   interact(selector).draggable({
     listeners: {
       move(event) {
@@ -75,12 +72,9 @@ document.addEventListener("DOMContentLoaded", () => {
     },
   });
 
-  setUpBodyBoundDraggable(
-    alphabetPosition,
-    ".alphabet-popup-wrapper.draggable"
-  );
+  setUpBodyBoundDraggable(".alphabet-popup-wrapper.draggable");
 
-  setUpBodyBoundDraggable(gridPosition, ".grid-popup-wrapper.draggable");
+  setUpBodyBoundDraggable(".grid-popup-wrapper.draggable");
 
   // Makes divs only draggable by their header
   const draggableGridAreas = document.querySelectorAll(".drag-area");

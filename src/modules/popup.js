@@ -64,6 +64,13 @@ class GridPopup {
       this.dom.widthInput.select();
     };
 
+    window.addEventListener("resize", () => {
+      // Reset rect objs on window change
+      this.dom.gridPopupWrapper.classList.add("hidden");
+      this.dom.gridBtn.classList.remove("selected");
+      this.dom.gridPopupWrapper.style.transform = "none";
+    });
+
     this.dom.colorCells.forEach((colorEle) => {
       colorEle.addEventListener("click", () =>
         this.setColor(colorEle.getAttribute("data-color"))
@@ -320,6 +327,13 @@ class NumberedAlphabetPopup {
       this.alphaPopupWrapper.classList.toggle("hidden");
       this.alphaBtn.classList.toggle("selected");
     };
+
+    window.addEventListener("resize", () => {
+      // Reset rect objs on window change
+      this.alphaPopupWrapper.classList.add("hidden");
+      this.alphaBtn.classList.remove("selected");
+      this.alphaPopupWrapper.style.transform = "none";
+    });
 
     this.alphaBtn.addEventListener("click", togglePopup);
     document.addEventListener("keydown", (event) => {
