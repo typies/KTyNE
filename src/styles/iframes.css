@@ -74,11 +74,13 @@
   stroke: none;
 }
 
+.split-notes-hor-btn:hover,
 .split-notes-btn:hover,
 .split-button:hover {
   stroke: var(--color-green);
 }
 
+.split-notes-hor-btn.selected,
 .split-notes-btn.selected,
 .split-button.selected {
   stroke: var(--color-green);

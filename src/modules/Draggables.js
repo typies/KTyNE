@@ -69,7 +69,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const splitNotesBtn = document.querySelector(".split-notes-btn");
   splitNotesBtn.addEventListener("click", () => {
     splitNotesBtn.classList.toggle("selected");
-    document.querySelector(".second-notes").classList.toggle("hidden");
+    document
+      .querySelector(".top-notes *:last-child")
+      .classList.toggle("hidden");
+    document
+      .querySelector(".bottom-notes *:last-child")
+      .classList.toggle("hidden");
+  });
+
+  const splitNotesHorBtn = document.querySelector(".split-notes-hor-btn");
+  splitNotesHorBtn.addEventListener("click", () => {
+    splitNotesHorBtn.classList.toggle("selected");
+    document.querySelector(".bottom-notes").classList.toggle("hidden");
   });
 });
 export default () => {};

@@ -16,13 +16,31 @@
   touch-action: none;
   position: relative;
   display: flex;
+  flex-direction: column;
   max-width: 60vw;
   min-width: 1px;
   min-height: 10px;
 }
 
-.notes,
-.second-notes {
+.top-notes,
+.bottom-notes {
+  height: 100%;
+  width: 100%;
+  flex-basis: 50%;
+  flex-grow: 1;
+  display: flex;
+}
+
+.bottom-notes {
+  border-top: 1px solid var(--color-jet);
+}
+
+.top-notes *:last-child,
+.bottom-notes *:last-child {
+  border-left: 1px solid var(--color-jet);
+}
+
+.notes {
   flex-basis: 50%;
   flex-grow: 1;
   padding: 10px;
@@ -51,6 +69,8 @@
   padding-right: 22px;
 }
 
+.fourth-notes:focus,
+.third-notes:focus,
 .second-notes:focus,
 .notes:focus {
   outline: none;
@@ -59,6 +79,12 @@
 .split-notes-btn {
   position: absolute;
   top: 2px;
+  right: 2px;
+}
+
+.split-notes-hor-btn {
+  position: absolute;
+  top: 22px;
   right: 2px;
 }
 
