@@ -243,7 +243,6 @@ class HeaderList {
       this.removeHeaderItemClass({ headerListItemId });
     }
     itemToRemove.remove();
-    console.log(this.dom.headerList);
     if (!this.dom.headerList.querySelector("li"))
       this.dom.closeAllBtn.classList.add("hidden");
 

@@ -55,9 +55,6 @@
   cursor: default;
 }
 
-.drag-area {
-}
-
 .drag-area .hide-btn {
   color: white;
   position: absolute;
@@ -297,11 +294,10 @@
 }
 
 .calc {
-  bottom: 0;
-  right: 0;
   background-color: var(--color-jet);
   border: 1px solid var(--color-gray);
-  border-radius: 6px;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
 }
 
 .calc-screen,
@@ -342,7 +338,4 @@
 
 .calc-btn svg {
   stroke: inherit;
-}
-
-.calc-btn {
 }

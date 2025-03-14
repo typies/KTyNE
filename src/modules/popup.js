@@ -324,7 +324,6 @@ class CalcPopup {
     this.miniScreen = this.calc.querySelector(".calc-mini-screen");
 
     this.btnGrid = this.calc.querySelector(".calc-btn-grid");
-    this.allBtns = Array.from(this.btnGrid.children);
 
     const calcWrapper = document.querySelector(".calc-popup-wrapper");
     const calcBtn = document.querySelector(".calc-btn");
@@ -364,143 +363,192 @@ class CalcPopup {
       "/",
       "=",
       ".",
-      "%",
+      "mod",
       "±",
       "C",
     ];
+    this.nums = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+    this.operators = ["+", "-", "*", "/", "mod"];
+
+    // Set up btns (- backspace)
+    const allBtns = Array.from(this.btnGrid.children);
     btns.forEach((btnText) => {
-      const btn = this.allBtns.find((btn) => btn.textContent === btnText);
+      const btn = allBtns.find((btn) => btn.textContent === btnText);
       btn.addEventListener("click", () => this.handleBtnPress(btnText));
     });
 
-    // Back btn
+    // Set up Backspace btn
     this.backBtn = this.btnGrid.querySelector(".calc-btn:has(> svg)");
-    this.backBtn.addEventListener("click", () => this.handleBtnPress("back"));
+    this.backBtn.addEventListener("click", () =>
+      this.handleBtnPress("Backspace")
+    );
 
+    // Prevent calcBtn & calc enter presses from interaction outside calc
+    calcBtn.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") event.preventDefault();
+    });
+    this.calc.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") event.preventDefault();
+    });
+
+    // Keyboard input
     document.addEventListener("keydown", (event) => {
       const activeElement = document.activeElement;
-      if (
+      const targetingPageInput =
         activeElement.tagName === "INPUT" ||
-        activeElement.getAttribute("contenteditable")
-      )
-        return;
-      if (btns.includes(event.key)) {
-        this.allBtns.find((btn) => btn.textContent === event.key).click();
-      } else if (event.key === "Enter") {
-        this.allBtns.find((btn) => btn.textContent === "=").click();
-      } else if (event.key === "Backspace") {
-        this.backBtn.click();
-      } else if (event.key === "m") {
-        this.allBtns.find((btn) => btn.textContent === "%").click();
-      } else if (event.key === "n") {
-        this.allBtns.find((btn) => btn.textContent === "±").click();
-      }
+        activeElement.getAttribute("contenteditable");
+
+      if (targetingPageInput) return;
+      else this.handleBtnPress(event.key);
     });
     return this;
   }
 
   handleBtnPress(btn) {
-    const nums = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
-    const operators = ["+", "-", "*", "/", "%"];
-    if (nums.includes(btn)) {
-      if (operators.includes(this.previousInput)) {
-        this.clearScreen();
-      }
-      if (this.previousInput === "=") {
-        this.clearMiniScreen();
-        this.clearScreen();
-        this.leftOperand = this.lastLeftOperand;
-        this.lastRes = null;
-      }
-      if (this.screen.textContent === "0") {
-        this.clearScreen();
-      }
-      this.appendScreen(btn);
-    } else if (btn === "±") {
-      if (!this.leftOperand) this.leftOperand = this.screen.textContent;
-      this.leftOperand = parseFloat(this.leftOperand) * -1;
-      this.screen.textContent = this.leftOperand;
-      this.lastRes = this.leftOperand;
-      this.rightOperand = null;
-    } else if (btn === ".") {
-      if (
-        operators.includes(this.previousInput) ||
-        this.previousInput === "="
-      ) {
-        this.clearScreen();
-      }
-      if (this.screen.textContent.includes(".")) return;
-      if (this.screen.textContent === "") this.screen.textContent = "0";
-      this.appendScreen(btn);
-    } else if (btn === "C") {
-      this.leftOperand = null;
-      this.operator = null;
-      this.rightOperand = null;
-      this.lastRes = null;
-      this.clearScreen();
-      this.clearMiniScreen();
-      this.appendScreen("0");
-    } else if (btn === "back") {
-      if (
-        operators.includes(this.previousInput) ||
-        this.previousInput === "="
-      ) {
-        this.clearMiniScreen();
-        this.leftOperand = null;
-        this.lastRes = null;
-        return;
-      }
-      this.backspaceScreen();
-    } else if (operators.includes(btn)) {
-      if (operators.includes(this.previousInput)) {
-        this.miniScreen.textContent = `${this.miniScreen.textContent.slice(0, -2)} ${btn} `;
-      } else {
-        if (this.operator) {
-          this.handleEqualClick(true);
-        }
-        if (this.lastRes) {
-          this.clearMiniScreen();
-          this.appendMiniScreen(`${this.lastRes} ${btn} `);
-          this.leftOperand = this.lastRes;
-        } else {
-          this.leftOperand = this.screen.textContent;
-          this.operator = btn;
-          this.appendMiniScreen(this.screen.textContent + ` ${btn} `);
-        }
-      }
-      this.operator = btn;
-    } else if (btn === "=") {
-      this.handleEqualClick();
+    if (btn === "Enter") btn = "=";
+    else if (btn === "m" || btn === "%") btn = "mod";
+    else if (btn === "n") btn = "±";
+    switch (btn) {
+      case "±":
+        this.handleNegatePress();
+        break;
+      case ".":
+        this.handleDotPress();
+        break;
+      case "C":
+        this.handleClearPress();
+        break;
+      case "Backspace":
+        this.handleBackspacePress();
+        break;
+      case "=":
+        this.handleEqualPress();
+        break;
+      case "+":
+      case "-":
+      case "*":
+      case "/":
+      case "mod":
+        this.handleOperatorPress(btn);
+        break;
+      default:
+        if (!this.nums.includes(btn)) return;
+        this.handleNumberPress(btn);
+        break;
     }
+
     this.previousInput = btn;
   }
 
-  handleEqualClick(resultOnly = false) {
-    if (this.previousInput === "=" || this.operator === null)
+  handleNegatePress() {
+    if (!this.leftOperand) this.leftOperand = this.getScreen();
+    this.leftOperand = parseFloat(this.leftOperand) * -1;
+    this.setScreen(this.leftOperand);
+    this.lastRes = this.leftOperand;
+    this.rightOperand = null;
+  }
+
+  handleDotPress() {
+    const lastInputWasEquals = this.previousInput === "=";
+    const lastInputWasOperator = this.operators.includes(this.previousInput);
+    const screenIsBlank = this.getScreen() === "";
+    const decimalInCurrentNum = this.getScreen().includes(".");
+    if (lastInputWasOperator || lastInputWasEquals) this.clearScreen();
+    if (decimalInCurrentNum) return;
+    if (screenIsBlank) this.setScreen("0");
+    this.appendScreen(".");
+  }
+
+  handleClearPress() {
+    this.leftOperand = null;
+    this.operator = null;
+    this.rightOperand = null;
+    this.lastRes = null;
+    this.clearScreen();
+    this.clearMiniScreen();
+    this.appendScreen("0");
+  }
+
+  handleBackspacePress() {
+    const lastInputWasOperator = this.operators.includes(this.previousInput);
+    if (lastInputWasOperator || this.previousInput === "=") {
+      this.clearMiniScreen();
+      this.leftOperand = null;
+      this.lastRes = null;
+      return;
+    }
+    this.backspaceScreen();
+  }
+
+  handleOperatorPress(btn) {
+    if (this.operators.includes(this.previousInput)) {
+      this.popMiniScreen(2);
+      if (btn === "mod") this.popMiniScreen(2); // Remove 2 extra ch for left over "mo"
+      this.appendMiniScreen(` ${btn}`);
+    } else {
+      if (this.operator) {
+        this.handleEqualPress(true);
+      }
+      if (this.lastRes) {
+        this.clearMiniScreen();
+        this.appendMiniScreen(`${this.lastRes} ${btn} `);
+        this.leftOperand = this.lastRes;
+      } else {
+        this.leftOperand = this.getScreen();
+        this.operator = btn;
+        this.appendMiniScreen(this.getScreen() + ` ${btn} `);
+      }
+    }
+    this.operator = btn;
+  }
+
+  handleNumberPress(btn) {
+    const lastInputWasEquals = this.previousInput === "=";
+    const lastInputWasOperator = this.operators.includes(this.previousInput);
+    if (lastInputWasOperator || this.getScreen() === "0") {
+      this.clearScreen();
+    }
+    if (lastInputWasEquals) {
+      this.clearMiniScreen();
+      this.clearScreen();
+      this.leftOperand = this.lastLeftOperand;
+      this.lastRes = null;
+    }
+    this.appendScreen(btn);
+  }
+
+  handleEqualPress(resultOnly = false) {
+    // Set defaults
+    if (!this.leftOperand) this.leftOperand = this.lastRes || this.getScreen();
+
+    if (!this.operator) this.operator = this.lastOperator || "+";
+
+    if (this.previousInput === "=" || !this.operator)
       this.rightOperand = this.lastRightOperand;
     else this.rightOperand = this.screen.textContent;
-    if (this.leftOperand === null) this.leftOperand = this.lastRes || 0;
-    if (this.operator === null) this.operator = this.lastOperator || 0;
+    if (!this.rightOperand) this.rightOperand = 0;
+
+    // Calculation
     this.lastRes = this.roundToThree(
       this.calculate(this.leftOperand, this.operator, this.rightOperand)
     );
-    this.clearMiniScreen();
-    if (resultOnly) {
-      this.appendMiniScreen(`${this.lastRes}`);
-    } else {
-      this.appendMiniScreen(
-        `${this.leftOperand} ${this.operator} ${this.rightOperand} = `
-      );
-    }
+
+    // Set screens
+    this.setScreen(`${this.lastRes}`);
+
+    const display = resultOnly
+      ? `${this.lastRes}`
+      : `${this.leftOperand} ${this.operator} ${this.rightOperand} = `;
+
+    this.setMiniScreen(display);
+
+    // "Reset" calculator
     this.lastLeftOperand = this.leftOperand;
     this.lastOperator = this.operator;
     this.lastRightOperand = this.rightOperand;
     this.leftOperand = this.lastRes;
     this.operator = null;
     this.rightOperand = null;
-
-    this.clearScreen();
-    this.appendScreen(`${this.lastRes}`);
   }
 
   roundToThree(num) {
@@ -517,7 +565,7 @@ class CalcPopup {
         return parseFloat(a) * parseFloat(b);
       case "/":
         return parseFloat(a) / parseFloat(b); // :)
-      case "%":
+      case "mod":
         if (a < 0)
           while (a < 0) {
             a = parseFloat(a) + parseFloat(b);
@@ -542,6 +590,37 @@ class CalcPopup {
 
   appendMiniScreen(text) {
     this.miniScreen.textContent += text;
+  }
+
+  getScreen() {
+    return this.screen.textContent;
+  }
+
+  getMiniScreen() {
+    return this.miniScreen.textContent;
+  }
+
+  popScreen(num) {
+    if (num < 1) return;
+    this.screen.textContent = this.screen.textContent.slice(0, -1 * num);
+    return this.screen.textContent;
+  }
+
+  popMiniScreen(num) {
+    if (num < 1) return;
+    this.miniScreen.textContent = this.miniScreen.textContent.slice(
+      0,
+      -1 * num
+    );
+    return this.miniScreen.textContent;
+  }
+
+  setScreen(text) {
+    this.screen.textContent = text;
+  }
+
+  setMiniScreen(text) {
+    this.miniScreen.textContent = text;
   }
 
   clearScreen() {
