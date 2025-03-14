@@ -862,6 +862,7 @@ class EdgeworkPopup {
           type: "no-reset-yes-btn-group",
           no: "Close",
           yes: "Create",
+          yesClassList: "gray",
           resetCallback: {
             trigger: "click",
             callback: () => {
@@ -932,6 +933,32 @@ class EdgeworkPopup {
     this.portsPreview = this.form.querySelector(".ports-preview");
     this.litIndsPreview = this.form.querySelector(".lit-inds-preview");
     this.unlitIndsPreview = this.form.querySelector(".unlit-inds-preview");
+
+    const moConfig = { childList: true, subtree: true };
+    const moCallback = (mutationList, observer) => {
+      for (const mutation of mutationList) {
+        if (mutation.type === "childList") {
+          const widgetCount = Array.from(this.edgeworkPreview.children)
+            .slice(1)
+            .reduce((acc, preview) => (acc += preview.children.length), 0);
+          if (widgetCount === 5 && this.serialPreview.textContent.length === 6)
+            this.form
+              .querySelector("button[type='submit'")
+              .classList.add("green");
+          else if (widgetCount > 5) {
+            this.form
+              .querySelector("button[type='submit'")
+              .classList.add("orange");
+          } else
+            this.form
+              .querySelector("button[type='submit'")
+              .classList.remove("green");
+        }
+      }
+    };
+    const mutationObserver = new MutationObserver(moCallback);
+    mutationObserver.observe(this.edgeworkPreview, moConfig);
+
     return this;
   }
 

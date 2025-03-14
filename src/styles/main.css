@@ -72,6 +72,10 @@ li {
   list-style: none;
 }
 
+.gray {
+  color: var(--color-gray) !important;
+}
+
 .red {
   color: var(--color-red) !important;
 }
