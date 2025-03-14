@@ -50,11 +50,17 @@ class GridPopup {
         ];
         if (event.altKey && Number.isInteger(parseInt(event.key)))
           this.setColor(colorList[event.key - 1]);
-        if (event.altKey && event.key === "q") this.setColor("#000000");
+        if (event.altKey && (event.key === "q" || event.key === "b"))
+          this.setColor("#000000");
         if (event.altKey && event.key === "w") this.setColor("#ffffff");
         if (event.altKey && event.key === "g") this.setColor("#808080");
-        if (event.altKey && event.key === "s") this.setColor("#800080");
-        if (event.altKey && event.key === "`") this.setColor("#00ffff");
+        if (event.altKey && (event.key === "s" || event.key === "p"))
+          this.setColor("#800080");
+        if (
+          event.altKey &&
+          (event.key === "`" || event.key === "~" || event.key === "`")
+        )
+          this.setColor("#00ffff");
       }
     });
 
@@ -399,6 +405,8 @@ class CalcPopup {
         activeElement.getAttribute("contenteditable");
 
       if (targetingPageInput) return;
+      if (event.altKey)
+        return; // Used for grid popup
       else this.handleBtnPress(event.key);
     });
     return this;
