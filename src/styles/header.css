@@ -65,22 +65,12 @@
   margin: 12px 12px;
 }
 
-.edgework-wrapper {
-  flex: 1;
-  flex-wrap: wrap;
-  background-color: var(--color-jet);
-  align-self: flex-start;
-  justify-content: flex-start;
-  display: flex;
-  flex-direction: row-reverse;
-  min-width: 270px;
-}
-
 .edgework {
+  flex: 1;
   display: flex;
   flex-wrap: wrap;
   flex-direction: row-reverse;
-  align-self: flex-end;
+  align-content: space-evenly;
 }
 
 .widget {

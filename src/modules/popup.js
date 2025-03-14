@@ -920,7 +920,8 @@ class EdgeworkPopup {
       true
     );
     this.form = this.popup.form;
-    this.realEdgework = document.querySelector(".header .edgework");
+    this.header = document.querySelector(".header");
+    this.realEdgework = this.header.querySelector(".header .edgework");
     this.serialInput = this.form.querySelector("#serial-input");
     this.batteriesInput = this.form.querySelector("#batteries-input");
     this.holdersInput = this.form.querySelector("#holders-input");
@@ -934,36 +935,48 @@ class EdgeworkPopup {
     this.litIndsPreview = this.form.querySelector(".lit-inds-preview");
     this.unlitIndsPreview = this.form.querySelector(".unlit-inds-preview");
 
-    const moConfig = { childList: true, subtree: true };
-    const moCallback = (mutationList, observer) => {
+    mainPubSub.subscribe("addHeaderListItem", this.headerUpdate.bind(this));
+
+    const previewObserverConfig = { childList: true, subtree: true };
+    const previewObserverCallback = (mutationList) => {
       for (const mutation of mutationList) {
         if (mutation.type === "childList") {
           const widgetCount = Array.from(this.edgeworkPreview.children)
             .slice(1)
             .reduce((acc, preview) => (acc += preview.children.length), 0);
-          if (widgetCount === 5 && this.serialPreview.textContent.length === 6)
-            this.form
-              .querySelector("button[type='submit'")
-              .classList.add("green");
-          else if (widgetCount > 5) {
-            this.form
-              .querySelector("button[type='submit'")
-              .classList.add("orange");
-          } else
-            this.form
-              .querySelector("button[type='submit'")
-              .classList.remove("green");
+          const submitBtn = this.form.querySelector("button[type='submit'");
+          if (
+            widgetCount === 5 &&
+            this.serialPreview.textContent.length === 6
+          ) {
+            submitBtn.classList.remove("orange");
+            submitBtn.classList.add("green");
+          } else if (widgetCount > 5) {
+            submitBtn.classList.remove("green");
+            submitBtn.classList.add("orange");
+          } else {
+            submitBtn.classList.remove("green");
+            submitBtn.classList.remove("orange");
+          }
         }
       }
     };
-    const mutationObserver = new MutationObserver(moCallback);
-    mutationObserver.observe(this.edgeworkPreview, moConfig);
+    const previewObserver = new MutationObserver(previewObserverCallback);
+    previewObserver.observe(this.edgeworkPreview, previewObserverConfig);
 
     return this;
   }
 
   doPopup() {
     this.popup.doPopup();
+  }
+
+  headerUpdate() {
+    const headerHeight = parseInt(
+      getComputedStyle(this.header).height.replace("px", "")
+    );
+    if (headerHeight > 100) this.realEdgework.style.maxWidth = "520px";
+    else this.realEdgework.style.maxWidth = "max-content";
   }
 
   validateSerialInput() {
