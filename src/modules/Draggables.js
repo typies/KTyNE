@@ -4,6 +4,7 @@ window.addEventListener("resize", () => {
   // Reset rect objs on window change
   setUpBodyBoundDraggable(".alphabet-popup-wrapper.draggable");
   setUpBodyBoundDraggable(".grid-popup-wrapper.draggable");
+  setUpBodyBoundDraggable(".calc-popup-wrapper.draggable");
 });
 
 function setUpBodyBoundDraggable(selector) {
@@ -43,6 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   setUpBodyBoundDraggable(".alphabet-popup-wrapper.draggable");
   setUpBodyBoundDraggable(".grid-popup-wrapper.draggable");
+  setUpBodyBoundDraggable(".calc-popup-wrapper.draggable");
 
   // Makes divs only draggable by their header
   const draggableGridAreas = document.querySelectorAll(".drag-area");
@@ -65,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
     iframeCover.classList.add("hidden");
   });
 
-  // Split notes button
+  // Split notes buttons
   const splitNotesBtn = document.querySelector(".split-notes-btn");
   splitNotesBtn.addEventListener("click", () => {
     splitNotesBtn.classList.toggle("selected");
@@ -76,7 +78,6 @@ document.addEventListener("DOMContentLoaded", () => {
       .querySelector(".bottom-notes *:last-child")
       .classList.toggle("hidden");
   });
-
   const splitNotesHorBtn = document.querySelector(".split-notes-hor-btn");
   splitNotesHorBtn.addEventListener("click", () => {
     splitNotesHorBtn.classList.toggle("selected");

@@ -64,13 +64,6 @@ class GridPopup {
       this.dom.widthInput.select();
     };
 
-    window.addEventListener("resize", () => {
-      // Reset rect objs on window change
-      this.dom.gridPopupWrapper.classList.add("hidden");
-      this.dom.gridBtn.classList.remove("selected");
-      this.dom.gridPopupWrapper.style.transform = "none";
-    });
-
     this.dom.gridPopupWrapper
       .querySelector(".drag-area .hide-btn")
       .addEventListener("click", () => {
@@ -323,6 +316,247 @@ class GridPopup {
   }
 }
 
+class CalcPopup {
+  constructor() {
+    this.init();
+    this.calc = document.querySelector(".calc");
+    this.screen = this.calc.querySelector(".calc-screen");
+    this.miniScreen = this.calc.querySelector(".calc-mini-screen");
+
+    this.btnGrid = this.calc.querySelector(".calc-btn-grid");
+    this.allBtns = Array.from(this.btnGrid.children);
+
+    const calcWrapper = document.querySelector(".calc-popup-wrapper");
+    const calcBtn = document.querySelector(".calc-btn");
+    calcBtn.addEventListener("click", () => {
+      calcBtn.classList.toggle("selected");
+      calcWrapper.classList.toggle("hidden");
+    });
+
+    calcWrapper
+      .querySelector(".drag-area .hide-btn")
+      .addEventListener("click", () => {
+        calcWrapper.classList.add("hidden");
+        calcBtn.classList.remove("selected");
+      });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.altKey && event.key === "c") {
+        calcBtn.classList.toggle("selected");
+        calcWrapper.classList.toggle("hidden");
+      }
+    });
+
+    const btns = [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "+",
+      "-",
+      "*",
+      "/",
+      "=",
+      ".",
+      "%",
+      "±",
+      "C",
+    ];
+    btns.forEach((btnText) => {
+      const btn = this.allBtns.find((btn) => btn.textContent === btnText);
+      btn.addEventListener("click", () => this.handleBtnPress(btnText));
+    });
+
+    // Back btn
+    this.backBtn = this.btnGrid.querySelector(".calc-btn:has(> svg)");
+    this.backBtn.addEventListener("click", () => this.handleBtnPress("back"));
+
+    document.addEventListener("keydown", (event) => {
+      const activeElement = document.activeElement;
+      if (
+        activeElement.tagName === "INPUT" ||
+        activeElement.getAttribute("contenteditable")
+      )
+        return;
+      if (btns.includes(event.key)) {
+        this.allBtns.find((btn) => btn.textContent === event.key).click();
+      } else if (event.key === "Enter") {
+        this.allBtns.find((btn) => btn.textContent === "=").click();
+      } else if (event.key === "Backspace") {
+        this.backBtn.click();
+      } else if (event.key === "m") {
+        this.allBtns.find((btn) => btn.textContent === "%").click();
+      } else if (event.key === "n") {
+        this.allBtns.find((btn) => btn.textContent === "±").click();
+      }
+    });
+    return this;
+  }
+
+  handleBtnPress(btn) {
+    const nums = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+    const operators = ["+", "-", "*", "/", "%"];
+    if (nums.includes(btn)) {
+      if (operators.includes(this.previousInput)) {
+        this.clearScreen();
+      }
+      if (this.previousInput === "=") {
+        this.clearMiniScreen();
+        this.clearScreen();
+        this.leftOperand = this.lastLeftOperand;
+        this.lastRes = null;
+      }
+      if (this.screen.textContent === "0") {
+        this.clearScreen();
+      }
+      this.appendScreen(btn);
+    } else if (btn === "±") {
+      if (!this.leftOperand) this.leftOperand = this.screen.textContent;
+      this.leftOperand = parseFloat(this.leftOperand) * -1;
+      this.screen.textContent = this.leftOperand;
+      this.lastRes = this.leftOperand;
+      this.rightOperand = null;
+    } else if (btn === ".") {
+      if (
+        operators.includes(this.previousInput) ||
+        this.previousInput === "="
+      ) {
+        this.clearScreen();
+      }
+      if (this.screen.textContent.includes(".")) return;
+      if (this.screen.textContent === "") this.screen.textContent = "0";
+      this.appendScreen(btn);
+    } else if (btn === "C") {
+      this.leftOperand = null;
+      this.operator = null;
+      this.rightOperand = null;
+      this.lastRes = null;
+      this.clearScreen();
+      this.clearMiniScreen();
+      this.appendScreen("0");
+    } else if (btn === "back") {
+      if (
+        operators.includes(this.previousInput) ||
+        this.previousInput === "="
+      ) {
+        this.clearMiniScreen();
+        this.leftOperand = null;
+        this.lastRes = null;
+        return;
+      }
+      this.backspaceScreen();
+    } else if (operators.includes(btn)) {
+      if (operators.includes(this.previousInput)) {
+        this.miniScreen.textContent = `${this.miniScreen.textContent.slice(0, -2)} ${btn} `;
+      } else {
+        if (this.operator) {
+          this.handleEqualClick(true);
+        }
+        if (this.lastRes) {
+          this.clearMiniScreen();
+          this.appendMiniScreen(`${this.lastRes} ${btn} `);
+          this.leftOperand = this.lastRes;
+        } else {
+          this.leftOperand = this.screen.textContent;
+          this.operator = btn;
+          this.appendMiniScreen(this.screen.textContent + ` ${btn} `);
+        }
+      }
+      this.operator = btn;
+    } else if (btn === "=") {
+      this.handleEqualClick();
+    }
+    this.previousInput = btn;
+  }
+
+  handleEqualClick(resultOnly = false) {
+    if (this.previousInput === "=" || this.operator === null)
+      this.rightOperand = this.lastRightOperand;
+    else this.rightOperand = this.screen.textContent;
+    if (this.leftOperand === null) this.leftOperand = this.lastRes || 0;
+    if (this.operator === null) this.operator = this.lastOperator || 0;
+    this.lastRes = this.roundToThree(
+      this.calculate(this.leftOperand, this.operator, this.rightOperand)
+    );
+    this.clearMiniScreen();
+    if (resultOnly) {
+      this.appendMiniScreen(`${this.lastRes}`);
+    } else {
+      this.appendMiniScreen(
+        `${this.leftOperand} ${this.operator} ${this.rightOperand} = `
+      );
+    }
+    this.lastLeftOperand = this.leftOperand;
+    this.lastOperator = this.operator;
+    this.lastRightOperand = this.rightOperand;
+    this.leftOperand = this.lastRes;
+    this.operator = null;
+    this.rightOperand = null;
+
+    this.clearScreen();
+    this.appendScreen(`${this.lastRes}`);
+  }
+
+  roundToThree(num) {
+    return Math.round(num * 1000) / 1000;
+  }
+
+  calculate(a, op, b) {
+    switch (op) {
+      case "+":
+        return parseFloat(a) + parseFloat(b);
+      case "-":
+        return parseFloat(a) - parseFloat(b);
+      case "*":
+        return parseFloat(a) * parseFloat(b);
+      case "/":
+        return parseFloat(a) / parseFloat(b); // :)
+      case "%":
+        if (a < 0)
+          while (a < 0) {
+            a = parseFloat(a) + parseFloat(b);
+          }
+        return parseFloat(a) % parseFloat(b);
+      default:
+        break;
+    }
+  }
+
+  backspaceScreen() {
+    if (this.screen.textContent.length === 1) {
+      this.screen.textContent = "0";
+    } else {
+      this.screen.textContent = this.screen.textContent.slice(0, -1);
+    }
+  }
+
+  appendScreen(text) {
+    this.screen.textContent += text;
+  }
+
+  appendMiniScreen(text) {
+    this.miniScreen.textContent += text;
+  }
+
+  clearScreen() {
+    this.screen.textContent = "";
+  }
+
+  clearMiniScreen() {
+    this.miniScreen.textContent = "";
+  }
+
+  init() {
+    return this;
+  }
+}
+
 class NumberedAlphabetPopup {
   constructor() {
     this.init();
@@ -334,13 +568,6 @@ class NumberedAlphabetPopup {
       this.alphaPopupWrapper.classList.toggle("hidden");
       this.alphaBtn.classList.toggle("selected");
     };
-
-    window.addEventListener("resize", () => {
-      // Reset rect objs on window change
-      this.alphaPopupWrapper.classList.add("hidden");
-      this.alphaBtn.classList.remove("selected");
-      this.alphaPopupWrapper.style.transform = "none";
-    });
 
     this.alphaPopupWrapper
       .querySelector(".drag-area .hide-btn")
@@ -883,4 +1110,10 @@ class AddModulePopup {
   }
 }
 
-export { AddModulePopup, EdgeworkPopup, NumberedAlphabetPopup, GridPopup };
+export {
+  AddModulePopup,
+  EdgeworkPopup,
+  NumberedAlphabetPopup,
+  GridPopup,
+  CalcPopup,
+};

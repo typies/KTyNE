@@ -33,11 +33,21 @@
   color: var(--color-jet);
 }
 
+.grid-popup-wrapper {
+  bottom: calc(
+    var(--footer-height) + 105px
+  ); /* Some extra space for alpha popup*/
+}
+
 .drag-area {
   border-radius: inherit;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
   border: 1px solid var(--color-gray);
+  border-bottom-width: 2px;
+  height: 20px;
+  background-color: var(--color-jet);
+  position: relative;
 }
 
 .grid-popup {
@@ -46,9 +56,6 @@
 }
 
 .drag-area {
-  height: 20px;
-  background-color: var(--color-jet);
-  position: relative;
 }
 
 .drag-area .hide-btn {
@@ -68,7 +75,6 @@
   padding: 12px;
   grid-template-columns: repeat(10, 4ch);
   font-size: 1.25em;
-  width: 514px; /* Width specified for draggable calculations */
 }
 
 .grid-wrapper {
@@ -280,4 +286,63 @@
   height: 4ch;
   text-align: center;
   display: block;
+}
+
+.calc-popup-wrapper {
+  position: absolute;
+  bottom: calc(
+    var(--footer-height) + 110px
+  ); /* Some extra space for alpha popup*/
+  right: 400px;
+}
+
+.calc {
+  bottom: 0;
+  right: 0;
+  background-color: var(--color-jet);
+  border: 1px solid var(--color-gray);
+  border-radius: 6px;
+}
+
+.calc-screen,
+.calc-mini-screen {
+  margin: 10px;
+  line-height: 1.4;
+  padding-right: 8px;
+  justify-content: right;
+  display: flex;
+  color: var(--color-gray);
+  height: 1em;
+  overflow: hidden;
+}
+
+.calc-mini-screen {
+  font-size: 1em;
+}
+
+.calc-screen {
+  font-size: 1.6em;
+}
+
+.calc-btn-grid {
+  display: grid;
+  grid-template-rows: repeat(5, 40px);
+  grid-template-columns: repeat(4, 60px);
+  gap: 4px;
+  margin: 10px;
+}
+
+.calc-btn {
+  stroke: var(--color-blue);
+}
+
+.calc-btn:has(> svg):hover {
+  stroke: white;
+}
+
+.calc-btn svg {
+  stroke: inherit;
+}
+
+.calc-btn {
 }
