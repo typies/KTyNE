@@ -331,24 +331,23 @@ class CalcPopup {
 
     this.btnGrid = this.calc.querySelector(".calc-btn-grid");
 
-    const calcWrapper = document.querySelector(".calc-popup-wrapper");
-    const calcBtn = document.querySelector(".calc-btn");
-    calcBtn.addEventListener("click", () => {
-      calcBtn.classList.toggle("selected");
-      calcWrapper.classList.toggle("hidden");
-    });
+    this.calcWrapper = document.querySelector(".calc-popup-wrapper");
+    this.calcBtn = document.querySelector(".calc-btn");
 
-    calcWrapper
+    this.calcWrapper
       .querySelector(".drag-area .hide-btn")
       .addEventListener("click", () => {
-        calcWrapper.classList.add("hidden");
-        calcBtn.classList.remove("selected");
+        this.togglePopup();
       });
+
+    this.calcBtn.addEventListener("click", () => {
+      this.togglePopup();
+    });
 
     document.addEventListener("keydown", (event) => {
       if (event.altKey && event.key === "c") {
-        calcBtn.classList.toggle("selected");
-        calcWrapper.classList.toggle("hidden");
+        event.preventDefault();
+        this.togglePopup();
       }
     });
 
@@ -390,7 +389,7 @@ class CalcPopup {
     );
 
     // Prevent calcBtn & calc enter presses from interaction outside calc
-    calcBtn.addEventListener("keydown", (event) => {
+    this.calcBtn.addEventListener("keydown", (event) => {
       if (event.key === "Enter") event.preventDefault();
     });
     this.calc.addEventListener("keydown", (event) => {
@@ -410,6 +409,18 @@ class CalcPopup {
       else this.handleBtnPress(event.key);
     });
     return this;
+  }
+
+  togglePopup() {
+    this.calcBtn.classList.toggle("selected");
+    this.calcWrapper.classList.toggle("hidden");
+    if (this.calcBtn.classList.contains("selected")) {
+      console.log("focus calc wrapper");
+      document.querySelector(".calc-btn:last-child").focus();
+    } else {
+      console.log("focus notes");
+      document.querySelector(".notes").focus();
+    }
   }
 
   handleBtnPress(btn) {
@@ -449,25 +460,33 @@ class CalcPopup {
   }
 
   handleNegatePress() {
-    this.setScreen(this.getScreen() * -1);
+    // this.setScreen(this.getScreen() * -1);
+    this.leftOperand = this.getScreen();
+    this.operator = "*";
+    this.rightOperand = -1;
+    this.handleEqualPress();
   }
 
   handleDotPress() {
     const lastInputWasEquals = this.previousInput === "=";
     const lastInputWasOperator = this.operators.includes(this.previousInput);
-    const screenIsBlank = this.getScreen() === "";
     const decimalInCurrentNum = this.getScreen().includes(".");
     if (lastInputWasOperator || lastInputWasEquals) this.clearScreen();
     if (decimalInCurrentNum) return;
+    const screenIsBlank = this.getScreen() === "";
     if (screenIsBlank) this.setScreen("0");
     this.appendScreen(".");
   }
 
   handleClearPress() {
     this.leftOperand = null;
+    this.lastLeftOperand = null;
     this.operator = null;
+    this.lastOperator = null;
     this.rightOperand = null;
+    this.lastRightOperand = null;
     this.lastRes = null;
+
     this.clearScreen();
     this.clearMiniScreen();
     this.appendScreen("0");
@@ -525,18 +544,23 @@ class CalcPopup {
     // Set defaults
     if (!this.leftOperand) this.leftOperand = this.lastRes || this.getScreen();
 
-    if (this.operator || this.previousInput === "=") {
-      if (this.previousInput === "=") this.rightOperand = this.lastRightOperand;
-      else this.rightOperand = this.screen.textContent;
+    if (!this.operator && !this.lastOperator) {
+      // Res = screen. No calculation needed
+      this.lastRes = this.leftOperand;
+    } else {
+      console.log("previousInput: ", this.previousInput);
+      // Repeat previous operation, with lastRes as leftOperand
+      if (!this.rightOperand && this.previousInput === "=")
+        this.rightOperand = this.lastRightOperand;
+      // Do normal calculation
+      else if (!this.rightOperand) this.rightOperand = this.screen.textContent;
+
       if (!this.operator) this.operator = this.lastOperator;
-      if (!this.rightOperand) this.rightOperand = 0;
 
       // Calculation
       this.lastRes = this.roundToThree(
         this.calculate(this.leftOperand, this.operator, this.rightOperand)
       );
-    } else {
-      this.lastRes = this.leftOperand;
     }
 
     // Set screens
@@ -563,6 +587,7 @@ class CalcPopup {
   }
 
   calculate(a, op, b) {
+    console.log(a, op, b);
     switch (op) {
       case "+":
         return parseFloat(a) + parseFloat(b);
@@ -585,6 +610,7 @@ class CalcPopup {
 
   backspaceScreen() {
     if (this.screen.textContent.length === 1) {
+      if (this.screen.textContent === "0") this.handleClearPress();
       this.screen.textContent = "0";
     } else {
       this.screen.textContent = this.screen.textContent.slice(0, -1);
