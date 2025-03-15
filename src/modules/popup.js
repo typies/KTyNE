@@ -449,11 +449,7 @@ class CalcPopup {
   }
 
   handleNegatePress() {
-    if (!this.leftOperand) this.leftOperand = this.getScreen();
-    this.leftOperand = parseFloat(this.leftOperand) * -1;
-    this.setScreen(this.leftOperand);
-    this.lastRes = this.leftOperand;
-    this.rightOperand = null;
+    this.setScreen(this.getScreen() * -1);
   }
 
   handleDotPress() {
@@ -529,24 +525,27 @@ class CalcPopup {
     // Set defaults
     if (!this.leftOperand) this.leftOperand = this.lastRes || this.getScreen();
 
-    if (!this.operator) this.operator = this.lastOperator || "+";
+    if (this.operator || this.previousInput === "=") {
+      if (this.previousInput === "=") this.rightOperand = this.lastRightOperand;
+      else this.rightOperand = this.screen.textContent;
+      if (!this.operator) this.operator = this.lastOperator;
+      if (!this.rightOperand) this.rightOperand = 0;
 
-    if (this.previousInput === "=" || !this.operator)
-      this.rightOperand = this.lastRightOperand;
-    else this.rightOperand = this.screen.textContent;
-    if (!this.rightOperand) this.rightOperand = 0;
-
-    // Calculation
-    this.lastRes = this.roundToThree(
-      this.calculate(this.leftOperand, this.operator, this.rightOperand)
-    );
+      // Calculation
+      this.lastRes = this.roundToThree(
+        this.calculate(this.leftOperand, this.operator, this.rightOperand)
+      );
+    } else {
+      this.lastRes = this.leftOperand;
+    }
 
     // Set screens
     this.setScreen(`${this.lastRes}`);
 
-    const display = resultOnly
-      ? `${this.lastRes}`
-      : `${this.leftOperand} ${this.operator} ${this.rightOperand} = `;
+    const display =
+      resultOnly || !this.operator
+        ? `${this.lastRes}`
+        : `${this.leftOperand} ${this.operator} ${this.rightOperand} = `;
 
     this.setMiniScreen(display);
 
