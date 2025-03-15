@@ -26,12 +26,15 @@ function setUpBodyBoundDraggable(selector) {
   });
 }
 
+const iframeCover = document.querySelector(".iframe-cover");
 // Delay until page is done loading so heights can be calculated properly
 document.addEventListener("DOMContentLoaded", () => {
   interact(".notes-wrapper-wrapper").resizable({
     edges: { left: true },
     listeners: {
       move: function (event) {
+        /* Block the mouse from touching the iframe when moving resizeable area*/
+        iframeCover.classList.remove("hidden");
         let x = event.target.dataset.x;
         x = (parseFloat(x) || 0) + event.deltaRect.left;
         Object.assign(event.target.style, {
@@ -40,6 +43,10 @@ document.addEventListener("DOMContentLoaded", () => {
         Object.assign(event.target.dataset, { x });
       },
     },
+  });
+  /* Block the mouse from touching the iframe when moving resizeable area*/
+  document.addEventListener("mouseup", () => {
+    iframeCover.classList.add("hidden");
   });
 
   setUpBodyBoundDraggable(".alphabet-popup-wrapper.draggable");
@@ -55,16 +62,6 @@ document.addEventListener("DOMContentLoaded", () => {
     item.addEventListener("mouseout", () => {
       item.parentElement.classList.remove("draggable");
     });
-  });
-
-  /* Block the mouse from touching the iframe when moving resizeable area*/
-  const notesArea = document.querySelector(".notes");
-  const iframeCover = document.querySelector(".iframe-cover");
-  notesArea.addEventListener("mousedown", () => {
-    iframeCover.classList.remove("hidden");
-  });
-  notesArea.addEventListener("mouseup", () => {
-    iframeCover.classList.add("hidden");
   });
 
   // Split notes buttons
