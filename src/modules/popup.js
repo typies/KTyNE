@@ -935,8 +935,6 @@ class EdgeworkPopup {
     this.litIndsPreview = this.form.querySelector(".lit-inds-preview");
     this.unlitIndsPreview = this.form.querySelector(".unlit-inds-preview");
 
-    mainPubSub.subscribe("addHeaderListItem", this.headerUpdate.bind(this));
-
     const previewObserverConfig = { childList: true, subtree: true };
     const previewObserverCallback = (mutationList) => {
       for (const mutation of mutationList) {
@@ -969,14 +967,6 @@ class EdgeworkPopup {
 
   doPopup() {
     this.popup.doPopup();
-  }
-
-  headerUpdate() {
-    const headerHeight = parseInt(
-      getComputedStyle(this.header).height.replace("px", "")
-    );
-    if (headerHeight > 100) this.realEdgework.style.maxWidth = "520px";
-    else this.realEdgework.style.maxWidth = "max-content";
   }
 
   validateSerialInput() {
