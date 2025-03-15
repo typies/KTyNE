@@ -28,7 +28,7 @@ function setUpBodyBoundDraggable(selector) {
 
 // Delay until page is done loading so heights can be calculated properly
 document.addEventListener("DOMContentLoaded", () => {
-  interact(".notes-wrapper").resizable({
+  interact(".notes-wrapper-wrapper").resizable({
     edges: { left: true },
     listeners: {
       move: function (event) {
