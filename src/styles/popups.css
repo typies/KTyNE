@@ -66,9 +66,3 @@ form input[name="url"] {
   display: flex;
   flex-direction: column;
 }
-
-.edgwork-overlay {
-  position: absolute;
-  left: 0;
-  top: 0;
-}
