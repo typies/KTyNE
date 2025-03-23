@@ -170,15 +170,6 @@ class GridPopup {
       cell.addEventListener("mouseover", () => {
         if (this.coloring) this.colorCell(cell);
       });
-      cell.addEventListener("input", () => {
-        if (cell.textContent.length > 6 && this.cellSize < 5) {
-          this.cellSize = 5;
-          this.updateGridSize();
-        } else if (cell.textContent.length > 8 && this.cellSize < 6) {
-          this.cellSize++;
-          this.updateGridSize();
-        }
-      });
     } else {
       cell.textContent = textContent;
       cell.style.border = "none";
@@ -235,6 +226,7 @@ class GridPopup {
         this.createRow(numOfExistingRows + i - 1)
       );
     }
+    this.updateGridSize();
   }
 
   popCols(numberToPop = 1) {
@@ -264,20 +256,11 @@ class GridPopup {
       existingRows[0].appendChild(
         this.createCell(this.indexStart + numOfExistingCols)
       );
-      existingRows.slice(1).forEach((row) => {
-        const cell = this.createCell();
-        cell.addEventListener("input", () => {
-          if (
-            (cell.textContent.length > 6 && this.cellSize < 5) ||
-            (cell.textContent.length > 8 && this.cellSize < 6)
-          ) {
-            this.cellSize++;
-            this.updateGridSize();
-          }
-        });
-        row.appendChild(cell);
-      });
+      existingRows
+        .slice(1)
+        .forEach((row) => row.appendChild(this.createCell()));
     }
+    this.updateGridSize();
   }
 
   switchIndexing(newIndexStart = 0) {
