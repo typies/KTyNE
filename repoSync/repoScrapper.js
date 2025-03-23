@@ -65,7 +65,7 @@ async function run() {
 console.log(
   `
   -------------------------------------------------------------
-  | This Process takes a minute or 2 to complete. Be patitent |
+  | This Process takes a minute or 2 to complete. Be patient. |
   -------------------------------------------------------------
   | Don't forget to update the import/variable in Sidebar.js  |
   -------------------------------------------------------------

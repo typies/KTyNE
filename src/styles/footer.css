@@ -21,6 +21,16 @@
   color: var(--color-blue);
 }
 
+.github-link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  & a {
+    color: var(--color-blue);
+  }
+}
+
 .grid-popup-wrapper,
 .alphabet-popup-wrapper {
   position: absolute;
