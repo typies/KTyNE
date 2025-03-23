@@ -227,13 +227,13 @@ class HeaderList {
   sortHeaderList() {
     const headerList = this.dom.headerList;
     const headerListChildren = Array.from(headerList.children);
-    headerListChildren.slice(1).sort((a, b) => {
+    const closeAllBtn = headerListChildren[0];
+    const openModules = headerListChildren.slice(1);
+    openModules.sort((a, b) => {
       if (a.textContent.toLowerCase() < b.textContent.toLowerCase()) return -1;
       return 1;
     });
-    headerList.replaceChildren(
-      ...[headerListChildren[0], ...headerListChildren]
-    );
+    headerList.replaceChildren(...[closeAllBtn, ...openModules]);
   }
 
   closeHeaderListItem(headerListItemId) {
