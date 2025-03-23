@@ -65,4 +65,5 @@ form input[name="url"] {
 .manual-choices-group {
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
 }
