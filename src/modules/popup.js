@@ -470,8 +470,8 @@ class CalcPopup {
   handleDotPress() {
     const lastInputWasEquals = this.previousInput === "=";
     const lastInputWasOperator = this.operators.includes(this.previousInput);
-    const decimalInCurrentNum = this.getScreen().includes(".");
     if (lastInputWasOperator || lastInputWasEquals) this.clearScreen();
+    const decimalInCurrentNum = this.getScreen().includes(".");
     if (decimalInCurrentNum) return;
     const screenIsBlank = this.getScreen() === "";
     if (screenIsBlank) this.setScreen("0");
