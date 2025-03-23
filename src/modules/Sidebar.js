@@ -248,8 +248,10 @@ class Sidebar {
     this.importModulesFromLocal();
   }
 
-  openModule(sidebarItem) {
-    this.openNewModule(sidebarItem.moduleName, sidebarItem.manualUrl);
+  openModule(sidebarItem, oneTimeManual = false) {
+    if (oneTimeManual)
+      this.openNewModule(sidebarItem.moduleName, oneTimeManual);
+    else this.openNewModule(sidebarItem.moduleName, sidebarItem.manualUrl);
     this.localStorageAppendRecent(sidebarItem);
     this.dom.filter.select();
     this.dom.filter.value = "";
@@ -272,10 +274,7 @@ class Sidebar {
     );
 
     editBtn.setAttribute("fill", "#87ceeb");
-    path1.setAttribute(
-      "d",
-      "M3.8 12.963L2 18l4.8-.63L18.11 6.58a2.612 2.612 0 00-3.601-3.785L3.8 12.963z"
-    );
+    path1.setAttribute("d", "M7 10L12 15L17 10");
 
     editBtn.appendChild(path1);
     return editBtn;
@@ -293,7 +292,7 @@ class Sidebar {
       event.stopPropagation();
       if (!sidebarItem.deleteable) {
         new PopupGenerator(
-          `Set default manual for ${sidebarItem.moduleName}`,
+          `Alternative Manuals for ${sidebarItem.moduleName}`,
           [
             {
               type: "default-manual-btn-group",
@@ -306,7 +305,7 @@ class Sidebar {
             },
           ],
           (data) => {
-            this.setDefaultManual(sidebarItem.moduleName, data);
+            this.setDefaultPrompt(sidebarItem, data);
           }
         ).doPopup();
       } else {
@@ -368,24 +367,56 @@ class Sidebar {
     localStorage.removeItem(moduleName);
   }
 
-  setDefaultManual(modName, newDefaultManual) {
-    const existingGroupItem = this.getSidebarItem(modName);
-    new PopupGenerator(`New default set for ${modName}`, [
-      { type: "label", textContent: newDefaultManual },
-      { type: "close-btn" },
-    ]).doPopup();
-    if (existingGroupItem.manualUrl !== newDefaultManual) {
-      existingGroupItem.manualUrl = newDefaultManual;
-      const newItem = {
-        moduleName: modName,
-        manualList: existingGroupItem.manualList,
-        manualUrl: newDefaultManual,
-      };
-      this.localStorageUpdateRecent(newItem);
-      this.localStorageUpdateModule(modName, newItem);
-      this.syncLists();
-      this.renderSome();
+  setDefaultPrompt(sidebarItem, manualClicked) {
+    const existingGroupItem = this.getSidebarItem(sidebarItem.moduleName);
+    if (existingGroupItem.manualUrl !== manualClicked) {
+      new PopupGenerator(
+        `This is different from your default, What would you like to do?`,
+        [
+          {
+            type: "group",
+            schema: [
+              {
+                type: "button",
+              },
+              {
+                type: "button",
+                btnType: "submit",
+                textContent: "Open Once",
+                listenerEvent: {
+                  trigger: "click",
+                  callback: () => {
+                    this.openModule(sidebarItem, manualClicked);
+                  },
+                },
+              },
+              {
+                type: "button",
+                btnType: "submit",
+                textContent: "Change Default",
+                listenerEvent: {
+                  trigger: "click",
+                  callback: () => {
+                    this.setDefaultManual(sidebarItem, manualClicked);
+                  },
+                },
+              },
+            ],
+            classList: "form-btn-group",
+          },
+        ]
+      ).doPopup();
+    } else {
+      this.openModule(sidebarItem);
     }
+  }
+
+  setDefaultManual(sidebarItem, newDefaultManual) {
+    sidebarItem.manualUrl = newDefaultManual;
+    this.localStorageUpdateRecent(sidebarItem);
+    this.localStorageUpdateModule(sidebarItem.moduleName, sidebarItem);
+    this.syncLists();
+    this.renderSome();
   }
 
   attemptToOpen() {

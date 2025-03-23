@@ -78,7 +78,7 @@ class HeaderList {
     }
     if (!skipDuplicateCheck && matchingModules.length == 1) {
       new PopupGenerator(
-        "This module already exists. What would you like to do?",
+        "This module is already open. What would you like to do?",
         [
           {
             type: "group",
@@ -110,7 +110,7 @@ class HeaderList {
               {
                 type: "button",
                 btnType: "submit",
-                textContent: "Open New",
+                textContent: "Open Another Tab",
                 listenerEvent: {
                   trigger: "click",
                   callback: () => {
@@ -122,7 +122,7 @@ class HeaderList {
               {
                 type: "button",
                 btnType: "submit",
-                textContent: "Replace Existing",
+                textContent: "Replace Existing Tab",
                 listenerEvent: {
                   trigger: "click",
                   callback: () => {
