@@ -80,5 +80,77 @@ document.addEventListener("DOMContentLoaded", () => {
     splitNotesHorBtn.classList.toggle("selected");
     document.querySelector(".bottom-notes").classList.toggle("hidden");
   });
+
+  interact(".top-notes *:last-child").resizable({
+    edges: { left: true },
+    listeners: {
+      move: function (event) {
+        /* Block the mouse from touching the iframe when moving resizeable area*/
+        iframeCover.classList.remove("hidden");
+        let x = event.target.dataset.x;
+        x = (parseFloat(x) || 0) + event.deltaRect.left;
+        const notesWidth = getComputedStyle(
+          document.querySelector(".notes-wrapper")
+        ).width;
+        const rightBasis = (event.rect.width / parseInt(notesWidth)) * 100;
+        Object.assign(event.target.style, {
+          maxWidth: `${rightBasis}%`,
+        });
+        const leftSide = document.querySelector(".top-notes *:first-child");
+        Object.assign(leftSide.style, {
+          maxWidth: `${100 - rightBasis}%`,
+        });
+        Object.assign(event.target.dataset, { x });
+      },
+    },
+  });
+
+  interact(".bottom-notes *:last-child").resizable({
+    edges: { left: true },
+    listeners: {
+      move: function (event) {
+        /* Block the mouse from touching the iframe when moving resizeable area*/
+        iframeCover.classList.remove("hidden");
+        let x = event.target.dataset.x;
+        x = (parseFloat(x) || 0) + event.deltaRect.left;
+        const notesWidth = getComputedStyle(
+          document.querySelector(".notes-wrapper")
+        ).width;
+        const rightBasis = (event.rect.width / parseInt(notesWidth)) * 100;
+        Object.assign(event.target.style, {
+          maxWidth: `${rightBasis}%`,
+        });
+        const leftSide = document.querySelector(".bottom-notes *:first-child");
+        Object.assign(leftSide.style, {
+          maxWidth: `${100 - rightBasis}%`,
+        });
+        Object.assign(event.target.dataset, { x });
+      },
+    },
+  });
+
+  interact(".bottom-notes").resizable({
+    edges: { top: true },
+    listeners: {
+      move: function (event) {
+        /* Block the mouse from touching the iframe when moving resizeable area*/
+        iframeCover.classList.remove("hidden");
+        let x = event.target.dataset.x;
+        x = (parseFloat(x) || 0) + event.deltaRect.left;
+        const notesHeight = getComputedStyle(
+          document.querySelector(".notes-wrapper")
+        ).height;
+        const bottomBasis = (event.rect.height / parseInt(notesHeight)) * 100;
+        Object.assign(event.target.style, {
+          maxHeight: `${bottomBasis}%`,
+        });
+        const topSide = document.querySelector(".top-notes");
+        Object.assign(topSide.style, {
+          maxHeight: `${100 - bottomBasis}%`,
+        });
+        Object.assign(event.target.dataset, { x });
+      },
+    },
+  });
 });
 export default () => {};

@@ -19,30 +19,33 @@
   touch-action: none;
   position: relative;
   min-width: 1px;
+  display: flex;
+  flex-direction: column;
 }
 
 .top-notes,
 .bottom-notes {
-  width: 100%;
-  flex-basis: 50%;
-  flex-grow: 1;
   display: flex;
+  flex-grow: 1;
 }
 
-.top-notes {
-  height: 100%;
+.top-notes > :has(+ .hidden),
+.bottom-notes > :has(+ .hidden) {
+  max-width: 100% !important;
 }
 
-.top-notes:has(+ :not(.hidden)) {
-  height: 50%;
+.top-notes:has(+ .hidden) {
+  max-height: 100% !important;
 }
 
+.notes:first-child:has(+ :not(.hidden)),
+.notes:nth-child(2) {
+  max-width: 50%;
+}
+
+.top-notes:has(+ :not(.hidden)),
 .bottom-notes {
-  height: 50%;
-}
-
-.bottom-notes .hidden {
-  height: 0;
+  max-height: 50%;
 }
 
 .bottom-notes {
@@ -55,7 +58,7 @@
 }
 
 .notes {
-  flex-basis: 50%;
+  /* flex-basis: 50%; */
   flex-grow: 1;
   padding: 10px;
 

@@ -1,7 +1,7 @@
 import HeaderList from "./modules/HeaderList.js";
 import IframeManager from "./modules/IframeManager.js";
 import Sidebar from "./modules/Sidebar.js";
-import Draggables from "./modules/Draggables.js";
+import Interactjs from "./modules/Interactjs.js";
 import "./styles/main.css";
 import {
   NumberedAlphabetPopup,
@@ -15,4 +15,4 @@ new Sidebar();
 new NumberedAlphabetPopup();
 new GridPopup();
 new CalcPopup();
-Draggables;
+Interactjs;
