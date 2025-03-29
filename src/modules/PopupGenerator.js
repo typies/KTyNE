@@ -286,7 +286,8 @@ class PopupGenerator {
       },
     ],
     formSubmit,
-    dontReset = false
+    dontReset = false,
+    classList = []
   ) {
     Object.assign(this, {
       title,
@@ -301,7 +302,7 @@ class PopupGenerator {
         if (this.formSubmit) this.formSubmit(data);
         if (!this.dontReset) data.element.reset();
       },
-      "form"
+      ["form", ...classList]
     ).element;
     this.popup = new OverlayElement(this.form, "popup-overlay");
     this.popup.element.addEventListener("submit", (event) =>

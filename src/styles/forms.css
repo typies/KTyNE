@@ -1,26 +1,33 @@
 /* Edgework Form */
 
-.edgework-first-form-row {
-  text-align: center;
+.form.edgework-form {
+  max-width: 840px;
+  flex-basis: 840px;
+}
+
+.edgework-form-row {
   display: flex;
   gap: 8px;
-  width: 800px;
   justify-content: center;
+}
+
+.edgework-form .edgework-form-row:not(.battery-row) * {
+  width: 100%;
+  max-width: 100%;
+  & label {
+    display: block;
+  }
+}
+
+label[for="serial"] {
+  margin: 0 auto;
 }
 
 #serial-input {
   padding: 8px;
   width: 8ch;
   text-align: center;
-}
-
-label[for="serial"]:after {
-  content: "required";
-  color: var(--color-red);
-  font-size: 0.5em;
-  position: absolute;
-  bottom: 0;
-  right: 0;
+  margin: 0 auto;
 }
 
 #holders-input,
@@ -29,67 +36,15 @@ label[for="serial"]:after {
   padding: 4px;
 }
 
-.ind-list {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-input.ind-checkbox {
-  width: auto;
-}
-
-.ind-table {
-  display: grid;
-  grid-template-columns: 5ch repeat(11, 4ch);
-  text-align: center;
-  gap: 2px;
-  margin-top: 10px;
-}
-
-.ind-group,
-.row-labels {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-
-.row-labels {
-  display: flex;
-  flex-direction: column;
-  justify-content: end;
-  align-items: end;
-  gap: 0;
-}
-
-.ind-group input[type="radio"] {
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-}
-
-.none-text,
-.ind-group:has(input[value="none"]:checked) {
-  color: #2b2926;
-}
-
-.lit-text,
-.ind-group:has(input[value="lit"]:checked) {
-  color: white;
-}
-
-.unlit-text,
-.ind-group:has(input[value="unlit"]:checked) {
-  color: rgba(0, 0, 0, 0.15);
-}
-
 .edgework-preview.edgework {
-  margin-top: 20px;
   padding: 10px;
   background-color: var(--color-jet);
   min-height: 100px;
+  max-height: fit-content;
+  display: flex;
+  flex-wrap: wrap;
   width: 100%;
+  flex-basis: 800px;
   align-self: center;
 }
 

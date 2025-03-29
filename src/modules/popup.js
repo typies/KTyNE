@@ -742,28 +742,6 @@ class EdgeworkPopup {
           schema: [
             {
               type: "label",
-              forField: "serial",
-              textContent: "Serial #",
-            },
-            {
-              type: "textInput",
-              name: "serial",
-              id: "serial-input",
-              minlength: "6",
-              maxlength: "6",
-              autocomplete: "off",
-              required: true,
-              oninputCallback: () => {
-                this.validateSerialInput();
-                this.form
-                  .querySelector(".serial-preview")
-                  .replaceChildren(
-                    this.createSerialEle(this.serialInput.value)
-                  );
-              },
-            },
-            {
-              type: "label",
               forField: "batteries",
               textContent: "Batteries",
             },
@@ -803,67 +781,116 @@ class EdgeworkPopup {
               },
             },
           ],
-          classList: "edgework-first-form-row",
+          classList: ["edgework-form-row", "battery-row"],
+        },
+        {
+          type: "group",
+          schema: [
+            {
+              type: "group",
+              schema: [
+                {
+                  type: "label",
+                  forField: "lit-inds",
+                  textContent: "Lit Indicators",
+                },
+                {
+                  type: "textInput",
+                  name: "lit-inds",
+                  id: "lit-inds-input",
+                  placeholder: "ex: frk bob msa",
+                  autocomplete: "off",
+                  oninputCallback: () => {
+                    this.litIndsPreview.replaceChildren(
+                      ...this.createIndicatorsEleList(
+                        this.standardizeIndicators(this.litIndsInput.value),
+                        "lit"
+                      )
+                    );
+                  },
+                },
+              ],
+              classList: [],
+            },
+            {
+              type: "group",
+              schema: [
+                {
+                  type: "label",
+                  forField: "unl-inds",
+                  textContent: "UN-Lit Indicators",
+                },
+                {
+                  type: "textInput",
+                  name: "unlit-inds",
+                  id: "unlit-inds-input",
+                  placeholder: "ex: frq nsa",
+                  autocomplete: "off",
+                  oninputCallback: () => {
+                    this.validatePorts();
+                    this.unlitIndsPreview.replaceChildren(
+                      ...this.createIndicatorsEleList(
+                        this.standardizeIndicators(this.unlitIndsInput.value),
+                        "unlit"
+                      )
+                    );
+                  },
+                },
+              ],
+              classList: [],
+            },
+          ],
+          classList: "edgework-form-row",
+        },
+        {
+          type: "group",
+          schema: [
+            {
+              type: "group",
+              schema: [
+                {
+                  type: "label",
+                  forField: "ports",
+                  textContent: "Ports",
+                },
+                {
+                  type: "textInput",
+                  name: "ports",
+                  id: "ports-input",
+                  placeholder: "ex: (dvi rj) (serial para) (empty)",
+                  autocomplete: "off",
+                  oninputCallback: () => {
+                    this.validatePorts();
+                    this.portsPreview.replaceChildren(
+                      ...this.createPortPlatesEleList(
+                        this.standardizePorts(this.portsInput.value)
+                      )
+                    );
+                  },
+                },
+              ],
+              classList: [],
+            },
+          ],
+          classList: "edgework-form-row",
         },
         {
           type: "label",
-          forField: "ports",
-          textContent: "Ports",
+          forField: "serial",
+          textContent: "Serial #",
         },
         {
           type: "textInput",
-          name: "ports",
-          id: "ports-input",
-          placeholder: "ex: (dvi rj) (serial para) (empty)",
+          name: "serial",
+          id: "serial-input",
+          minlength: "6",
+          maxlength: "6",
           autocomplete: "off",
           oninputCallback: () => {
-            this.validatePorts();
-            this.portsPreview.replaceChildren(
-              ...this.createPortPlatesEleList(
-                this.standardizePorts(this.portsInput.value)
-              )
-            );
-          },
-        },
-        {
-          type: "label",
-          forField: "lit-inds",
-          textContent: "Lit Indicators",
-        },
-        {
-          type: "textInput",
-          name: "lit-inds",
-          id: "lit-inds-input",
-          placeholder: "ex: frk bob msa",
-          autocomplete: "off",
-          oninputCallback: () => {
-            this.litIndsPreview.replaceChildren(
-              ...this.createIndicatorsEleList(
-                this.standardizeIndicators(this.litIndsInput.value),
-                "lit"
-              )
-            );
-          },
-        },
-        {
-          type: "label",
-          forField: "unl-inds",
-          textContent: "UN-Lit Indicators",
-        },
-        {
-          type: "textInput",
-          name: "unlit-inds",
-          id: "unlit-inds-input",
-          placeholder: "ex: frq nsa",
-          autocomplete: "off",
-          oninputCallback: () => {
-            this.validatePorts();
-            this.unlitIndsPreview.replaceChildren(
-              ...this.createIndicatorsEleList(
-                this.standardizeIndicators(this.unlitIndsInput.value),
-                "unlit"
-              )
-            );
+            this.validateSerialInput();
+            this.form
+              .querySelector(".serial-preview")
+              .replaceChildren(this.createSerialEle(this.serialInput.value));
           },
         },
         {
@@ -925,7 +952,8 @@ class EdgeworkPopup {
         ]);
         this.populatePortPlates(this.standardizePorts(formData.get("ports")));
       },
-      true
+      true,
+      ["edgework-form"]
     );
     this.form = this.popup.form;
     this.header = document.querySelector(".header");
@@ -981,7 +1009,7 @@ class EdgeworkPopup {
     this.serialInput.setCustomValidity("");
     const validSerialRegex = /[A-Za-z0-9]{6}/;
     const serial = this.serialInput.value;
-    if (!serial.match(validSerialRegex) || serial.length !== 6) {
+    if (!serial.match(validSerialRegex) && serial.length > 0) {
       this.serialInput.setCustomValidity(
         "Invalid serial. Must be exactly 6 letters/numbers"
       );
@@ -1024,7 +1052,7 @@ class EdgeworkPopup {
   }
 
   createSerialEle(serialValue) {
-    if (!serialValue) return;
+    if (!serialValue) return "";
     const newSerialEle = document.createElement("div");
     newSerialEle.classList.add("widget", "serial");
     newSerialEle.textContent = serialValue.toUpperCase();
@@ -1045,7 +1073,7 @@ class EdgeworkPopup {
       !batteries ||
       !holders
     ) {
-      return null;
+      return [];
     }
     const numOfAAPairs = batteries - holders;
     const numOfD = batteries - 2 * numOfAAPairs;
