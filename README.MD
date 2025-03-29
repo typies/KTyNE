@@ -27,7 +27,7 @@ For the best experience I recommend
 <ol>
   <li>The site is contains all the mods located on <a href="https://ktane.timwi.de/" target="_blank">https://ktane.timwi.de</a> but is manually updated. You can see when the last sync was by checking the bottom left corner of the website.</li>
   <li>Use the search bar on the left hand side to find a mod and click (or press <kbd>enter</kbd>) to open a manual.</li>
-  <li>Alternative Manuals are available by pressing the blue pencil icon next to a mod name (Preferences are saved between page loads).</li>
+  <li>Alternative Manuals are available by pressing the blue arrow icon next to a mod name (Preferences are saved between page loads).</li>
   <li>If you don't see a mod on the list, it can be added manually on your computer by pressing the <em>Add New Manual/Module</em> Button. Or alternatively use the <em>New Repo Tab</em> button to open up a window that goes straight to <a href="https://ktane.timwi.de/" target="_blank">https://ktane.timwi.de</a>.</li>
   <li>The <em>Enable Split Manual Mode</em> button can be used to have 2 manuals open at the same time.</li>
   <li>The <em>Hide Sidebar</em> button can be used to collapse the sidebar when not needed. This can be helpful for small monitors or when using <em>Split Manual Mode</em> (<strong style="color:#87ceeb">Tip</strong>: While the sidebar is collapsed, press the <em>Open New Tab</em> button to pull up the sidebar and open a single tab. Afterward the sidebar with automatically re-collapse).</li>
@@ -82,7 +82,7 @@ Credit for images, icons & resources
   </li>
   <li>
   <p>Q: How do I use alternate manuals?</p>
-  <p>A: Click the pencil icon next to the mod name in the Modules list.</p>
+  <p>A: Click the arrow icon next to the mod name in the Modules list.</p>
   </li>
   <li>
   <p>Q: Something isn't working correctly! How can I let you know it needs fixed?</p>
