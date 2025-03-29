@@ -31,6 +31,11 @@
   }
 }
 
+.right-btns {
+  display: flex;
+  gap: 5px;
+}
+
 .grid-popup-wrapper,
 .alphabet-popup-wrapper {
   position: absolute;
