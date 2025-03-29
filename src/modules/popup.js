@@ -857,7 +857,7 @@ class EdgeworkPopup {
                   type: "textInput",
                   name: "ports",
                   id: "ports-input",
-                  placeholder: "ex: (dvi rj) (serial para) (empty)",
+                  placeholder: "ex: (serial para) (dvi rj) (empty)",
                   autocomplete: "off",
                   oninputCallback: () => {
                     this.validatePorts();
