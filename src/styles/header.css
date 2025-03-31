@@ -9,7 +9,7 @@
 }
 
 .open-modules-list {
-  flex: 4;
+  flex: 1;
   margin: 10px;
   gap: 10px;
   color: var(--color-blue);
@@ -67,7 +67,7 @@
 }
 
 .edgework {
-  flex: 1.5;
+  flex: 1;
   display: flex;
   flex-wrap: wrap;
   flex-direction: row-reverse;
