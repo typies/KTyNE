@@ -423,8 +423,7 @@ class Sidebar {
     const exactMatch = this.getSidebarItem(this.dom.filter.value);
     const sidebarItems = this.dom.sidebarListElement.children;
     if (exactMatch) this.openModule(exactMatch);
-    else if (sidebarItems.length === 1)
-      this.openModule(this.getSidebarItem(sidebarItems[0].textContent));
+    else this.openModule(this.getSidebarItem(sidebarItems[0].textContent));
   }
 
   configureStaticSidebarBtns() {
