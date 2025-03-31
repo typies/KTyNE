@@ -3,12 +3,7 @@
   flex-grow: 1;
   border-left: 1px solid var(--color-jet);
   position: relative;
-  background: linear-gradient(
-    0deg,
-    rgba(53, 53, 53, 1) 25%,
-    rgba(135, 206, 235, 1) 70%,
-    rgba(210, 215, 223, 1) 95%
-  );
+  background: url("../images/web-background.jpg");
   touch-action: none;
 }
 
