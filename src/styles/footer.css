@@ -1,5 +1,9 @@
 /* Footer css */
 
+:root {
+  --drag-area-height: 20px;
+}
+
 .footer {
   background-color: var(--color-jet);
 
@@ -60,7 +64,7 @@
   border-bottom-right-radius: 0;
   border: 1px solid var(--color-gray);
   border-bottom-width: 2px;
-  height: 20px;
+  height: var(--drag-area-height);
   background-color: var(--color-jet);
   position: relative;
 }
@@ -302,10 +306,12 @@
 
 .calc-popup-wrapper {
   position: absolute;
-  bottom: calc(
-    var(--footer-height) + 110px
-  ); /* Some extra space for alpha popup*/
-  right: 400px;
+  top: 50%;
+  left: 50%;
+  min-width: 120px;
+  min-height: 180px;
+  width: 250px;
+  height: 180px;
 }
 
 .calc {
@@ -313,44 +319,30 @@
   border: 1px solid var(--color-gray);
   border-bottom-left-radius: 6px;
   border-bottom-right-radius: 6px;
-}
-
-.calc-screen,
-.calc-mini-screen {
-  margin: 10px;
-  line-height: 1.4;
-  padding-right: 8px;
-  justify-content: right;
-  display: flex;
+  padding: 10px;
   color: var(--color-gray);
-  height: 1em;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - var(--drag-area-height));
 }
 
-.calc-mini-screen {
-  font-size: 1em;
+.calc-input {
+  flex: 1;
+  margin: 10px 0;
+  font-size: 20px;
+  padding: 4px;
+  line-height: 1.4;
+  background-color: var(--color-gray);
+  color: var(--color-jet);
+  min-height: 2em;
+  resize: none;
+  field-sizing: content;
 }
 
-.calc-screen {
-  font-size: 1.6em;
-}
-
-.calc-btn-grid {
-  display: grid;
-  grid-template-rows: repeat(5, 40px);
-  grid-template-columns: repeat(4, 60px);
-  gap: 4px;
-  margin: 10px;
-}
-
-.calc-btn {
-  stroke: var(--color-blue);
-}
-
-.calc-btn:has(> svg):hover {
-  stroke: white;
-}
-
-.calc-btn svg {
-  stroke: inherit;
+.calc-result {
+  min-height: 2em;
+  max-height: 5em;
+  line-height: 1.4;
+  color: var(--color-green);
+  overflow-y: auto;
 }

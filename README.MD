@@ -44,7 +44,7 @@ For the best experience I recommend
   <p><strong style="color:#87ceeb">Tip</strong>: All footer popup windows are movable! Use the top of the popup to drag/drog it anywhere on screen</p>
 <ol>
 
-  <li>The <em>Calculator</em> button opens up a simple calculator. (<strong style="color:#ed9190">Note</strong>: If you notice a bug with the calculator please let me know, it's surprisingly hard to identify every edge case with a custom calculator).</li>
+  <li>The <em>Calculator</em> button opens up a text field calculator. Use the text field to type in a mathmatical equation (ex: <em>(17 * 87) mod 26</em> ) and see the result below the input. (<strong style="color:#87ceeb">Tip</strong>: This popup is resizable via the bottom left corner)</li>
   <li>The <em>Grid</em> button opens up a customizable grid area. (<strong style="color:#87ceeb">Tip</strong>: You can add/remove rows/columns, resize cells, color cells, and even type in cells) (<strong style="color:#87ceeb">Bonus Tip</strong>: Hold down <kbd>alt</kbd> and press one of the associated keys to change your paint color to that color).</li>
   <li>The <em>Numbered Alphabet</em> button opens up a numbered alphabet list. (<strong style="color:#87ceeb">Tip</strong>: Press the <em>Swap Indexing</em> button to change the ordering to 0-25 or 1-26).</li>
 

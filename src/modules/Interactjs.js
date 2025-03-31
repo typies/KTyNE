@@ -44,6 +44,36 @@ document.addEventListener("DOMContentLoaded", () => {
       },
     },
   });
+
+  // Calc resizable
+  interact(".calc-popup-wrapper").resizable({
+    edges: { right: true, bottom: true },
+    listeners: {
+      move: function (event) {
+        /* Block the mouse from touching the iframe when moving resizeable area*/
+        iframeCover.classList.remove("hidden");
+        let { x, y } = event.target.dataset;
+        x = (parseFloat(x) || 0) + event.deltaRect.left;
+        y = (parseFloat(y) || 0) + event.deltaRect.top;
+
+        const calcWrapperPopup = document.querySelector(".calc-popup-wrapper");
+        const minWidth = getComputedStyle(calcWrapperPopup).minWidth;
+        const minHeight = getComputedStyle(calcWrapperPopup).minHeight;
+
+        if (event.rect.width < minWidth) event.rect.width = minWidth;
+        if (event.rect.width < minHeight) event.rect.width = minHeight;
+
+        Object.assign(event.target.style, {
+          width: `${event.rect.width}px`,
+          maxWidth: `${event.rect.width}px`,
+          height: `${event.rect.height}px`,
+        });
+
+        Object.assign(event.target.dataset, { x, y });
+      },
+    },
+  });
+
   /* Block the mouse from touching the iframe when moving resizeable area*/
   document.addEventListener("mouseup", () => {
     iframeCover.classList.add("hidden");
