@@ -62,8 +62,6 @@
 }
 
 .split-button {
-  width: 1.75em;
-  height: 1.75em;
   cursor: pointer;
   stroke: none;
 }

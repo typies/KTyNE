@@ -52,7 +52,6 @@ class Sidebar {
     sidebarListElement: document.querySelector(".sidebar .module-list"),
     newRepoTabBtn: document.querySelector(".new-repo-tab-btn"),
     filter: document.querySelector("#sidebar-filter-input"),
-    filterClear: document.querySelector(".sidebar-filter-clear"),
     moduleListTitle: document.querySelector(".module-list-title"),
     collapseSidebarBtn: document.querySelector(".collapse-sidebar-btn"),
     showSidebarBtn: document.querySelector(".show-sidebar-btn"),
@@ -434,10 +433,6 @@ class Sidebar {
       if (event.key === "Enter") {
         this.attemptToOpen();
       }
-    });
-    this.dom.filterClear.addEventListener("click", () => {
-      this.dom.filter.value = "";
-      this.filterSidebar("");
     });
     this.dom.collapseSidebarBtn.addEventListener("click", () =>
       this.collapseToggle()

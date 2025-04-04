@@ -50,21 +50,6 @@
   border-radius: 6px;
 }
 
-svg.sidebar-filter-clear {
-  min-width: 1em;
-  min-height: 1em;
-  max-width: 1em;
-  max-height: 1em;
-  position: absolute;
-  right: 0.5em;
-  top: 0.4em;
-  cursor: pointer;
-}
-
-.sidebar-filter-clear:hover {
-  fill: var(--color-red);
-}
-
 .sidebar-item,
 .new-repo-tab-btn {
   width: 100%;
