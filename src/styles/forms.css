@@ -46,6 +46,8 @@ label[for="serial"] {
   width: 100%;
   flex-basis: 800px;
   align-self: center;
+  flex-direction: row;
+  justify-content: center;
 }
 
 .serial-preview div.widget.serial {

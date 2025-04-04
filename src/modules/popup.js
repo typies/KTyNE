@@ -640,15 +640,7 @@ class EdgeworkPopup {
           schema: [
             {
               type: "group",
-              classList: "serial-preview",
-            },
-            {
-              type: "group",
               classList: "batteries-preview",
-            },
-            {
-              type: "group",
-              classList: "ports-preview",
             },
             {
               type: "group",
@@ -657,6 +649,14 @@ class EdgeworkPopup {
             {
               type: "group",
               classList: "unlit-inds-preview",
+            },
+            {
+              type: "group",
+              classList: "ports-preview",
+            },
+            {
+              type: "group",
+              classList: "serial-preview",
             },
           ],
         },
@@ -670,15 +670,15 @@ class EdgeworkPopup {
         this.resetEdgework();
         const formData = new FormData(this.form);
         this.populateSerialEle(formData.get("serial"));
-        this.populateBatteries(
-          formData.get("batteries"),
-          formData.get("holders")
-        );
+        this.populatePortPlates(this.standardizePorts(formData.get("ports")));
         this.populateIndicators([
           this.standardizeIndicators(formData.get("lit-inds")),
           this.standardizeIndicators(formData.get("unlit-inds")),
         ]);
-        this.populatePortPlates(this.standardizePorts(formData.get("ports")));
+        this.populateBatteries(
+          formData.get("batteries"),
+          formData.get("holders")
+        );
       },
       true,
       ["edgework-form"]
@@ -823,8 +823,8 @@ class EdgeworkPopup {
 
   populateIndicators(indsLists) {
     const edgework = this.realEdgework;
-    edgework.append(...this.createIndicatorsEleList(indsLists[0], "lit"));
     edgework.append(...this.createIndicatorsEleList(indsLists[1], "unlit"));
+    edgework.append(...this.createIndicatorsEleList(indsLists[0], "lit"));
   }
 
   createIndicatorsEleList(indsList, className) {
@@ -843,7 +843,7 @@ class EdgeworkPopup {
   populatePortPlates(portList) {
     if (portList.length === 0) return;
     const edgework = this.realEdgework;
-    edgework.append(...this.createPortPlatesEleList(portList));
+    edgework.append(...this.createPortPlatesEleList(portList).reverse()); // reverse to preserve input order while using row-reverse flex
   }
 
   createPortPlatesEleList(portList) {
