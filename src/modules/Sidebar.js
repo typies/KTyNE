@@ -3,8 +3,8 @@ import PopupGenerator from "./PopupGenerator.js";
 import mainPubSub from "./PubSub.js";
 
 // These need updated after each repo sync
-import fullModList from "../defaultModLists/fullList(Mar 31 2025).json";
-const FULL_LIST_URL = "../defaultModLists/fullList(Mar 31 2025).json";
+import fullModList from "../defaultModLists/fullList(Apr 04 2025).json";
+const FULL_LIST_URL = "../defaultModLists/fullList(Apr 04 2025).json";
 
 const KTANE_TIMWI_URL = "https://ktane.timwi.de/";
 
