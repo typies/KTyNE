@@ -53,8 +53,7 @@ class Sidebar {
     newRepoTabBtn: document.querySelector(".new-repo-tab-btn"),
     filter: document.querySelector("#sidebar-filter-input"),
     moduleListTitle: document.querySelector(".module-list-title"),
-    collapseSidebarBtn: document.querySelector(".collapse-sidebar-btn"),
-    showSidebarBtn: document.querySelector(".show-sidebar-btn"),
+    toggleSidebarBtn: document.querySelector(".toggle-sidebar-btn"),
     addOneBtn: document.querySelector(".add-one-btn"),
     edgeworkBtn: document.querySelector(".edgework-btn"),
     addModuleBtn: document.querySelector(".add-module-btn"),
@@ -434,10 +433,7 @@ class Sidebar {
         this.attemptToOpen();
       }
     });
-    this.dom.collapseSidebarBtn.addEventListener("click", () =>
-      this.collapseToggle()
-    );
-    this.dom.showSidebarBtn.addEventListener("click", () =>
+    this.dom.toggleSidebarBtn.addEventListener("click", () =>
       this.collapseToggle()
     );
     this.dom.addOneBtn.addEventListener("click", () => {
@@ -460,8 +456,7 @@ class Sidebar {
 
   collapseToggle() {
     this.dom.sidebar.classList.toggle("hidden");
-    this.dom.collapseSidebarBtn.classList.toggle("hidden");
-    this.dom.showSidebarBtn.classList.toggle("hidden");
+    this.dom.toggleSidebarBtn.classList.toggle("rotate");
     this.dom.addOneBtn.classList.toggle("hidden");
   }
 
